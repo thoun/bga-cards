@@ -1,11 +1,12 @@
-
 # Concept
-## CardManager and Stocks
+## CardManager, Stocks and Card
 The CardManager will handle the creation of all cards used in all stocks linked to it.
 
 For example, if you have cards in 3 stocks on your game, you will create 1 manager and 3 stocks.
 
 If you have different decks of cards (cards of different kind, that may have ids in common as they are handled in different DB tables), you will need one manager for each.
+
+When the card is mentionned in the parameters, it can be any type of object. For example `{ id: 3, type: 3, type_arg: 2 }`. It should be possible to identify the card and generate it's unique id by the object.
 
 ## Card layout
 The card contains a div (card-sides) that contains 2 divs : a front side and a back side.
@@ -73,3 +74,6 @@ function (dojo, declare, debounce, gamegui, /*...,*/ bgaCards) {
         const card = { id: 3, type: 3, type_arg: 2, location: 'table', location_arg: 0 };
         this.stock.addCard(card);
 ```
+
+# Documentation
+[Full documentation here](./DOC.md)
