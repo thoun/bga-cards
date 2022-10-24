@@ -6,6 +6,7 @@
       "lib": ["dom", "esnext"],  
       "sourceMap": false,
       "outFile": "bga-cards.js",
+      "declaration": true,
     },
     "files": [
       "src/framework.d.ts",
