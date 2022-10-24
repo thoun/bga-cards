@@ -1,6 +1,11 @@
 declare const define;
 
 define({ 
-    CardStock,
     CardManager,
+    CardStock,
+    LineStock,
+    SlotStock,
+    HiddenDeck,
+    VisibleDeck,
+    AllVisibleDeck,
  });

@@ -555,6 +555,11 @@ var CardManager = /** @class */ (function () {
     return CardManager;
 }());
 define({
-    CardStock: CardStock,
     CardManager: CardManager,
+    CardStock: CardStock,
+    LineStock: LineStock,
+    SlotStock: SlotStock,
+    HiddenDeck: HiddenDeck,
+    VisibleDeck: VisibleDeck,
+    AllVisibleDeck: AllVisibleDeck,
 });

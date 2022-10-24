@@ -10,8 +10,8 @@ class CardStock<T> {
     protected selectedCards: T[] = [];
     protected selectionMode: CardSelectionMode = 'none';
 
-    public onSelectionChange: (selection: T[], lastChange: T | null) => void;
-    public onCardClick: (card: T) => void;
+    public onSelectionChange?: (selection: T[], lastChange: T | null) => void;
+    public onCardClick?: (card: T) => void;
 
     constructor(protected manager: CardManager<T>, protected element: HTMLElement) {
         manager.addStock(this);

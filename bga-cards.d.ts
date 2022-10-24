@@ -24,8 +24,8 @@ declare class CardStock<T> {
     protected cards: T[];
     protected selectedCards: T[];
     protected selectionMode: CardSelectionMode;
-    onSelectionChange: (selection: T[], lastChange: T | null) => void;
-    onCardClick: (card: T) => void;
+    onSelectionChange?: (selection: T[], lastChange: T | null) => void;
+    onCardClick?: (card: T) => void;
     constructor(manager: CardManager<T>, element: HTMLElement);
     getCards(): T[];
     isEmpty(): boolean;
