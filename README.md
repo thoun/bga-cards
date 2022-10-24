@@ -1,3 +1,6 @@
+# Documentation
+[Components documentation here](./DOC.md)
+
 # Concept
 ## CardManager, Stocks and Card
 The CardManager will handle the creation of all cards used in all stocks linked to it.
@@ -74,6 +77,3 @@ function (dojo, declare, debounce, gamegui, /*...,*/ bgaCards) {
         const card = { id: 3, type: 3, type_arg: 2, location: 'table', location_arg: 0 };
         this.stock.addCard(card);
 ```
-
-# Documentation
-[Full documentation here](./DOC.md)
