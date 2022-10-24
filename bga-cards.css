@@ -1,0 +1,116 @@
+body > .card {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+}
+
+.card[data-side=back] .card-sides {
+  transform: rotateY(180deg);
+}
+.card .card-sides {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.5s;
+}
+.card .card-sides .card-side {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transform-style: preserve-3d;
+  -webkit-backface-visibility: hidden; /* Safari */
+  backface-visibility: hidden;
+  transform-origin: center center;
+  border-radius: 5px;
+  box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+.card .card-sides .card-side.front > * {
+  pointer-events: none;
+  user-select: none;
+}
+.card .card-sides .card-side.back {
+  transform: rotateY(180deg);
+}
+.card .card-sides .card-side.back > * {
+  pointer-events: none;
+  user-select: none;
+}
+
+.card-stock.selectable .card:not(.disabled) {
+  cursor: pointer;
+}
+.card-stock .card.selectable:not(.disabled) {
+  cursor: pointer;
+}
+
+.card-stock.line-stock {
+  display: flex;
+  gap: var(--gap);
+  flex-wrap: var(--wrap);
+  flex-direction: var(--direction);
+}
+.card-stock.line-stock[data-center=true] {
+  justify-content: center;
+}
+
+.card-stock.slot-stock {
+  display: flex;
+  gap: var(--gap);
+  flex-wrap: var(--wrap);
+  flex-direction: var(--direction);
+}
+.card-stock.slot-stock[data-center=true] {
+  justify-content: center;
+}
+
+.card-stock.hidden-deck {
+  position: relative;
+}
+.card-stock.hidden-deck > .card[id$=-hidden-deck-back] {
+  box-shadow: 4px 4px 0px 0px #111, 5px 5px 2px 1px rgba(0, 0, 0, 0.5);
+}
+.card-stock.hidden-deck > .card:not([id$=-hidden-deck-back]) {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.card-stock.hidden-deck[data-empty=true] {
+  visibility: hidden;
+}
+
+.card-stock.visible-deck {
+  position: relative;
+}
+.card-stock.visible-deck > .card.under {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.card-stock.all-visible-deck {
+  position: absolute;
+  --tile-count: 1;
+  width: calc(var(--width) + var(--tile-count) * var(--shift));
+  transition: height 0.5s ease-in-out, background-color 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
+  opacity: var(--tile-count);
+}
+.card-stock.all-visible-deck > * {
+  position: absolute;
+  margin: 0;
+  transition: left 0.5s ease-in-out, top 0.5s ease-in-out;
+  top: calc(var(--shift) * var(--order));
+  left: calc(var(--shift) * var(--order));
+}
+.card-stock.all-visible-deck:hover, .card-stock.all-visible-deck:active, .card-stock.all-visible-deck.opened {
+  height: calc((var(--height) + var(--shift)) * var(--tile-count) - var(--shift));
+  z-index: 1;
+}
+.card-stock.all-visible-deck:hover > *, .card-stock.all-visible-deck:active > *, .card-stock.all-visible-deck.opened > * {
+  top: calc((var(--height) + var(--shift)) * var(--order));
+}

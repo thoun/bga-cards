@@ -1,72 +1,75 @@
-# What is this project ? 
-This project is an adaptation for BoardGameArena of game King of Tokyo edited by Iello.
-You can play here : https://boardgamearena.com
 
-# How to install the auto-build stack
+# Concept
+## CardManager and Stocks
+The CardManager will handle the creation of all cards used in all stocks linked to it.
 
-## Install builders
-Intall node/npm then `npm i` on the root folder to get builders.
+For example, if you have cards in 3 stocks on your game, you will create 1 manager and 3 stocks.
 
-## Auto build JS and CSS files
-In VS Code, add extension https://marketplace.visualstudio.com/items?itemName=emeraldwalk.RunOnSave and then add to config.json extension part :
-```json
-        "commands": [
-            {
-                "match": ".*\\.ts$",
-                "isAsync": true,
-                "cmd": "npm run build:ts"
-            },
-            {
-                "match": ".*\\.scss$",
-                "isAsync": true,
-                "cmd": "npm run build:scss"
-            }
-        ]
-    }
+If you have different decks of cards (cards of different kind, that may have ids in common as they are handled in different DB tables), you will need one manager for each.
+
+## Card layout
+The card contains a div (card-sides) that contains 2 divs : a front side and a back side.
+
+# Integration
+## On standard BGA project
+Copy bga-cards.css and bga-cards.js files to the `modules` directory.  
+Then you can include the module on your game :
+
+CSS file: 
+```css
+@import url(modules/bga-cards.css);
 ```
-If you use it for another game, replace `kingoftokyo` mentions on package.json `build:scss` script and on tsconfig.json `files` property.
+JS file:
+```js
+define([
+   "dojo","dojo/_base/declare",
+   "dojo/debounce",
+   "ebg/core/gamegui",
+   /*...,*/
+   g_gamethemeurl + "modules/bga-cards.js",
+],
+function (dojo, declare, debounce, gamegui, /*...,*/ bgaCards) {
+```
 
-## Auto-upload builded files
-Also add one auto-FTP upload extension (for example https://marketplace.visualstudio.com/items?itemName=lukasz-wronski.ftp-sync) and configure it. The extension will detected modified files in the workspace, including builded ones, and upload them to remote server.
+# Code example
 
-## Hint
-Make sure ftp-sync.json and node_modules are in .gitignore
+Example of integration
+```js
+define([
+   "dojo","dojo/_base/declare",
+   "dojo/debounce",
+   "ebg/core/gamegui",
+   /*...,*/
+   g_gamethemeurl + "modules/bga-cards.js",
+],
+function (dojo, declare, debounce, gamegui, /*...,*/ bgaCards) {
+   return declare("bgagame.mygame", gamegui, {
+      constructor: function() {
 
-# How to start PHP unit test
-go on tests dir and start execute file, for example `php ./kingoftokyo.game.test-dice-sort.php`
+        // create the card manager
+        this.cardsManager = new CardManager(this, {
+            getId: (card) => `card-${card.id}`,
+            setupDiv: (card, div) => {
+                div.classList.add('mygame-card');
+                div.style.width = '100px';
+                div.style.height = '150px';
+                div.style.position = 'relative';
+            },
+            setupFrontDiv: (card, div) => {
+                div.style.background = 'blue';
+                div.classList.add('mygame-card-front');
+                div.id = `card-${card.id}-front`;
+                this.addTooltipHtml(div.id, `tooltip de ${card.type}`);
+            },
+            setupBackDiv: (card, div) => {
+                div.style.background = 'url(' + g_gamethemeurl + 'img/card-back.jpg');
+            },
+        });
 
-# TODO
-add animation for smashes even if no smash dice (poison quills)
-slide energy cubes from battery monster
+        // create the stock
+        this.stock = new LineStock(this.cardsManager, document.getElementById('card-stock'));
 
-TODO check psychic probe with Background Dweller allowing to reroll a 3 that's not PB die => /bug?id=51953
-TODODE add new images
-TODODE handle cards cost differences
-TODODE handle cards color/style differences
-TODODE handle it has a child text difference
-
-log no energy/heart/points won
-
-## PU Evolutions to play a timing :
-before resolving :
- - 33 mecha blast (meka dragon)
- - 92 grande marée (kraken)
-after resolving
- - 34 analyse impitoyable (meka dragon) (or everytime ?)
- electric carrot
-when tokyo monster is damaged by this player
- - 29 jouer avec sa nourriture (Cyber Kitty)
-during move phase (after leaving, before entering) :
- - 30 propulseur félin (Cyber Kitty)
- - 57 ruée du grand singe (The King)
-after move phase active player turn :
- - 59 gare au gorille (The King)
- - 66 panda guerilla (Pandakai)
- - 90 vague dévastatrice (Kraken)
-at the end of active player turn :
- - 44 vague de froid (space penguin) (or everytime ?)
- - 45 pris dans la glace (space penguin) (or everytime ?)
- - 46 blizzard (space penguin) (or everytime in player's turn ?)
- - 51 convertisseur d'énergie (alienoid) (or everytime ?)
- - 81 coup de génie (cyber bunny) (or everytime ?)
- - 91 adorateurs cultistes (Kraken) (or everytime ?)
+        // add a card
+        const card = { id: 3, type: 3, type_arg: 2, location: 'table', location_arg: 0 };
+        this.stock.addCard(card);
+```
