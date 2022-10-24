@@ -1,0 +1,52 @@
+body > .card {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+}
+
+.card {
+    &[data-side="back"] {
+        .card-sides { 
+            transform: rotateY(180deg);
+        }
+    }
+
+    .card-sides {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        transform-style: preserve-3d;
+        transition: transform 0.5s;
+
+        .card-side {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            transform-style: preserve-3d;      
+            -webkit-backface-visibility: hidden; /* Safari */
+            backface-visibility: hidden;
+            transform-origin: center center;
+            border-radius: 5px;
+            box-shadow: 1px 1px 2px 1px rgba(0,0,0,0.5);
+            overflow: hidden;
+
+            &.front > * {
+                pointer-events: none;
+                user-select: none;
+            } 
+            
+            &.back {    
+                transform: rotateY(180deg);
+
+                & > * {
+                    pointer-events: none;
+                    user-select: none;
+                }
+            }
+        }
+    }
+}

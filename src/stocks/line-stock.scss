@@ -1,0 +1,13 @@
+.card-stock {
+
+    &.line-stock {
+        display: flex;
+        gap: var(--gap);
+        flex-wrap: var(--wrap);
+        flex-direction: var(--direction);
+
+        &[data-center="true"] {
+            justify-content: center;
+        }
+    }
+}

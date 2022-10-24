@@ -1,0 +1,16 @@
+{
+  "name": "bga-cards",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bga-cards.js",
+  "scripts": {
+    "build:ts": "tsc",
+    "build:scss": "sass --no-source-map src/bga-cards.scss bga-cards.css"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "sass": "^1.32.6",
+    "typescript": "^4.1.3"
+  }
+}

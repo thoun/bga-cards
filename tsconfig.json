@@ -1,0 +1,22 @@
+{
+    "rootDir": ".", 
+    "compilerOptions": {
+      "target": "es5",
+      "module": "none",
+      "lib": ["dom", "esnext"],  
+      "sourceMap": false,
+      "outFile": "bga-cards.js",
+    },
+    "files": [
+      "src/framework.d.ts",
+      "src/animations.ts",
+      "src/stocks/card-stock.ts",
+      "src/stocks/line-stock.ts",
+      "src/stocks/slot-stock.ts",
+      "src/stocks/hidden-deck.ts",
+      "src/stocks/visible-deck.ts",
+      "src/stocks/all-visible-deck.ts",
+      "src/card-manager.ts",
+      "src/define.ts"
+    ]
+}

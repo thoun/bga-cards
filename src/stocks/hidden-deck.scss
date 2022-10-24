@@ -1,0 +1,21 @@
+.card-stock {
+    &.hidden-deck {
+        position: relative;
+
+        &>.card {
+            &[id$="-hidden-deck-back"] {
+                box-shadow: 4px 4px 0px 0px #111, 5px 5px 2px 1px rgba(0,0,0,0.5);
+            }
+            
+            &:not([id$="-hidden-deck-back"]) {
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+        }
+    
+        &[data-empty="true"] {
+            visibility: hidden;
+        }
+    }
+}

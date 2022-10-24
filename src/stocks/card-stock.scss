@@ -1,0 +1,12 @@
+.card-stock {
+
+    &.selectable {
+        .card:not(.disabled) {
+            cursor: pointer;
+        }
+    }
+
+    .card.selectable:not(.disabled) {
+        cursor: pointer;
+    }
+}
