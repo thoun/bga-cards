@@ -5,11 +5,14 @@
   "main": "bga-cards.js",
   "scripts": {
     "build:ts": "tsc",
-    "build:scss": "sass --no-source-map src/bga-cards.scss bga-cards.css"
+    "build:scss": "sass --no-source-map src/bga-cards.scss bga-cards.css",
+    "doc": "typedoc --out doc ./src/**.ts ./src/stocks/**.ts"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@microsoft/tsdoc": "0.14.2",
+    "typedoc": "^0.23.18",
     "sass": "^1.32.6",
     "typescript": "^4.1.3"
   }

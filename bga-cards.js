@@ -506,6 +506,10 @@ var AllVisibleDeck = /** @class */ (function (_super) {
     return AllVisibleDeck;
 }(CardStock));
 var CardManager = /** @class */ (function () {
+    /**
+     * @param game the BGA game class, usually it will be `this`
+     * @param settings: a `CardManagerSettings` object
+     */
     function CardManager(game, settings) {
         this.game = game;
         this.settings = settings;
@@ -514,6 +518,10 @@ var CardManager = /** @class */ (function () {
     CardManager.prototype.addStock = function (stock) {
         this.stocks.push(stock);
     };
+    /**
+     * @param card the card informations
+     * @return the id for a card
+     */
     CardManager.prototype.getId = function (card) {
         var _a, _b, _c;
         return (_c = (_b = (_a = this.settings).getId) === null || _b === void 0 ? void 0 : _b.call(_a, card)) !== null && _c !== void 0 ? _c : "card-".concat(card.id);
@@ -536,6 +544,10 @@ var CardManager = /** @class */ (function () {
         document.body.removeChild(element);
         return element;
     };
+    /**
+     * @param card the card informations
+     * @return the HTML element of an existing card
+     */
     CardManager.prototype.getCardElement = function (card) {
         return document.getElementById(this.getId(card));
     };
@@ -549,6 +561,10 @@ var CardManager = /** @class */ (function () {
         // TODO this.removeVisibleInformations(div);
         div.remove();
     };
+    /**
+     * @param card the card informations
+     * @return the stock containing the card
+     */
     CardManager.prototype.getCardStock = function (card) {
         return this.stocks.find(function (stock) { return stock.contains(card); });
     };

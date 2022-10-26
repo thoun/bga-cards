@@ -106,21 +106,56 @@ declare class AllVisibleDeck<T> extends CardStock<T> {
     cardRemoved(card: T): void;
 }
 interface CardManagerSettings<T> {
+    /**
+     * @param card the card informations
+     * @return the id for a card
+     */
     getId?: (card: T) => string;
+    /**
+     * @param card the card informations
+     * @param element the card main Div element. You can add a class (to set width/height), change dataset, ... based on the card informations. There should be no visual informations on it, as it will be set on front/back Divs.
+     * @return the id for a card
+     */
     setupDiv?: (card: T, element: HTMLDivElement) => void;
+    /**
+     * @param card the card informations
+     * @param element the card main Div element. You can add a class (to set width/height), change dataset, ... based on the card informations. There should be no visual informations on it, as it will be set on front/back Divs.
+     * @return the id for a card
+     */
     setupFrontDiv?: (card: T, element: HTMLDivElement) => void;
+    /**
+     * @param card the card informations
+     * @param element  the card back Div element. You can add a class, change dataset, set background for the back side
+     * @return the id for a card
+     */
     setupBackDiv?: (card: T, element: HTMLDivElement) => void;
 }
 declare class CardManager<T> {
     game: Game;
     private settings;
     private stocks;
+    /**
+     * @param game the BGA game class, usually it will be `this`
+     * @param settings: a `CardManagerSettings` object
+     */
     constructor(game: Game, settings: CardManagerSettings<T>);
     addStock(stock: CardStock<T>): void;
+    /**
+     * @param card the card informations
+     * @return the id for a card
+     */
     getId(card: T): string;
     createCardElement(card: T, visible?: boolean): HTMLDivElement;
+    /**
+     * @param card the card informations
+     * @return the HTML element of an existing card
+     */
     getCardElement(card: T): HTMLElement;
     removeCard(card: T): void;
+    /**
+     * @param card the card informations
+     * @return the stock containing the card
+     */
     getCardStock(card: T): CardStock<T>;
 }
 declare const define: any;

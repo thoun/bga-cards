@@ -1,13 +1,37 @@
 interface CardManagerSettings<T> {
+    /**
+     * @param card the card informations
+     * @return the id for a card
+     */
     getId?: (card: T) => string;
+
+    /**
+     * @param card the card informations
+     * @param element the card main Div element. You can add a class (to set width/height), change dataset, ... based on the card informations. There should be no visual informations on it, as it will be set on front/back Divs.
+     * @return the id for a card
+     */
     setupDiv?: (card: T, element: HTMLDivElement) => void;
+    /**
+     * @param card the card informations
+     * @param element the card main Div element. You can add a class (to set width/height), change dataset, ... based on the card informations. There should be no visual informations on it, as it will be set on front/back Divs.
+     * @return the id for a card
+     */
     setupFrontDiv?: (card: T, element: HTMLDivElement) => void;
+    /**
+     * @param card the card informations
+     * @param element  the card back Div element. You can add a class, change dataset, set background for the back side
+     * @return the id for a card
+     */
     setupBackDiv?: (card: T, element: HTMLDivElement) => void;
 }
 
 class CardManager<T> {
     private stocks: CardStock<T>[] = [];
 
+    /**
+     * @param game the BGA game class, usually it will be `this`
+     * @param settings: a `CardManagerSettings` object
+     */
     constructor(public game: Game, private settings: CardManagerSettings<T>) {
     }
 
@@ -15,6 +39,10 @@ class CardManager<T> {
         this.stocks.push(stock);
     }
 
+    /**
+     * @param card the card informations
+     * @return the id for a card
+     */
     public getId(card: T) {
         return this.settings.getId?.(card) ?? `card-${(card as any).id}`;
     }
@@ -44,6 +72,10 @@ class CardManager<T> {
         return element;
     }
 
+    /**
+     * @param card the card informations
+     * @return the HTML element of an existing card
+     */
     public getCardElement(card: T): HTMLElement {
         return document.getElementById(this.getId(card));
     }
@@ -60,6 +92,10 @@ class CardManager<T> {
         div.remove();
     }
 
+    /**
+     * @param card the card informations
+     * @return the stock containing the card
+     */
     public getCardStock(card: T): CardStock<T> {
         return this.stocks.find(stock => stock.contains(card));
     }
