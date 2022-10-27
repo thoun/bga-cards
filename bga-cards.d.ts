@@ -259,13 +259,25 @@ declare class SlotStock<T> extends LineStock<T> {
 }
 interface DeckSettings {
     /**
-     * Indicate the number of cards in the deck (default 0)
+     * Indicate the width of the deck (should be the width of a card, in px)
+     */
+    width: number;
+    /**
+     * Indicate the height of the deck (should be the height of a card, in px)
+     */
+    height: number;
+    /**
+     * Indicate the current number of cards in the deck (default 52)
      */
     cardNumber?: number;
     /**
-     * indicate if the line should be centered (default yes)
+     * Indicate if the line should be centered (default yes)
      */
     autoUpdateCardNumber?: boolean;
+    /**
+     * Indicate the thresholds to add 1px to the thickness of the pile. Default [0, 2, 5, 10, 20, 30].
+     */
+    thicknesses: number[];
 }
 /**
  * Abstract stock to represent a deck. (pile of cards, with a fake 3d effect of thickness).
@@ -275,17 +287,16 @@ declare class Deck<T> extends CardStock<T> {
     protected element: HTMLElement;
     private cardNumber;
     private autoUpdateCardNumber;
-    private thicknessArray;
+    private thicknesses;
     constructor(manager: CardManager<T>, element: HTMLElement, settings: DeckSettings);
     setCardNumber(cardNumber: number): void;
     addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean>;
     cardRemoved(card: T): void;
 }
-declare class HiddenDeck<T> extends CardStock<T> {
+declare class HiddenDeck<T> extends Deck<T> {
     protected manager: CardManager<T>;
     protected element: HTMLElement;
-    constructor(manager: CardManager<T>, element: HTMLElement, empty?: boolean);
-    setEmpty(empty: boolean): void;
+    constructor(manager: CardManager<T>, element: HTMLElement, settings: DeckSettings);
     addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean>;
 }
 declare class VisibleDeck<T> extends CardStock<T> {

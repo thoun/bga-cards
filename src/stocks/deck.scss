@@ -1,6 +1,8 @@
 .card-stock {
     &.deck {
         position: relative;
+        width: var(--width);
+        height: var(--height);
 
         &>.card {            
             position: absolute;
@@ -13,7 +15,9 @@
         }
     
         &[data-empty="true"] {
-            visibility: hidden;
+            &>.card { 
+                visibility: hidden;
+            }
         }
     }
 }

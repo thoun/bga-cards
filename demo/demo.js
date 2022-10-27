@@ -57,7 +57,11 @@ function addCardToLineStockWithAnimation(fromElement, customAnimation) {
 }
 
 function initHiddenDeck() {
-    hiddenDeck = new HiddenDeck(cardsManager, document.getElementById('hidden-deck'));
+    hiddenDeck = new HiddenDeck(cardsManager, document.getElementById('hidden-deck'), {
+        width: 100,
+        height: 150,
+        cardNumber: 5,
+    });
 }
 
 function setHiddenDeckCardNumber(cardNumber) {

@@ -68,18 +68,20 @@ body > .card {
   justify-content: center;
 }
 
-.card-stock.hidden-deck {
+.card-stock.deck {
   position: relative;
+  width: var(--width);
+  height: var(--height);
 }
-.card-stock.hidden-deck > .card[id$=-hidden-deck-back] {
-  box-shadow: 4px 4px 0px 0px #111, 5px 5px 2px 1px rgba(0, 0, 0, 0.5);
-}
-.card-stock.hidden-deck > .card:not([id$=-hidden-deck-back]) {
+.card-stock.deck > .card {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: calc(var(--thickness) * -1);
+  left: calc(var(--thickness) * -1);
 }
-.card-stock.hidden-deck[data-empty=true] {
+.card-stock.deck > .card:first-child {
+  box-shadow: var(--thickness) var(--thickness) 0px 0px #111, var(--thickness) var(--thickness) 2px 1px rgba(0, 0, 0, 0.5);
+}
+.card-stock.deck[data-empty=true] > .card {
   visibility: hidden;
 }
 

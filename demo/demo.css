@@ -26,3 +26,8 @@ html {
     background: darkblue;
     border-radius: 5px;
 }
+
+.hidden-deck[data-empty="true"] {
+    background-color: #FFFFFF99;
+    border-radius: 5px;
+}

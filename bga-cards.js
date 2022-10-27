@@ -502,22 +502,24 @@ var Deck = /** @class */ (function (_super) {
     __extends(Deck, _super);
     function Deck(manager, element, settings) {
         var _this = this;
-        var _a, _b;
+        var _a, _b, _c;
         _this = _super.call(this, manager, element) || this;
         _this.manager = manager;
         _this.element = element;
-        _this.thicknessArray = [0, 2, 5, 10, 20];
         element.classList.add('deck');
-        _this.setCardNumber((_a = settings === null || settings === void 0 ? void 0 : settings.cardNumber) !== null && _a !== void 0 ? _a : 0);
-        _this.autoUpdateCardNumber = (_b = settings === null || settings === void 0 ? void 0 : settings.autoUpdateCardNumber) !== null && _b !== void 0 ? _b : true;
+        _this.thicknesses = (_a = settings === null || settings === void 0 ? void 0 : settings.thicknesses) !== null && _a !== void 0 ? _a : [0, 2, 5, 10, 20, 30];
+        _this.setCardNumber((_b = settings === null || settings === void 0 ? void 0 : settings.cardNumber) !== null && _b !== void 0 ? _b : 52);
+        _this.autoUpdateCardNumber = (_c = settings === null || settings === void 0 ? void 0 : settings.autoUpdateCardNumber) !== null && _c !== void 0 ? _c : true;
+        _this.element.style.setProperty('--width', settings.width + 'px');
+        _this.element.style.setProperty('--height', settings.height + 'px');
         return _this;
     }
     Deck.prototype.setCardNumber = function (cardNumber) {
         var _this = this;
         this.cardNumber = cardNumber;
-        this.element.dataset.empty = (this.cardNumber === 0).toString();
+        this.element.dataset.empty = (this.cardNumber == 0).toString();
         var thickness = 0;
-        this.thicknessArray.forEach(function (threshold, index) {
+        this.thicknesses.forEach(function (threshold, index) {
             if (_this.cardNumber >= threshold) {
                 thickness = index;
             }
@@ -537,26 +539,21 @@ var Deck = /** @class */ (function (_super) {
 }(CardStock));
 var HiddenDeck = /** @class */ (function (_super) {
     __extends(HiddenDeck, _super);
-    function HiddenDeck(manager, element, empty) {
-        if (empty === void 0) { empty = false; }
-        var _this = _super.call(this, manager, element) || this;
+    function HiddenDeck(manager, element, settings) {
+        var _this = _super.call(this, manager, element, settings) || this;
         _this.manager = manager;
         _this.element = element;
         element.classList.add('hidden-deck');
-        _this.setEmpty(empty);
         _this.element.appendChild(_this.manager.createCardElement({ id: "".concat(element.id, "-hidden-deck-back") }, false));
         return _this;
     }
-    HiddenDeck.prototype.setEmpty = function (empty) {
-        this.element.dataset.empty = empty.toString();
-    };
     HiddenDeck.prototype.addCard = function (card, animation, settings) {
         var _a;
         var newSettings = __assign(__assign({}, settings), { visible: (_a = settings === null || settings === void 0 ? void 0 : settings.visible) !== null && _a !== void 0 ? _a : false });
         return _super.prototype.addCard.call(this, card, animation, newSettings);
     };
     return HiddenDeck;
-}(CardStock));
+}(Deck));
 var VisibleDeck = /** @class */ (function (_super) {
     __extends(VisibleDeck, _super);
     function VisibleDeck(manager, element) {

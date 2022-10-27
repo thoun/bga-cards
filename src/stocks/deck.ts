@@ -1,13 +1,27 @@
 interface DeckSettings {
     /**
-     * Indicate the number of cards in the deck (default 0)
+     * Indicate the width of the deck (should be the width of a card, in px)
+     */
+    width: number;
+    /**
+     * Indicate the height of the deck (should be the height of a card, in px)
+     */
+    height: number;
+
+    /**
+     * Indicate the current number of cards in the deck (default 52)
      */
     cardNumber?: number;
 
     /**
-     * indicate if the line should be centered (default yes)
+     * Indicate if the line should be centered (default yes)
      */
     autoUpdateCardNumber?: boolean;
+
+    /**
+     * Indicate the thresholds to add 1px to the thickness of the pile. Default [0, 2, 5, 10, 20, 30].
+     */
+    thicknesses: number[];
 }
 
 /**
@@ -16,22 +30,25 @@ interface DeckSettings {
 class Deck<T> extends CardStock<T> {
     private cardNumber: number;
     private autoUpdateCardNumber: boolean;
-    private thicknessArray = [0, 2, 5, 10, 20];
+    private thicknesses: number[];
 
     constructor(protected manager: CardManager<T>, protected element: HTMLElement, settings: DeckSettings) {
         super(manager, element);
         element.classList.add('deck');
-        this.setCardNumber(settings?.cardNumber ?? 0);
+        this.thicknesses = settings?.thicknesses ?? [0, 2, 5, 10, 20, 30];
+        this.setCardNumber(settings?.cardNumber ?? 52);
         this.autoUpdateCardNumber = settings?.autoUpdateCardNumber ?? true;
+        this.element.style.setProperty('--width', settings.width+'px');
+        this.element.style.setProperty('--height', settings.height+'px');
     }
 
     public setCardNumber(cardNumber: number) {
         this.cardNumber = cardNumber;
 
-        this.element.dataset.empty = (this.cardNumber === 0).toString();
+        this.element.dataset.empty = (this.cardNumber == 0).toString();
 
         let thickness = 0;
-        this.thicknessArray.forEach((threshold, index) => {
+        this.thicknesses.forEach((threshold, index) => {
             if (this.cardNumber >= threshold) {
                 thickness = index;
             }
