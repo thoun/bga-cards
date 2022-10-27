@@ -1,7 +1,7 @@
 # Links
-[Documentation](./docs/index.html)
+[Documentation](https://thoun.github.io/bga-cards/docs/index.html)
 
-[Demo](./demo/index.html)
+[Demo](https://thoun.github.io/bga-cards/demo/index.html)
 
 # Concept
 ## CardManager, Stocks and Card
