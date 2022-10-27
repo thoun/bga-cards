@@ -1,12 +1,26 @@
 interface SlotStockSettings<T> extends LineStockSettings {
+    /**
+     * The ids for the slots (can be number or string)
+     */
     slotsIds: SlotId[];
+
+    /**
+     * The classes to apply to each slot
+     */
     slotClasses?: string[];
+
+    /**
+     * How to place the card on a slot automatically
+     */
     mapCardToSlot?: (card: T) => SlotId;
 }
 
 type SlotId = number | string;
 
 interface AddCardToSlotSettings extends AddCardSettings {
+    /**
+     * The slot to place the card on.
+     */
     slot?: SlotId;
 }
 

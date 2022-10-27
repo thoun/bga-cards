@@ -1,5 +1,9 @@
 interface AddCardSettings {
+    /**
+     * If the card will be on its visible side on the stock
+     */
     visible?: boolean;
+
     forceToElement?: HTMLElement;
 }
 

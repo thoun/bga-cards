@@ -1,19 +1,52 @@
 interface CardAnimation<T> {
+    /**
+     * The stock to take the card. It will automatically remove the card from the other stock.
+     */
     fromStock?: CardStock<T>;
+    /**
+     * The element to move the card from.
+     */
     fromElement?: HTMLElement;
+    /**
+     * The side before animation.
+     */
     originalSide?: 'front' | 'back';
+    /**
+     * If the card is rotated at the start of animation.
+     */
     rotationDelta?: number;
+    /**
+     * An animation function, based on the `AnimationSettings` settings, that return a Promise at the end of animation (the promise returns true if animation ended, false otherwise)
+     */
     animation?: (settings: AnimationSettings) => Promise<boolean>;
 }
 interface AnimationSettings {
+    /**
+     * The element to animate. The element is added to the destination stock before the animation starts.
+     */
     element: HTMLElement;
+    /**
+     * The HTMLElement to animate from.
+     */
     fromElement: HTMLElement;
+    /**
+     * The side before animation.
+     */
     originalSide?: 'front' | 'back';
+    /**
+     * If the card is rotated at the start of animation.
+     */
     rotationDelta?: number;
+    /**
+     * An animation function, based on the `AnimationSettings` settings, that return a Promise at the end of animation (the promise returns true if animation ended, false otherwise)
+     */
     animation?: (settings: AnimationSettings) => Promise<boolean>;
 }
 declare function stockSlideAnimation(settings: AnimationSettings): Promise<boolean>;
 interface AddCardSettings {
+    /**
+     * If the card will be on its visible side on the stock
+     */
     visible?: boolean;
     forceToElement?: HTMLElement;
 }
@@ -52,9 +85,21 @@ declare class CardStock<T> {
     protected animationFromElement(settings: AnimationSettings): Promise<boolean>;
 }
 interface LineStockSettings {
+    /**
+     * Indicate if the line should wrap when needed (default wrap)
+     */
     wrap?: 'wrap' | 'nowrap';
+    /**
+     * Indicate the line direction (default row)
+     */
     direction?: 'row' | 'column';
+    /**
+     * indicate if the line should be centered (default yes)
+     */
     center?: boolean;
+    /**
+    * CSS to set the gap between cards. '8px' if unset.
+    */
     gap?: string;
 }
 declare class LineStock<T> extends CardStock<T> {
@@ -63,12 +108,24 @@ declare class LineStock<T> extends CardStock<T> {
     constructor(manager: CardManager<T>, element: HTMLElement, settings?: LineStockSettings);
 }
 interface SlotStockSettings<T> extends LineStockSettings {
+    /**
+     * The ids for the slots (can be number or string)
+     */
     slotsIds: SlotId[];
+    /**
+     * The classes to apply to each slot
+     */
     slotClasses?: string[];
+    /**
+     * How to place the card on a slot automatically
+     */
     mapCardToSlot?: (card: T) => SlotId;
 }
 declare type SlotId = number | string;
 interface AddCardToSlotSettings extends AddCardSettings {
+    /**
+     * The slot to place the card on.
+     */
     slot?: SlotId;
 }
 declare class SlotStock<T> extends LineStock<T> {

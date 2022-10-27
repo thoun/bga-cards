@@ -1,7 +1,22 @@
 interface LineStockSettings {
+    /**
+     * Indicate if the line should wrap when needed (default wrap)
+     */
     wrap?: 'wrap' | 'nowrap';
+
+    /**
+     * Indicate the line direction (default row)
+     */
     direction?: 'row' | 'column';
+
+    /**
+     * indicate if the line should be centered (default yes)
+     */
     center?: boolean;
+    
+    /**
+    * CSS to set the gap between cards. '8px' if unset.
+    */
     gap?: string;
 }
 
