@@ -257,6 +257,30 @@ declare class SlotStock<T> extends LineStock<T> {
     setSlotsIds(slotsIds: SlotId[]): void;
     protected cardElementInStock(element: HTMLElement): boolean;
 }
+interface DeckSettings {
+    /**
+     * Indicate the number of cards in the deck (default 0)
+     */
+    cardNumber?: number;
+    /**
+     * indicate if the line should be centered (default yes)
+     */
+    autoUpdateCardNumber?: boolean;
+}
+/**
+ * Abstract stock to represent a deck. (pile of cards, with a fake 3d effect of thickness).
+ */
+declare class Deck<T> extends CardStock<T> {
+    protected manager: CardManager<T>;
+    protected element: HTMLElement;
+    private cardNumber;
+    private autoUpdateCardNumber;
+    private thicknessArray;
+    constructor(manager: CardManager<T>, element: HTMLElement, settings: DeckSettings);
+    setCardNumber(cardNumber: number): void;
+    addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean>;
+    cardRemoved(card: T): void;
+}
 declare class HiddenDeck<T> extends CardStock<T> {
     protected manager: CardManager<T>;
     protected element: HTMLElement;

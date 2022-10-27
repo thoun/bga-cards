@@ -1,0 +1,19 @@
+.card-stock {
+    &.deck {
+        position: relative;
+
+        &>.card {            
+            position: absolute;
+            top: calc(var(--thickness) * -1);
+            left: calc(var(--thickness) * -1);
+
+            &:first-child {
+                box-shadow: var(--thickness) var(--thickness) 0px 0px #111, var(--thickness) var(--thickness) 2px 1px rgba(0,0,0,0.5);
+            }
+        }
+    
+        &[data-empty="true"] {
+            visibility: hidden;
+        }
+    }
+}

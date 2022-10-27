@@ -495,6 +495,46 @@ var SlotStock = /** @class */ (function (_super) {
     };
     return SlotStock;
 }(LineStock));
+/**
+ * Abstract stock to represent a deck. (pile of cards, with a fake 3d effect of thickness).
+ */
+var Deck = /** @class */ (function (_super) {
+    __extends(Deck, _super);
+    function Deck(manager, element, settings) {
+        var _this = this;
+        var _a, _b;
+        _this = _super.call(this, manager, element) || this;
+        _this.manager = manager;
+        _this.element = element;
+        _this.thicknessArray = [0, 2, 5, 10, 20];
+        element.classList.add('deck');
+        _this.setCardNumber((_a = settings === null || settings === void 0 ? void 0 : settings.cardNumber) !== null && _a !== void 0 ? _a : 0);
+        _this.autoUpdateCardNumber = (_b = settings === null || settings === void 0 ? void 0 : settings.autoUpdateCardNumber) !== null && _b !== void 0 ? _b : true;
+        return _this;
+    }
+    Deck.prototype.setCardNumber = function (cardNumber) {
+        var _this = this;
+        this.cardNumber = cardNumber;
+        this.element.dataset.empty = (this.cardNumber === 0).toString();
+        var thickness = 0;
+        this.thicknessArray.forEach(function (threshold, index) {
+            if (_this.cardNumber >= threshold) {
+                thickness = index;
+            }
+        });
+        this.element.style.setProperty('--thickness', thickness + 'px');
+    };
+    Deck.prototype.addCard = function (card, animation, settings) {
+        return _super.prototype.addCard.call(this, card, animation, settings);
+    };
+    Deck.prototype.cardRemoved = function (card) {
+        if (this.autoUpdateCardNumber) {
+            this.setCardNumber(this.cardNumber - 1);
+        }
+        _super.prototype.cardRemoved.call(this, card);
+    };
+    return Deck;
+}(CardStock));
 var HiddenDeck = /** @class */ (function (_super) {
     __extends(HiddenDeck, _super);
     function HiddenDeck(manager, element, empty) {

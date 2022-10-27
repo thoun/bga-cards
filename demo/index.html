@@ -7,9 +7,11 @@
         <script src="../bga-cards.js" type="text/javascript"></script>
         <link href="./demo.css" rel="stylesheet"></script>
         <script src="./demo.js" type="text/javascript"></script>
+        <script src="./custom-animation-function.js" type="text/javascript"></script>
     </head>
     <body>
         <h1>Stocks</h1>
+
         <h2>LineStock</h2>
         <div id="line-stock"></div>
         <button onclick="addCardToLineStockWithAnimation(this, false)">Add card with default animation (slide)</button>
@@ -17,6 +19,10 @@
         <div>
             Last selection change event : <span id="line-stock-last-selection-change"></span>
         </div>
+        
+        <h2>HiddenDeck</h2>
+        <div id="hidden-deck"></div>
+        Set card number : <input type="number" value="5" onchange="setHiddenDeckCardNumber(this.value)">
 
         <script>
             init();

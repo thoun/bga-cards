@@ -15,6 +15,7 @@
       "src/stocks/card-stock.ts",
       "src/stocks/line-stock.ts",
       "src/stocks/slot-stock.ts",
+      "src/stocks/deck.ts",
       "src/stocks/hidden-deck.ts",
       "src/stocks/visible-deck.ts",
       "src/stocks/all-visible-deck.ts",
