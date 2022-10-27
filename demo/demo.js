@@ -25,7 +25,7 @@ function initManager() {
                 <div>SubType ${card.type_arg}</div>
             `;
             div.id = `card-${card.id}-front`;
-            game.addTooltipHtml(div.id, `tooltip de ${card.type}`);
+            game.addTooltipHtml(div.id, `tooltip de ${card.type} > ${card.type_arg}`);
         },
         setupBackDiv: (card, div) => {
             div.classList.add('mygame-card-back');
@@ -142,7 +142,7 @@ function initAllVisibleDeck() {
     allVisibleDeck = new AllVisibleDeck(cardsManager, document.getElementById('all-visible-deck'), {
         width: '100px',
         height: '150px',
-        shift: '5px',
+        shift: '8px',
     });
     allVisibleDeck.addCards([
         { id: 6, type: 3, type_arg: 2, location: 'table', location_arg: 0 },

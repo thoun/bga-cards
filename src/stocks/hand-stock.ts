@@ -43,7 +43,7 @@ class HandStock<T> extends CardStock<T> {
     }
 
     protected updateAngles() {
-        const middle = this.cards.length / 2;
+        const middle = (this.cards.length - 1) / 2;
         this.cards.forEach((card, index) => {
             const middleIndex = index - middle;
             const cardElement = this.getCardElement(card);

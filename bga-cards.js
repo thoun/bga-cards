@@ -615,7 +615,7 @@ var HandStock = /** @class */ (function (_super) {
     };
     HandStock.prototype.updateAngles = function () {
         var _this = this;
-        var middle = this.cards.length / 2;
+        var middle = (this.cards.length - 1) / 2;
         this.cards.forEach(function (card, index) {
             var middleIndex = index - middle;
             var cardElement = _this.getCardElement(card);
