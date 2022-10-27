@@ -2,6 +2,12 @@ html {
     background: url(https://x.boardgamearena.net/data/themereleases/221026-1000/img/layout/back-main.jpg), #f2f2f2;
 }
 
+.flex {
+    display: flex;
+    gap: 50px;
+    flex-wrap: wrap;
+}
+
 .mygame-card {
     width: 100px;
     height: 150px;

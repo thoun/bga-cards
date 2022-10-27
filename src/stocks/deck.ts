@@ -21,7 +21,7 @@ interface DeckSettings {
     /**
      * Indicate the thresholds to add 1px to the thickness of the pile. Default [0, 2, 5, 10, 20, 30].
      */
-    thicknesses: number[];
+    thicknesses?: number[];
 
     /**
      * Shadow direction. Default 'bottom-right'.
@@ -33,8 +33,8 @@ interface DeckSettings {
  * Abstract stock to represent a deck. (pile of cards, with a fake 3d effect of thickness).
  */
 class Deck<T> extends CardStock<T> {
-    private cardNumber: number;
-    private autoUpdateCardNumber: boolean;
+    protected cardNumber: number;
+    protected autoUpdateCardNumber: boolean;
     private thicknesses: number[];
 
     constructor(protected manager: CardManager<T>, protected element: HTMLElement, settings: DeckSettings) {

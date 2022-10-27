@@ -17,7 +17,7 @@
 <li><a href="stocks_visible_deck.VisibleDeck.html">VisibleDeck</a></li></ul>
 <h1>Class VisibleDeck&lt;T&gt;</h1></div>
 <section class="tsd-panel tsd-comment">
-<div class="tsd-comment tsd-typography"><p>The abstract stock. It shouldn&#39;t be used directly, use stocks that extends it.</p>
+<div class="tsd-comment tsd-typography"><p>Abstract stock to represent a deck. (pile of cards, with a fake 3d effect of thickness).</p>
 </div></section> 
 <section class="tsd-panel tsd-type-parameters">
 <h4>Type Parameters</h4>
@@ -27,11 +27,11 @@
 <section class="tsd-panel tsd-hierarchy">
 <h4>Hierarchy</h4>
 <ul class="tsd-hierarchy">
-<li><a href="stocks_card_stock.CardStock.html" class="tsd-signature-type" data-tsd-kind="Class">CardStock</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type" data-tsd-kind="Type parameter">T</span><span class="tsd-signature-symbol">&gt;</span>
+<li><a href="stocks_deck.Deck.html" class="tsd-signature-type" data-tsd-kind="Class">Deck</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type" data-tsd-kind="Type parameter">T</span><span class="tsd-signature-symbol">&gt;</span>
 <ul class="tsd-hierarchy">
 <li><span class="target">VisibleDeck</span></li></ul></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/visible-deck.ts#L1">stocks/visible-deck.ts:1</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/visible-deck.ts#L1">stocks/visible-deck.ts:1</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -43,7 +43,9 @@
 </div></section>
 <section class="tsd-index-section">
 <h3 class="tsd-index-heading">Properties</h3>
-<div class="tsd-index-list"><a href="stocks_visible_deck.VisibleDeck.html#cards" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#FF984D" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-1024-path"></rect><path d="M9.354 16V7.24H12.174C12.99 7.24 13.638 7.476 14.118 7.948C14.606 8.412 14.85 9.036 14.85 9.82C14.85 10.604 14.606 11.232 14.118 11.704C13.638 12.168 12.99 12.4 12.174 12.4H10.434V16H9.354ZM10.434 11.428H12.174C12.646 11.428 13.022 11.284 13.302 10.996C13.59 10.7 13.734 10.308 13.734 9.82C13.734 9.324 13.59 8.932 13.302 8.644C13.022 8.356 12.646 8.212 12.174 8.212H10.434V11.428Z" fill="var(--color-text)" id="icon-1024-text"></path></svg><span>cards</span></a>
+<div class="tsd-index-list"><a href="stocks_visible_deck.VisibleDeck.html#autoUpdateCardNumber" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#FF984D" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-1024-path"></rect><path d="M9.354 16V7.24H12.174C12.99 7.24 13.638 7.476 14.118 7.948C14.606 8.412 14.85 9.036 14.85 9.82C14.85 10.604 14.606 11.232 14.118 11.704C13.638 12.168 12.99 12.4 12.174 12.4H10.434V16H9.354ZM10.434 11.428H12.174C12.646 11.428 13.022 11.284 13.302 10.996C13.59 10.7 13.734 10.308 13.734 9.82C13.734 9.324 13.59 8.932 13.302 8.644C13.022 8.356 12.646 8.212 12.174 8.212H10.434V11.428Z" fill="var(--color-text)" id="icon-1024-text"></path></svg><span>auto<wbr/>Update<wbr/>Card<wbr/>Number</span></a>
+<a href="stocks_visible_deck.VisibleDeck.html#cardNumber" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>card<wbr/>Number</span></a>
+<a href="stocks_visible_deck.VisibleDeck.html#cards" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>cards</span></a>
 <a href="stocks_visible_deck.VisibleDeck.html#element" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>element</span></a>
 <a href="stocks_visible_deck.VisibleDeck.html#manager" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>manager</span></a>
 <a href="stocks_visible_deck.VisibleDeck.html#onCardClick" class="tsd-index-link tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>on<wbr/>Card<wbr/>Click?</span></a>
@@ -72,6 +74,7 @@
 <a href="stocks_visible_deck.VisibleDeck.html#removeCard" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>remove<wbr/>Card</span></a>
 <a href="stocks_visible_deck.VisibleDeck.html#selectAll" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>select<wbr/>All</span></a>
 <a href="stocks_visible_deck.VisibleDeck.html#selectCard" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>select<wbr/>Card</span></a>
+<a href="stocks_visible_deck.VisibleDeck.html#setCardNumber" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>set<wbr/>Card<wbr/>Number</span></a>
 <a href="stocks_visible_deck.VisibleDeck.html#setSelectableCard" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>set<wbr/>Selectable<wbr/>Card</span></a>
 <a href="stocks_visible_deck.VisibleDeck.html#setSelectionMode" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>set<wbr/>Selection<wbr/>Mode</span></a>
 <a href="stocks_visible_deck.VisibleDeck.html#unselectAll" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>unselect<wbr/>All</span></a>
@@ -82,7 +85,7 @@
 <section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class"><a id="constructor" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>constructor</span><a href="#constructor" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" id="icon-anchor-a"></path><path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" id="icon-anchor-b"></path><path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" id="icon-anchor-c"></path></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-<li class="tsd-signature tsd-anchor-link" id="constructor.new_VisibleDeck">new <wbr/>Visible<wbr/>Deck<span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type" data-tsd-kind="Type parameter">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span>manager<span class="tsd-signature-symbol">: </span><a href="card_manager.CardManager.html" class="tsd-signature-type" data-tsd-kind="Class">CardManager</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type" data-tsd-kind="Type parameter">T</span><span class="tsd-signature-symbol">&gt;</span>, element<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLElement</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="stocks_visible_deck.VisibleDeck.html" class="tsd-signature-type" data-tsd-kind="Class">VisibleDeck</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type" data-tsd-kind="Type parameter">T</span><span class="tsd-signature-symbol">&gt;</span><a href="#constructor.new_VisibleDeck" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="constructor.new_VisibleDeck">new <wbr/>Visible<wbr/>Deck<span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type" data-tsd-kind="Type parameter">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span>manager<span class="tsd-signature-symbol">: </span><a href="card_manager.CardManager.html" class="tsd-signature-type" data-tsd-kind="Class">CardManager</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type" data-tsd-kind="Type parameter">T</span><span class="tsd-signature-symbol">&gt;</span>, element<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HTMLElement</span>, settings<span class="tsd-signature-symbol">: </span><a href="../interfaces/stocks_deck.DeckSettings.html" class="tsd-signature-type" data-tsd-kind="Interface">DeckSettings</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="stocks_visible_deck.VisibleDeck.html" class="tsd-signature-type" data-tsd-kind="Class">VisibleDeck</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type" data-tsd-kind="Type parameter">T</span><span class="tsd-signature-symbol">&gt;</span><a href="#constructor.new_VisibleDeck" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <section class="tsd-panel tsd-type-parameters">
 <h4>Type Parameters</h4>
@@ -95,35 +98,49 @@
 <li>
 <h5>manager: <a href="card_manager.CardManager.html" class="tsd-signature-type" data-tsd-kind="Class">CardManager</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type" data-tsd-kind="Type parameter">T</span><span class="tsd-signature-symbol">&gt;</span></h5></li>
 <li>
-<h5>element: <span class="tsd-signature-type">HTMLElement</span></h5></li></ul></div>
+<h5>element: <span class="tsd-signature-type">HTMLElement</span></h5></li>
+<li>
+<h5>settings: <a href="../interfaces/stocks_deck.DeckSettings.html" class="tsd-signature-type" data-tsd-kind="Interface">DeckSettings</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="stocks_visible_deck.VisibleDeck.html" class="tsd-signature-type" data-tsd-kind="Class">VisibleDeck</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type" data-tsd-kind="Type parameter">T</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
-<p>Overrides <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#constructor">constructor</a></p>
+<p>Overrides <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#constructor">constructor</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/visible-deck.ts#L2">stocks/visible-deck.ts:2</a></li></ul></aside></li></ul></section></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/visible-deck.ts#L2">stocks/visible-deck.ts:2</a></li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Properties</h2>
+<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="autoUpdateCardNumber" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>auto<wbr/>Update<wbr/>Card<wbr/>Number</span><a href="#autoUpdateCardNumber" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<div class="tsd-signature">auto<wbr/>Update<wbr/>Card<wbr/>Number<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div><aside class="tsd-sources">
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#autoUpdateCardNumber">autoUpdateCardNumber</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/deck.ts#L37">stocks/deck.ts:37</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="cardNumber" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>card<wbr/>Number</span><a href="#cardNumber" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<div class="tsd-signature">card<wbr/>Number<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div><aside class="tsd-sources">
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#cardNumber">cardNumber</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/deck.ts#L36">stocks/deck.ts:36</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="cards" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>cards</span><a href="#cards" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">cards<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type" data-tsd-kind="Type parameter">T</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#cards">cards</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#cards">cards</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L16">stocks/card-stock.ts:16</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/card-stock.ts#L16">stocks/card-stock.ts:16</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="element" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>element</span><a href="#element" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">element<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">HTMLElement</span></div>
 <div class="tsd-comment tsd-typography"><p>the stock element (should be an empty HTML Element)</p>
 </div><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#element">element</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#element">element</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/visible-deck.ts#L2">stocks/visible-deck.ts:2</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/visible-deck.ts#L2">stocks/visible-deck.ts:2</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="manager" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>manager</span><a href="#manager" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">manager<span class="tsd-signature-symbol">:</span> <a href="card_manager.CardManager.html" class="tsd-signature-type" data-tsd-kind="Class">CardManager</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type" data-tsd-kind="Type parameter">T</span><span class="tsd-signature-symbol">&gt;</span></div>
 <div class="tsd-comment tsd-typography"><p>the card manager</p>
 </div><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#manager">manager</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#manager">manager</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/visible-deck.ts#L2">stocks/visible-deck.ts:2</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/visible-deck.ts#L2">stocks/visible-deck.ts:2</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a id="onCardClick" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>on<wbr/>Card<wbr/>Click</span><a href="#onCardClick" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">on<wbr/>Card<wbr/>Click<span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>card<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type" data-tsd-kind="Type parameter">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span></div>
@@ -143,9 +160,9 @@
 <li>
 <h5>card: <span class="tsd-signature-type" data-tsd-kind="Type parameter">T</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4></li></ul></li></ul></div><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#onCardClick">onCardClick</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#onCardClick">onCardClick</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L33">stocks/card-stock.ts:33</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/card-stock.ts#L33">stocks/card-stock.ts:33</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a id="onSelectionChange" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>on<wbr/>Selection<wbr/>Change</span><a href="#onSelectionChange" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">on<wbr/>Selection<wbr/>Change<span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>selection<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type" data-tsd-kind="Type parameter">T</span><span class="tsd-signature-symbol">[]</span>, lastChange<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type" data-tsd-kind="Type parameter">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span></div>
@@ -167,21 +184,21 @@
 <li>
 <h5>lastChange: <span class="tsd-signature-type" data-tsd-kind="Type parameter">T</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4></li></ul></li></ul></div><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#onSelectionChange">onSelectionChange</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#onSelectionChange">onSelectionChange</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L26">stocks/card-stock.ts:26</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/card-stock.ts#L26">stocks/card-stock.ts:26</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="selectedCards" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>selected<wbr/>Cards</span><a href="#selectedCards" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">selected<wbr/>Cards<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type" data-tsd-kind="Type parameter">T</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#selectedCards">selectedCards</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#selectedCards">selectedCards</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L17">stocks/card-stock.ts:17</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/card-stock.ts#L17">stocks/card-stock.ts:17</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="selectionMode" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>selection<wbr/>Mode</span><a href="#selectionMode" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">selection<wbr/>Mode<span class="tsd-signature-symbol">:</span> <a href="../types/stocks_card_stock.CardSelectionMode.html" class="tsd-signature-type" data-tsd-kind="Type alias">CardSelectionMode</a><span class="tsd-signature-symbol"> = &#39;none&#39;</span></div><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#selectionMode">selectionMode</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#selectionMode">selectionMode</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L18">stocks/card-stock.ts:18</a></li></ul></aside></section></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/card-stock.ts#L18">stocks/card-stock.ts:18</a></li></ul></aside></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Methods</h2>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="addCard" class="tsd-anchor"></a>
@@ -209,9 +226,9 @@
 <div class="tsd-comment tsd-typography"><p>a <code>AddCardSettings</code> object</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
-<p>Overrides <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#addCard">addCard</a></p>
+<p>Overrides <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#addCard">addCard</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/visible-deck.ts#L7">stocks/visible-deck.ts:7</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/visible-deck.ts#L7">stocks/visible-deck.ts:7</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="addCards" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>add<wbr/>Cards</span><a href="#addCards" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
@@ -239,9 +256,9 @@
 <div class="tsd-comment tsd-typography"><p>if number, the number of milliseconds between each card. if true, chain animations</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#addCards">addCards</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#addCards">addCards</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L182">stocks/card-stock.ts:182</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/card-stock.ts#L182">stocks/card-stock.ts:182</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="animationFromElement" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>animation<wbr/>From<wbr/>Element</span><a href="#animationFromElement" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited">
@@ -253,18 +270,18 @@
 <li>
 <h5>settings: <a href="../interfaces/animations.AnimationSettings.html" class="tsd-signature-type" data-tsd-kind="Interface">AnimationSettings</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#animationFromElement">animationFromElement</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#animationFromElement">animationFromElement</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L346">stocks/card-stock.ts:346</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/card-stock.ts#L346">stocks/card-stock.ts:346</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="bindClick" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>bind<wbr/>Click</span><a href="#bindClick" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="bindClick.bindClick-1">bind<wbr/>Click<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#bindClick.bindClick-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#bindClick">bindClick</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#bindClick">bindClick</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L318">stocks/card-stock.ts:318</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/card-stock.ts#L318">stocks/card-stock.ts:318</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="cardClick" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>card<wbr/>Click</span><a href="#cardClick" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited">
@@ -276,9 +293,9 @@
 <li>
 <h5>card: <span class="tsd-signature-type" data-tsd-kind="Type parameter">T</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#cardClick">cardClick</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#cardClick">cardClick</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L332">stocks/card-stock.ts:332</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/card-stock.ts#L332">stocks/card-stock.ts:332</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="cardElementInStock" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>card<wbr/>Element<wbr/>In<wbr/>Stock</span><a href="#cardElementInStock" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited">
@@ -290,9 +307,9 @@
 <li>
 <h5>element: <span class="tsd-signature-type">HTMLElement</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#cardElementInStock">cardElementInStock</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#cardElementInStock">cardElementInStock</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L79">stocks/card-stock.ts:79</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/card-stock.ts#L79">stocks/card-stock.ts:79</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="cardInStock" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>card<wbr/>In<wbr/>Stock</span><a href="#cardInStock" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited">
@@ -304,9 +321,9 @@
 <li>
 <h5>card: <span class="tsd-signature-type" data-tsd-kind="Type parameter">T</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#cardInStock">cardInStock</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#cardInStock">cardInStock</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L74">stocks/card-stock.ts:74</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/card-stock.ts#L74">stocks/card-stock.ts:74</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="cardRemoved" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>card<wbr/>Removed</span><a href="#cardRemoved" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
@@ -318,9 +335,9 @@
 <li>
 <h5>card: <span class="tsd-signature-type" data-tsd-kind="Type parameter">T</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#cardRemoved">cardRemoved</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#cardRemoved">cardRemoved</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L213">stocks/card-stock.ts:213</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/deck.ts#L75">stocks/deck.ts:75</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="contains" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>contains</span><a href="#contains" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
@@ -337,9 +354,9 @@
 <div class="tsd-comment tsd-typography"><p>a card</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#contains">contains</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#contains">contains</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L70">stocks/card-stock.ts:70</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/card-stock.ts#L70">stocks/card-stock.ts:70</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="getCardElement" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Card<wbr/>Element</span><a href="#getCardElement" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
@@ -356,9 +373,9 @@
 <div class="tsd-comment tsd-typography"><p>a card in the stock</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">HTMLElement</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#getCardElement">getCardElement</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#getCardElement">getCardElement</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L87">stocks/card-stock.ts:87</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/card-stock.ts#L87">stocks/card-stock.ts:87</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="getCards" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Cards</span><a href="#getCards" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
@@ -368,9 +385,9 @@
 <h3>Returns</h3><p>the cards on the stock</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type" data-tsd-kind="Type parameter">T</span><span class="tsd-signature-symbol">[]</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#getCards">getCards</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#getCards">getCards</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L48">stocks/card-stock.ts:48</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/card-stock.ts#L48">stocks/card-stock.ts:48</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="getSelection" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Selection</span><a href="#getSelection" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
@@ -380,9 +397,9 @@
 <h3>Returns</h3><p>the selected cards</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type" data-tsd-kind="Type parameter">T</span><span class="tsd-signature-symbol">[]</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#getSelection">getSelection</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#getSelection">getSelection</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L62">stocks/card-stock.ts:62</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/card-stock.ts#L62">stocks/card-stock.ts:62</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="isEmpty" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>is<wbr/>Empty</span><a href="#isEmpty" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
@@ -392,9 +409,9 @@
 <h3>Returns</h3><p>if the stock is empty</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#isEmpty">isEmpty</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#isEmpty">isEmpty</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L55">stocks/card-stock.ts:55</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/card-stock.ts#L55">stocks/card-stock.ts:55</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="moveFromElement" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>move<wbr/>From<wbr/>Element</span><a href="#moveFromElement" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited">
@@ -412,9 +429,9 @@
 <li>
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> settings: <a href="../interfaces/stocks_card_stock.AddCardSettings.html" class="tsd-signature-type" data-tsd-kind="Interface">AddCardSettings</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#moveFromElement">moveFromElement</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#moveFromElement">moveFromElement</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L145">stocks/card-stock.ts:145</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/card-stock.ts#L145">stocks/card-stock.ts:145</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="moveFromOtherStock" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>move<wbr/>From<wbr/>Other<wbr/>Stock</span><a href="#moveFromOtherStock" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited">
@@ -432,9 +449,9 @@
 <li>
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> settings: <a href="../interfaces/stocks_card_stock.AddCardSettings.html" class="tsd-signature-type" data-tsd-kind="Interface">AddCardSettings</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#moveFromOtherStock">moveFromOtherStock</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#moveFromOtherStock">moveFromOtherStock</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L128">stocks/card-stock.ts:128</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/card-stock.ts#L128">stocks/card-stock.ts:128</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="removeAll" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>remove<wbr/>All</span><a href="#removeAll" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
@@ -443,9 +460,9 @@
 <div class="tsd-comment tsd-typography"><p>Remove all cards from the stock.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#removeAll">removeAll</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#removeAll">removeAll</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L223">stocks/card-stock.ts:223</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/card-stock.ts#L223">stocks/card-stock.ts:223</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="removeCard" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>remove<wbr/>Card</span><a href="#removeCard" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
@@ -461,9 +478,9 @@
 <div class="tsd-comment tsd-typography"><p>the card to remove</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#removeCard">removeCard</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#removeCard">removeCard</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L206">stocks/card-stock.ts:206</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/card-stock.ts#L206">stocks/card-stock.ts:206</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="selectAll" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>select<wbr/>All</span><a href="#selectAll" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
@@ -477,9 +494,9 @@
 <li>
 <h5>silent: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#selectAll">selectAll</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#selectAll">selectAll</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L294">stocks/card-stock.ts:294</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/card-stock.ts#L294">stocks/card-stock.ts:294</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="selectCard" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>select<wbr/>Card</span><a href="#selectCard" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
@@ -497,9 +514,23 @@
 <li>
 <h5>silent: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#selectCard">selectCard</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#selectCard">selectCard</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L254">stocks/card-stock.ts:254</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/card-stock.ts#L254">stocks/card-stock.ts:254</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="setCardNumber" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>set<wbr/>Card<wbr/>Number</span><a href="#setCardNumber" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+<li class="tsd-signature tsd-anchor-link" id="setCardNumber.setCardNumber-1">set<wbr/>Card<wbr/>Number<span class="tsd-signature-symbol">(</span>cardNumber<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><a href="#setCardNumber.setCardNumber-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>cardNumber: <span class="tsd-signature-type">number</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#setCardNumber">setCardNumber</a></p>
+<ul>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/deck.ts#L57">stocks/deck.ts:57</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="setSelectableCard" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>set<wbr/>Selectable<wbr/>Card</span><a href="#setSelectableCard" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited">
@@ -513,9 +544,9 @@
 <li>
 <h5>selectable: <span class="tsd-signature-type">boolean</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#setSelectableCard">setSelectableCard</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#setSelectableCard">setSelectableCard</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L228">stocks/card-stock.ts:228</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/card-stock.ts#L228">stocks/card-stock.ts:228</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="setSelectionMode" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>set<wbr/>Selection<wbr/>Mode</span><a href="#setSelectionMode" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
@@ -532,9 +563,9 @@ If set to &#39;none&#39;, it will unselect all selected cards.</p>
 <div class="tsd-comment tsd-typography"><p>the selection mode</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#setSelectionMode">setSelectionMode</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#setSelectionMode">setSelectionMode</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L239">stocks/card-stock.ts:239</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/card-stock.ts#L239">stocks/card-stock.ts:239</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="unselectAll" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>unselect<wbr/>All</span><a href="#unselectAll" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
@@ -548,9 +579,9 @@ If set to &#39;none&#39;, it will unselect all selected cards.</p>
 <li>
 <h5>silent: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#unselectAll">unselectAll</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#unselectAll">unselectAll</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L309">stocks/card-stock.ts:309</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/card-stock.ts#L309">stocks/card-stock.ts:309</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="unselectCard" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>unselect<wbr/>Card</span><a href="#unselectCard" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
@@ -568,9 +599,9 @@ If set to &#39;none&#39;, it will unselect all selected cards.</p>
 <li>
 <h5>silent: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
-<p>Inherited from <a href="stocks_card_stock.CardStock.html">CardStock</a>.<a href="stocks_card_stock.CardStock.html#unselectCard">unselectCard</a></p>
+<p>Inherited from <a href="stocks_deck.Deck.html">Deck</a>.<a href="stocks_deck.Deck.html#unselectCard">unselectCard</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/aa6fc09/src/stocks/card-stock.ts#L277">stocks/card-stock.ts:277</a></li></ul></aside></li></ul></section></section></div>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/stocks/card-stock.ts#L277">stocks/card-stock.ts:277</a></li></ul></aside></li></ul></section></section></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tsd-navigation settings">
 <details class="tsd-index-accordion"><summary class="tsd-accordion-summary">
@@ -599,6 +630,7 @@ If set to &#39;none&#39;, it will unselect all selected cards.</p>
 <li class="tsd-kind-module"><a href="../modules/framework.html">framework</a></li>
 <li class="tsd-kind-module"><a href="../modules/stocks_all_visible_deck.html">stocks/all-<wbr/>visible-<wbr/>deck</a></li>
 <li class="tsd-kind-module"><a href="../modules/stocks_card_stock.html">stocks/card-<wbr/>stock</a></li>
+<li class="tsd-kind-module"><a href="../modules/stocks_deck.html">stocks/deck</a></li>
 <li class="tsd-kind-module"><a href="../modules/stocks_hidden_deck.html">stocks/hidden-<wbr/>deck</a></li>
 <li class="tsd-kind-module"><a href="../modules/stocks_line_stock.html">stocks/line-<wbr/>stock</a></li>
 <li class="tsd-kind-module"><a href="../modules/stocks_slot_stock.html">stocks/slot-<wbr/>stock</a></li>
@@ -608,6 +640,8 @@ If set to &#39;none&#39;, it will unselect all selected cards.</p>
 <li class="current tsd-kind-class tsd-parent-kind-module"><a href="stocks_visible_deck.VisibleDeck.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-class)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-128-path"></rect><path d="M11.898 16.1201C11.098 16.1201 10.466 15.8961 10.002 15.4481C9.53803 15.0001 9.30603 14.3841 9.30603 13.6001V9.64012C9.30603 8.85612 9.53803 8.24012 10.002 7.79212C10.466 7.34412 11.098 7.12012 11.898 7.12012C12.682 7.12012 13.306 7.34812 13.77 7.80412C14.234 8.25212 14.466 8.86412 14.466 9.64012H13.386C13.386 9.14412 13.254 8.76412 12.99 8.50012C12.734 8.22812 12.37 8.09212 11.898 8.09212C11.426 8.09212 11.054 8.22412 10.782 8.48812C10.518 8.75212 10.386 9.13212 10.386 9.62812V13.6001C10.386 14.0961 10.518 14.4801 10.782 14.7521C11.054 15.0161 11.426 15.1481 11.898 15.1481C12.37 15.1481 12.734 15.0161 12.99 14.7521C13.254 14.4801 13.386 14.0961 13.386 13.6001H14.466C14.466 14.3761 14.234 14.9921 13.77 15.4481C13.306 15.8961 12.682 16.1201 11.898 16.1201Z" fill="var(--color-text)" id="icon-128-text"></path></svg><span>Visible<wbr/>Deck</span></a>
 <ul>
 <li class="tsd-kind-constructor tsd-parent-kind-class"><a href="stocks_visible_deck.VisibleDeck.html#constructor" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-512-path"></use><use href="#icon-512-text"></use></svg>constructor</a></li>
+<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a href="stocks_visible_deck.VisibleDeck.html#autoUpdateCardNumber" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>auto<wbr/>Update<wbr/>Card<wbr/>Number</a></li>
+<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a href="stocks_visible_deck.VisibleDeck.html#cardNumber" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>card<wbr/>Number</a></li>
 <li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a href="stocks_visible_deck.VisibleDeck.html#cards" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>cards</a></li>
 <li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a href="stocks_visible_deck.VisibleDeck.html#element" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>element</a></li>
 <li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a href="stocks_visible_deck.VisibleDeck.html#manager" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>manager</a></li>
@@ -634,6 +668,7 @@ If set to &#39;none&#39;, it will unselect all selected cards.</p>
 <li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="stocks_visible_deck.VisibleDeck.html#removeCard" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>remove<wbr/>Card</a></li>
 <li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="stocks_visible_deck.VisibleDeck.html#selectAll" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>select<wbr/>All</a></li>
 <li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="stocks_visible_deck.VisibleDeck.html#selectCard" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>select<wbr/>Card</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="stocks_visible_deck.VisibleDeck.html#setCardNumber" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>set<wbr/>Card<wbr/>Number</a></li>
 <li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a href="stocks_visible_deck.VisibleDeck.html#setSelectableCard" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>set<wbr/>Selectable<wbr/>Card</a></li>
 <li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="stocks_visible_deck.VisibleDeck.html#setSelectionMode" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>set<wbr/>Selection<wbr/>Mode</a></li>
 <li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="stocks_visible_deck.VisibleDeck.html#unselectAll" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>unselect<wbr/>All</a></li>

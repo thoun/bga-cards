@@ -171,6 +171,46 @@ declare class CardStock<T> {
     protected cardClick(card: T): void;
     protected animationFromElement(settings: AnimationSettings): Promise<boolean>;
 }
+interface DeckSettings {
+    /**
+     * Indicate the width of the deck (should be the width of a card, in px)
+     */
+    width: number;
+    /**
+     * Indicate the height of the deck (should be the height of a card, in px)
+     */
+    height: number;
+    /**
+     * Indicate the current number of cards in the deck (default 52)
+     */
+    cardNumber?: number;
+    /**
+     * Indicate if the line should be centered (default yes)
+     */
+    autoUpdateCardNumber?: boolean;
+    /**
+     * Indicate the thresholds to add 1px to the thickness of the pile. Default [0, 2, 5, 10, 20, 30].
+     */
+    thicknesses?: number[];
+    /**
+     * Shadow direction. Default 'bottom-right'.
+     */
+    shadowDirection?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top' | 'bottom' | 'left' | 'right';
+}
+/**
+ * Abstract stock to represent a deck. (pile of cards, with a fake 3d effect of thickness).
+ */
+declare class Deck<T> extends CardStock<T> {
+    protected manager: CardManager<T>;
+    protected element: HTMLElement;
+    protected cardNumber: number;
+    protected autoUpdateCardNumber: boolean;
+    private thicknesses;
+    constructor(manager: CardManager<T>, element: HTMLElement, settings: DeckSettings);
+    setCardNumber(cardNumber: number): void;
+    addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean>;
+    cardRemoved(card: T): void;
+}
 interface LineStockSettings {
     /**
      * Indicate if the line should wrap when needed (default wrap)
@@ -257,46 +297,6 @@ declare class SlotStock<T> extends LineStock<T> {
     setSlotsIds(slotsIds: SlotId[]): void;
     protected cardElementInStock(element: HTMLElement): boolean;
 }
-interface DeckSettings {
-    /**
-     * Indicate the width of the deck (should be the width of a card, in px)
-     */
-    width: number;
-    /**
-     * Indicate the height of the deck (should be the height of a card, in px)
-     */
-    height: number;
-    /**
-     * Indicate the current number of cards in the deck (default 52)
-     */
-    cardNumber?: number;
-    /**
-     * Indicate if the line should be centered (default yes)
-     */
-    autoUpdateCardNumber?: boolean;
-    /**
-     * Indicate the thresholds to add 1px to the thickness of the pile. Default [0, 2, 5, 10, 20, 30].
-     */
-    thicknesses: number[];
-    /**
-     * Shadow direction. Default 'bottom-right'.
-     */
-    shadowDirection?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top' | 'bottom' | 'left' | 'right';
-}
-/**
- * Abstract stock to represent a deck. (pile of cards, with a fake 3d effect of thickness).
- */
-declare class Deck<T> extends CardStock<T> {
-    protected manager: CardManager<T>;
-    protected element: HTMLElement;
-    private cardNumber;
-    private autoUpdateCardNumber;
-    private thicknesses;
-    constructor(manager: CardManager<T>, element: HTMLElement, settings: DeckSettings);
-    setCardNumber(cardNumber: number): void;
-    addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean>;
-    cardRemoved(card: T): void;
-}
 declare class HiddenDeck<T> extends Deck<T> {
     protected manager: CardManager<T>;
     protected element: HTMLElement;
@@ -309,10 +309,24 @@ declare class VisibleDeck<T> extends Deck<T> {
     constructor(manager: CardManager<T>, element: HTMLElement, settings: DeckSettings);
     addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean>;
 }
+interface AllVisibleDeckSettings {
+    /**
+     * Indicate the width of a card, in CSS with unit
+     */
+    width: string;
+    /**
+     * Indicate the height of a card, in CSS with unit
+     */
+    height: string;
+    /**
+     * The shift between each card (default 3)
+     */
+    shift?: string;
+}
 declare class AllVisibleDeck<T> extends CardStock<T> {
     protected manager: CardManager<T>;
     protected element: HTMLElement;
-    constructor(manager: CardManager<T>, element: HTMLElement, width: string, height: string, shift: string);
+    constructor(manager: CardManager<T>, element: HTMLElement, settings: AllVisibleDeckSettings);
     addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean>;
     /**
      * Set opened state. If true, all cards will be entirely visible.

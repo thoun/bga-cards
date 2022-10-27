@@ -1,10 +1,27 @@
+interface AllVisibleDeckSettings {
+    /**
+     * Indicate the width of a card, in CSS with unit
+     */
+    width: string;
+    /**
+     * Indicate the height of a card, in CSS with unit
+     */
+    height: string;
+
+    /**
+     * The shift between each card (default 3)
+     */
+    shift?: string;
+}
+
+
 class AllVisibleDeck<T> extends CardStock<T> {
-    constructor(protected manager: CardManager<T>, protected element: HTMLElement, width: string, height: string, shift: string) {
+    constructor(protected manager: CardManager<T>, protected element: HTMLElement, settings: AllVisibleDeckSettings) {
         super(manager, element);
         element.classList.add('all-visible-deck');
-        element.style.setProperty('--width', width);
-        element.style.setProperty('--height', height);
-        element.style.setProperty('--shift', shift);
+        element.style.setProperty('--width', settings.width);
+        element.style.setProperty('--height', settings.height);
+        element.style.setProperty('--shift', settings.shift ?? '3px');
     }        
 
     public addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean> {

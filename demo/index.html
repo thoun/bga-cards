@@ -20,13 +20,26 @@
             Last selection change event : <span id="line-stock-last-selection-change"></span>
         </div>
         
-        <h2>HiddenDeck</h2>
-        <div id="hidden-deck"></div>
-        Set card number : <input type="number" value="5" onchange="setHiddenDeckCardNumber(this.value)" min="0">
-        
-        <h2>VisibleDeck</h2>
-        <div id="visible-deck"></div>
-        Set card number : <input type="number" value="5" onchange="setVisibleDeckCardNumber(this.value)" min="0">
+        <div class="flex">
+            <div>
+                <h2>HiddenDeck</h2>
+                Set card number : <input type="number" value="5" onchange="setHiddenDeckCardNumber(this.value)" min="0">
+                <div id="hidden-deck"></div>
+            </div>
+                
+            <div>
+                <h2>VisibleDeck</h2>
+                Set card number : <input type="number" value="5" onchange="setVisibleDeckCardNumber(this.value)" min="0">
+                <div id="visible-deck"></div>
+            </div>
+                
+            <div>
+                <h2>AllVisibleDeck</h2>
+                <input type="checkbox" id="all-visible-deck-opened" onchange="setAllVisibleDeckOpen(this.checked)">
+                <label for="all-visible-deck-opened">Force opened</label>
+                <div id="all-visible-deck"></div>
+            </div>
+        </div>
 
         <script>
             init();

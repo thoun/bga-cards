@@ -382,6 +382,54 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 /**
+ * Abstract stock to represent a deck. (pile of cards, with a fake 3d effect of thickness).
+ */
+var Deck = /** @class */ (function (_super) {
+    __extends(Deck, _super);
+    function Deck(manager, element, settings) {
+        var _this = this;
+        var _a, _b, _c, _d;
+        _this = _super.call(this, manager, element) || this;
+        _this.manager = manager;
+        _this.element = element;
+        element.classList.add('deck');
+        _this.element.style.setProperty('--width', settings.width + 'px');
+        _this.element.style.setProperty('--height', settings.height + 'px');
+        _this.thicknesses = (_a = settings.thicknesses) !== null && _a !== void 0 ? _a : [0, 2, 5, 10, 20, 30];
+        _this.setCardNumber((_b = settings.cardNumber) !== null && _b !== void 0 ? _b : 52);
+        _this.autoUpdateCardNumber = (_c = settings.autoUpdateCardNumber) !== null && _c !== void 0 ? _c : true;
+        var shadowDirection = (_d = settings.shadowDirection) !== null && _d !== void 0 ? _d : 'bottom-right';
+        var shadowDirectionSplit = shadowDirection.split('-');
+        var xShadowShift = shadowDirectionSplit.includes('right') ? 1 : (shadowDirectionSplit.includes('left') ? -1 : 0);
+        var yShadowShift = shadowDirectionSplit.includes('bottom') ? 1 : (shadowDirectionSplit.includes('top') ? -1 : 0);
+        _this.element.style.setProperty('--xShadowShift', '' + xShadowShift);
+        _this.element.style.setProperty('--yShadowShift', '' + yShadowShift);
+        return _this;
+    }
+    Deck.prototype.setCardNumber = function (cardNumber) {
+        var _this = this;
+        this.cardNumber = cardNumber;
+        this.element.dataset.empty = (this.cardNumber == 0).toString();
+        var thickness = 0;
+        this.thicknesses.forEach(function (threshold, index) {
+            if (_this.cardNumber >= threshold) {
+                thickness = index;
+            }
+        });
+        this.element.style.setProperty('--thickness', thickness + 'px');
+    };
+    Deck.prototype.addCard = function (card, animation, settings) {
+        return _super.prototype.addCard.call(this, card, animation, settings);
+    };
+    Deck.prototype.cardRemoved = function (card) {
+        if (this.autoUpdateCardNumber) {
+            this.setCardNumber(this.cardNumber - 1);
+        }
+        _super.prototype.cardRemoved.call(this, card);
+    };
+    return Deck;
+}(CardStock));
+/**
  * A basic stock for a list of cards, based on flex.
  */
 var LineStock = /** @class */ (function (_super) {
@@ -495,54 +543,6 @@ var SlotStock = /** @class */ (function (_super) {
     };
     return SlotStock;
 }(LineStock));
-/**
- * Abstract stock to represent a deck. (pile of cards, with a fake 3d effect of thickness).
- */
-var Deck = /** @class */ (function (_super) {
-    __extends(Deck, _super);
-    function Deck(manager, element, settings) {
-        var _this = this;
-        var _a, _b, _c, _d;
-        _this = _super.call(this, manager, element) || this;
-        _this.manager = manager;
-        _this.element = element;
-        element.classList.add('deck');
-        _this.element.style.setProperty('--width', settings.width + 'px');
-        _this.element.style.setProperty('--height', settings.height + 'px');
-        _this.thicknesses = (_a = settings.thicknesses) !== null && _a !== void 0 ? _a : [0, 2, 5, 10, 20, 30];
-        _this.setCardNumber((_b = settings.cardNumber) !== null && _b !== void 0 ? _b : 52);
-        _this.autoUpdateCardNumber = (_c = settings.autoUpdateCardNumber) !== null && _c !== void 0 ? _c : true;
-        var shadowDirection = (_d = settings.shadowDirection) !== null && _d !== void 0 ? _d : 'bottom-right';
-        var shadowDirectionSplit = shadowDirection.split('-');
-        var xShadowShift = shadowDirectionSplit.includes('right') ? 1 : (shadowDirectionSplit.includes('left') ? -1 : 0);
-        var yShadowShift = shadowDirectionSplit.includes('bottom') ? 1 : (shadowDirectionSplit.includes('top') ? -1 : 0);
-        _this.element.style.setProperty('--xShadowShift', '' + xShadowShift);
-        _this.element.style.setProperty('--yShadowShift', '' + yShadowShift);
-        return _this;
-    }
-    Deck.prototype.setCardNumber = function (cardNumber) {
-        var _this = this;
-        this.cardNumber = cardNumber;
-        this.element.dataset.empty = (this.cardNumber == 0).toString();
-        var thickness = 0;
-        this.thicknesses.forEach(function (threshold, index) {
-            if (_this.cardNumber >= threshold) {
-                thickness = index;
-            }
-        });
-        this.element.style.setProperty('--thickness', thickness + 'px');
-    };
-    Deck.prototype.addCard = function (card, animation, settings) {
-        return _super.prototype.addCard.call(this, card, animation, settings);
-    };
-    Deck.prototype.cardRemoved = function (card) {
-        if (this.autoUpdateCardNumber) {
-            this.setCardNumber(this.cardNumber - 1);
-        }
-        _super.prototype.cardRemoved.call(this, card);
-    };
-    return Deck;
-}(CardStock));
 var HiddenDeck = /** @class */ (function (_super) {
     __extends(HiddenDeck, _super);
     function HiddenDeck(manager, element, settings) {
@@ -573,8 +573,14 @@ var VisibleDeck = /** @class */ (function (_super) {
         var _this = this;
         var currentCard = this.cards[this.cards.length - 1];
         if (currentCard) {
-            document.getElementById(this.manager.getId(currentCard)).classList.add('under');
-            setTimeout(function () { return _this.removeCard(currentCard); }, 600);
+            // we remove the card under, only when the animation is done. TODO use promise result
+            setTimeout(function () {
+                _this.removeCard(currentCard);
+                // counter the autoUpdateCardNumber as the card isn't really removed, we just remove it from the dom so player cannot see it's content.
+                if (_this.autoUpdateCardNumber) {
+                    _this.setCardNumber(_this.cardNumber + 1);
+                }
+            }, 600);
         }
         return _super.prototype.addCard.call(this, card, animation, settings);
     };
@@ -582,14 +588,16 @@ var VisibleDeck = /** @class */ (function (_super) {
 }(Deck));
 var AllVisibleDeck = /** @class */ (function (_super) {
     __extends(AllVisibleDeck, _super);
-    function AllVisibleDeck(manager, element, width, height, shift) {
-        var _this = _super.call(this, manager, element) || this;
+    function AllVisibleDeck(manager, element, settings) {
+        var _this = this;
+        var _a;
+        _this = _super.call(this, manager, element) || this;
         _this.manager = manager;
         _this.element = element;
         element.classList.add('all-visible-deck');
-        element.style.setProperty('--width', width);
-        element.style.setProperty('--height', height);
-        element.style.setProperty('--shift', shift);
+        element.style.setProperty('--width', settings.width);
+        element.style.setProperty('--height', settings.height);
+        element.style.setProperty('--shift', (_a = settings.shift) !== null && _a !== void 0 ? _a : '3px');
         return _this;
     }
     AllVisibleDeck.prototype.addCard = function (card, animation, settings) {
@@ -690,6 +698,7 @@ var CardManager = /** @class */ (function () {
 define({
     CardManager: CardManager,
     CardStock: CardStock,
+    Deck: Deck,
     LineStock: LineStock,
     SlotStock: SlotStock,
     HiddenDeck: HiddenDeck,
