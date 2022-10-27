@@ -1,5 +1,5 @@
 # Links
-[Documentation](./doc/index.html)
+[Documentation](./docs/index.html)
 
 [Demo](./demo/index.html)
 
