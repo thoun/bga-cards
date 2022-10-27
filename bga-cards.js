@@ -747,6 +747,7 @@ define({
     Deck: Deck,
     LineStock: LineStock,
     SlotStock: SlotStock,
+    ScrollableStock: ScrollableStock,
     HiddenDeck: HiddenDeck,
     VisibleDeck: VisibleDeck,
     AllVisibleDeck: AllVisibleDeck,
