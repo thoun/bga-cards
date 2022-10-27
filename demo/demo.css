@@ -16,6 +16,7 @@ html {
 .flex .block {
     background: #FFFFFF99;
     border-radius: 8px;
+    padding: 10px;
 }
 
 .mygame-card {

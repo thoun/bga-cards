@@ -589,6 +589,42 @@ var ScrollableStock = /** @class */ (function (_super) {
     };
     return ScrollableStock;
 }(CardStock));
+var HandStock = /** @class */ (function (_super) {
+    __extends(HandStock, _super);
+    function HandStock(manager, element, settings) {
+        var _this = this;
+        var _a, _b, _c, _d;
+        _this = _super.call(this, manager, element) || this;
+        _this.manager = manager;
+        _this.element = element;
+        element.classList.add('hand-stock');
+        element.style.setProperty('--card-overlap', (_a = settings.cardOverlap) !== null && _a !== void 0 ? _a : '60px');
+        element.style.setProperty('--card-shift', (_b = settings.cardShift) !== null && _b !== void 0 ? _b : '15px');
+        element.style.setProperty('--card-inclination', "".concat((_c = settings.inclination) !== null && _c !== void 0 ? _c : 12, "deg"));
+        _this.inclination = (_d = settings.inclination) !== null && _d !== void 0 ? _d : 4;
+        return _this;
+    }
+    HandStock.prototype.addCard = function (card, animation, settings) {
+        var promise = _super.prototype.addCard.call(this, card, animation, settings);
+        this.updateAngles();
+        return promise;
+    };
+    HandStock.prototype.cardRemoved = function (card) {
+        _super.prototype.cardRemoved.call(this, card);
+        this.updateAngles();
+    };
+    HandStock.prototype.updateAngles = function () {
+        var _this = this;
+        var middle = this.cards.length / 2;
+        this.cards.forEach(function (card, index) {
+            var middleIndex = index - middle;
+            var cardElement = _this.getCardElement(card);
+            cardElement.style.setProperty('--hand-stock-middle-index', "".concat(middleIndex));
+            cardElement.style.setProperty('--hand-stock-middle-index-abs', "".concat(Math.abs(middleIndex)));
+        });
+    };
+    return HandStock;
+}(CardStock));
 var HiddenDeck = /** @class */ (function (_super) {
     __extends(HiddenDeck, _super);
     function HiddenDeck(manager, element, settings) {
@@ -748,6 +784,7 @@ define({
     LineStock: LineStock,
     SlotStock: SlotStock,
     ScrollableStock: ScrollableStock,
+    HandStock: HandStock,
     HiddenDeck: HiddenDeck,
     VisibleDeck: VisibleDeck,
     AllVisibleDeck: AllVisibleDeck,

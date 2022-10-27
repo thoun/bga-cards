@@ -1,0 +1,15 @@
+.card-stock {
+
+    &.hand-stock {
+        display: flex;
+        justify-content: center;
+
+        .card {
+            transform: translateY(calc(var(--card-shift) * var(--hand-stock-middle-index-abs))) rotate(calc(var(--hand-stock-middle-index) * var(--card-inclination)));
+
+            &:not(:first-child) {
+                margin-left: calc(-1 * var(--card-overlap));
+            }
+        }
+    }
+}

@@ -353,6 +353,29 @@ declare class ScrollableStock<T> extends CardStock<T> {
     protected createButton(side: 'left' | 'right', settings: ScrollableStockButtonSettings): HTMLButtonElement;
     protected scroll(side: 'left' | 'right'): void;
 }
+interface HandStockSettings {
+    /**
+     * card overlap, in CSS with unit. Default 60px
+     */
+    cardOverlap?: string;
+    /**
+     * card shift, in CSS with unit. Default 15px
+     */
+    cardShift?: string;
+    /**
+     * the inclination between each card. Default 12
+     */
+    inclination?: number;
+}
+declare class HandStock<T> extends CardStock<T> {
+    protected manager: CardManager<T>;
+    protected element: HTMLElement;
+    protected inclination: number;
+    constructor(manager: CardManager<T>, element: HTMLElement, settings: HandStockSettings);
+    addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean>;
+    cardRemoved(card: T): void;
+    protected updateAngles(): void;
+}
 declare class HiddenDeck<T> extends Deck<T> {
     protected manager: CardManager<T>;
     protected element: HTMLElement;

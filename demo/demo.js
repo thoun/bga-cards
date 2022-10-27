@@ -2,6 +2,7 @@ let cardsManager;
 let lineStock;
 let slotStock;
 let scrollableStock;
+let handStock;
 let hiddenDeck;
 let visibleDeck;
 let allVisibleDeck;
@@ -95,6 +96,21 @@ function initScrollableStock() {
     ]);
 }
 
+function initHandStock() {
+    handStock = new HandStock(cardsManager, document.getElementById('hand-stock'), {
+    });
+
+    // add cards
+    handStock.addCards([
+        { id: 201, type: 3, type_arg: 2, location: 'table', location_arg: 0 },
+        { id: 202, type: 1, type_arg: 5, location: 'table', location_arg: 0 },
+        { id: 203, type: 3, type_arg: 2, location: 'table', location_arg: 0 },
+        { id: 204, type: 4, type_arg: 5, location: 'table', location_arg: 0 },
+        { id: 205, type: 3, type_arg: 2, location: 'table', location_arg: 0 },
+        { id: 206, type: 4, type_arg: 6, location: 'table', location_arg: 0 },
+    ]);
+}
+
 function initHiddenDeck() {
     hiddenDeck = new HiddenDeck(cardsManager, document.getElementById('hidden-deck'), {
         width: 100,
@@ -144,6 +160,7 @@ function init() {
     initLineStock();
     initSlotStock();
     initScrollableStock();
+    initHandStock();
     initHiddenDeck();
     initVisibleDeck();
     initAllVisibleDeck();

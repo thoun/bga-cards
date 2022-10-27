@@ -92,6 +92,17 @@ body > .card {
   justify-content: center;
 }
 
+.card-stock.hand-stock {
+  display: flex;
+  justify-content: center;
+}
+.card-stock.hand-stock .card {
+  transform: translateY(calc(var(--card-shift) * var(--hand-stock-middle-index-abs))) rotate(calc(var(--hand-stock-middle-index) * var(--card-inclination)));
+}
+.card-stock.hand-stock .card:not(:first-child) {
+  margin-left: calc(-1 * var(--card-overlap));
+}
+
 .card-stock.deck {
   position: relative;
   width: var(--width);
