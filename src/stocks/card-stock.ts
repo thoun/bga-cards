@@ -9,32 +9,64 @@ interface AddCardSettings {
 
 type CardSelectionMode = 'none' | 'single' | 'multiple';
 
+/**
+ * The abstract stock. It shouldn't be used directly, use stocks that extends it.
+ */
 class CardStock<T> {
     protected cards: T[] = [];
     protected selectedCards: T[] = [];
     protected selectionMode: CardSelectionMode = 'none';
 
+    /**
+     * Called when selection change. Returns the selection.
+     * 
+     * selection: the selected cards of the stock  
+     * lastChange: the last change on selection card (can be selected or unselected)
+     */
     public onSelectionChange?: (selection: T[], lastChange: T | null) => void;
+
+    /**
+     * Called when selection change. Returns the clicked card.
+     * 
+     * card: the clicked card (can be selected or unselected)
+     */
     public onCardClick?: (card: T) => void;
 
+    /**
+     * @param manager the card manager  
+     * @param element the stock element (should be an empty HTML Element)
+     */
     constructor(protected manager: CardManager<T>, protected element: HTMLElement) {
         manager.addStock(this);
         element?.classList.add('card-stock'/*, this.constructor.name.split(/(?=[A-Z])/).join('-').toLowerCase()* doesn't work in production because of minification */);
         this.bindClick();
     }
 
+    /**
+     * @returns the cards on the stock
+     */
     public getCards(): T[] {
         return this.cards.slice();
     }
 
+    /**
+     * @returns if the stock is empty
+     */
     public isEmpty(): boolean {
         return !this.cards.length;
     }
 
+    /**
+     * @returns the selected cards
+     */
     public getSelection(): T[] {
         return this.selectedCards.slice();
     }
 
+    /**
+     * @param card a card  
+     * @returns if the card is present in the stock
+     */
     public contains(card: T): boolean {
         return this.cards.some(c => this.manager.getId(c) == this.manager.getId(card));
     }
@@ -48,10 +80,22 @@ class CardStock<T> {
         return element?.parentElement == this.element;
     }
 
+    /**
+     * @param card a card in the stock
+     * @returns the HTML element generated for the card
+     */
     public getCardElement(card: T): HTMLElement {
         return document.getElementById(this.manager.getId(card));
     }
 
+    /**
+     * Add a card to the stock.
+     * 
+     * @param card the card to add  
+     * @param animation a `CardAnimation` object
+     * @param settings a `AddCardSettings` object
+     * @returns the promise when the animation is done (true if it was animated, false if it wasn't)
+     */
     public addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean> {
         if (this.cardInStock(card)) {
             return Promise.resolve(false);
@@ -127,6 +171,14 @@ class CardStock<T> {
         return promise;
     }
 
+    /**
+     * Add an array of cards to the stock.
+     * 
+     * @param cards the cards to add
+     * @param animation a `CardAnimation` object
+     * @param settings a `AddCardSettings` object
+     * @param shift if number, the number of milliseconds between each card. if true, chain animations
+     */
     public addCards(cards: T[], animation?: CardAnimation<T>, settings?: AddCardSettings, shift: number | boolean = false) {
         if (shift === true) {
             if (cards.length) {
@@ -146,6 +198,11 @@ class CardStock<T> {
         }
     }
 
+    /**
+     * Remove a card from the stock.
+     * 
+     * @param card the card to remove
+     */
     public removeCard(card: T) {
         if (this.cardInStock(card)) {
             this.manager.removeCard(card);
@@ -160,6 +217,9 @@ class CardStock<T> {
         }
     }
 
+    /**
+     * Remove all cards from the stock.
+     */
     public removeAll() {
         const cards = this.getCards(); // use a copy of the array as we iterate and modify it at the same time
         cards.forEach(card => this.removeCard(card));
@@ -170,12 +230,27 @@ class CardStock<T> {
         element.classList.toggle('selectable', selectable);
     }
 
+    /**
+     * Set if the stock is selectable, and if yes if it can be multiple.
+     * If set to 'none', it will unselect all selected cards.
+     * 
+     * @param selectionMode the selection mode
+     */
     public setSelectionMode(selectionMode: CardSelectionMode) {
+        if (selectionMode === 'none') {
+            this.unselectAll(true);
+        }
+
         this.cards.forEach(card => this.setSelectableCard(card, selectionMode != 'none'));
         this.element.classList.toggle('selectable', selectionMode != 'none');
         this.selectionMode = selectionMode;
     }
 
+    /**
+     * Set selected state to a card.
+     * 
+     * @param card the card to select
+     */
     public selectCard(card: T, silent: boolean = false) {
         if (this.selectionMode == 'none') {
             return;
@@ -194,6 +269,11 @@ class CardStock<T> {
         }
     }
 
+    /**
+     * Set unselected state to a card.
+     * 
+     * @param card the card to unselect
+     */
     public unselectCard(card: T, silent: boolean = false) {
         const element = this.getCardElement(card);
         element.classList.remove('selected');
@@ -208,6 +288,9 @@ class CardStock<T> {
         }
     }
 
+    /**
+     * Select all cards
+     */
     public selectAll(silent: boolean = false) {
         if (this.selectionMode == 'none') {
             return;
@@ -220,6 +303,9 @@ class CardStock<T> {
         }
     }
 
+    /**
+     * Unelect all cards
+     */
     public unselectAll(silent: boolean = false) {
         const cards = this.getCards(); // use a copy of the array as we iterate and modify it at the same time
         cards.forEach(c => this.unselectCard(c, true));

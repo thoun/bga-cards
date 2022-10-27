@@ -22,6 +22,11 @@ class AllVisibleDeck<T> extends CardStock<T> {
         return promise;
     }
 
+    /**
+     * Set opened state. If true, all cards will be entirely visible.
+     * 
+     * @param opened indicate if deck must be always opened. If false, will open only on hover/touch
+     */
     public setOpened(opened: boolean) {
         this.element.classList.toggle('opened', opened);
     }

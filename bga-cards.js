@@ -81,7 +81,14 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+/**
+ * The abstract stock. It shouldn't be used directly, use stocks that extends it.
+ */
 var CardStock = /** @class */ (function () {
+    /**
+     * @param manager the card manager
+     * @param element the stock element (should be an empty HTML Element)
+     */
     function CardStock(manager, element) {
         this.manager = manager;
         this.element = element;
@@ -92,15 +99,28 @@ var CardStock = /** @class */ (function () {
         element === null || element === void 0 ? void 0 : element.classList.add('card-stock' /*, this.constructor.name.split(/(?=[A-Z])/).join('-').toLowerCase()* doesn't work in production because of minification */);
         this.bindClick();
     }
+    /**
+     * @returns the cards on the stock
+     */
     CardStock.prototype.getCards = function () {
         return this.cards.slice();
     };
+    /**
+     * @returns if the stock is empty
+     */
     CardStock.prototype.isEmpty = function () {
         return !this.cards.length;
     };
+    /**
+     * @returns the selected cards
+     */
     CardStock.prototype.getSelection = function () {
         return this.selectedCards.slice();
     };
+    /**
+     * @param card a card
+     * @returns if the card is present in the stock
+     */
     CardStock.prototype.contains = function (card) {
         var _this = this;
         return this.cards.some(function (c) { return _this.manager.getId(c) == _this.manager.getId(card); });
@@ -113,9 +133,21 @@ var CardStock = /** @class */ (function () {
     CardStock.prototype.cardElementInStock = function (element) {
         return (element === null || element === void 0 ? void 0 : element.parentElement) == this.element;
     };
+    /**
+     * @param card a card in the stock
+     * @returns the HTML element generated for the card
+     */
     CardStock.prototype.getCardElement = function (card) {
         return document.getElementById(this.manager.getId(card));
     };
+    /**
+     * Add a card to the stock.
+     *
+     * @param card the card to add
+     * @param animation a `CardAnimation` object
+     * @param settings a `AddCardSettings` object
+     * @returns the promise when the animation is done (true if it was animated, false if it wasn't)
+     */
     CardStock.prototype.addCard = function (card, animation, settings) {
         var _a, _b;
         if (this.cardInStock(card)) {
@@ -183,6 +215,14 @@ var CardStock = /** @class */ (function () {
         }
         return promise;
     };
+    /**
+     * Add an array of cards to the stock.
+     *
+     * @param cards the cards to add
+     * @param animation a `CardAnimation` object
+     * @param settings a `AddCardSettings` object
+     * @param shift if number, the number of milliseconds between each card. if true, chain animations
+     */
     CardStock.prototype.addCards = function (cards, animation, settings, shift) {
         var _this = this;
         if (shift === void 0) { shift = false; }
@@ -204,6 +244,11 @@ var CardStock = /** @class */ (function () {
             cards.forEach(function (card) { return _this.addCard(card, animation, settings); });
         }
     };
+    /**
+     * Remove a card from the stock.
+     *
+     * @param card the card to remove
+     */
     CardStock.prototype.removeCard = function (card) {
         if (this.cardInStock(card)) {
             this.manager.removeCard(card);
@@ -217,6 +262,9 @@ var CardStock = /** @class */ (function () {
             this.cards.splice(index, 1);
         }
     };
+    /**
+     * Remove all cards from the stock.
+     */
     CardStock.prototype.removeAll = function () {
         var _this = this;
         var cards = this.getCards(); // use a copy of the array as we iterate and modify it at the same time
@@ -226,12 +274,26 @@ var CardStock = /** @class */ (function () {
         var element = this.getCardElement(card);
         element.classList.toggle('selectable', selectable);
     };
+    /**
+     * Set if the stock is selectable, and if yes if it can be multiple.
+     * If set to 'none', it will unselect all selected cards.
+     *
+     * @param selectionMode the selection mode
+     */
     CardStock.prototype.setSelectionMode = function (selectionMode) {
         var _this = this;
+        if (selectionMode === 'none') {
+            this.unselectAll(true);
+        }
         this.cards.forEach(function (card) { return _this.setSelectableCard(card, selectionMode != 'none'); });
         this.element.classList.toggle('selectable', selectionMode != 'none');
         this.selectionMode = selectionMode;
     };
+    /**
+     * Set selected state to a card.
+     *
+     * @param card the card to select
+     */
     CardStock.prototype.selectCard = function (card, silent) {
         var _this = this;
         var _a;
@@ -249,6 +311,11 @@ var CardStock = /** @class */ (function () {
             (_a = this.onSelectionChange) === null || _a === void 0 ? void 0 : _a.call(this, this.selectedCards.slice(), card);
         }
     };
+    /**
+     * Set unselected state to a card.
+     *
+     * @param card the card to unselect
+     */
     CardStock.prototype.unselectCard = function (card, silent) {
         var _this = this;
         var _a;
@@ -263,6 +330,9 @@ var CardStock = /** @class */ (function () {
             (_a = this.onSelectionChange) === null || _a === void 0 ? void 0 : _a.call(this, this.selectedCards.slice(), card);
         }
     };
+    /**
+     * Select all cards
+     */
     CardStock.prototype.selectAll = function (silent) {
         var _this = this;
         var _a;
@@ -275,6 +345,9 @@ var CardStock = /** @class */ (function () {
             (_a = this.onSelectionChange) === null || _a === void 0 ? void 0 : _a.call(this, this.selectedCards.slice(), null);
         }
     };
+    /**
+     * Unelect all cards
+     */
     CardStock.prototype.unselectAll = function (silent) {
         var _this = this;
         var _a;
@@ -341,8 +414,16 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+/**
+ * A basic stock for a list of cards, based on flex.
+ */
 var LineStock = /** @class */ (function (_super) {
     __extends(LineStock, _super);
+    /**
+     * @param manager the card manager
+     * @param element the stock element (should be an empty HTML Element)
+     * @param settings a `LineStockSettings` object
+     */
     function LineStock(manager, element, settings) {
         var _this = this;
         var _a, _b, _c, _d;
@@ -367,8 +448,16 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
+/**
+ * A stock with fixed slots (some can be empty)
+ */
 var SlotStock = /** @class */ (function (_super) {
     __extends(SlotStock, _super);
+    /**
+     * @param manager the card manager
+     * @param element the stock element (should be an empty HTML Element)
+     * @param settings a `SlotStockSettings` object
+     */
     function SlotStock(manager, element, settings) {
         var _this = this;
         var _a, _b;
@@ -393,6 +482,14 @@ var SlotStock = /** @class */ (function (_super) {
         this.element.appendChild(this.slots[slotId]);
         (_a = this.slots[slotId].classList).add.apply(_a, __spreadArray(['slot'], this.slotClasses, true));
     };
+    /**
+     * Add a card to the stock.
+     *
+     * @param card the card to add
+     * @param animation a `CardAnimation` object
+     * @param settings a `AddCardToSlotSettings` object
+     * @returns the promise when the animation is done (true if it was animated, false if it wasn't)
+     */
     SlotStock.prototype.addCard = function (card, animation, settings) {
         var _a, _b;
         var slotId = (_a = settings === null || settings === void 0 ? void 0 : settings.slot) !== null && _a !== void 0 ? _a : (_b = this.mapCardToSlot) === null || _b === void 0 ? void 0 : _b.call(this, card);
@@ -405,6 +502,11 @@ var SlotStock = /** @class */ (function (_super) {
         var newSettings = __assign(__assign({}, settings), { forceToElement: this.slots[slotId] });
         return _super.prototype.addCard.call(this, card, animation, newSettings);
     };
+    /**
+     * Change the slots ids. Will empty the stock before re-creating the slots.
+     *
+     * @param slotsIds the new slotsIds. Will replace the old ones.
+     */
     SlotStock.prototype.setSlotsIds = function (slotsIds) {
         var _this = this;
         if (slotsIds.length == this.slotsIds.length && slotsIds.every(function (slotId, index) { return _this.slotsIds[index] === slotId; })) {
@@ -490,6 +592,11 @@ var AllVisibleDeck = /** @class */ (function (_super) {
         this.element.style.setProperty('--tile-count', '' + this.cards.length);
         return promise;
     };
+    /**
+     * Set opened state. If true, all cards will be entirely visible.
+     *
+     * @param opened indicate if deck must be always opened. If false, will open only on hover/touch
+     */
     AllVisibleDeck.prototype.setOpened = function (opened) {
         this.element.classList.toggle('opened', opened);
     };

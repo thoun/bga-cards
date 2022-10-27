@@ -1,5 +1,5 @@
 # Links
-[Documentation](./DOC.md)
+[Documentation](./doc/index.html)
 
 [Examples](./EXAMPLES.md)
 

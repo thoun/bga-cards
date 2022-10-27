@@ -20,7 +20,15 @@ interface LineStockSettings {
     gap?: string;
 }
 
+/**
+ * A basic stock for a list of cards, based on flex.
+ */
 class LineStock<T> extends CardStock<T> {
+    /**
+     * @param manager the card manager  
+     * @param element the stock element (should be an empty HTML Element)
+     * @param settings a `LineStockSettings` object
+     */
     constructor(protected manager: CardManager<T>, protected element: HTMLElement, settings?: LineStockSettings) {
         super(manager, element);
         element.classList.add('line-stock');

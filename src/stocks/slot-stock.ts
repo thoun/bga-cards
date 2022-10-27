@@ -24,12 +24,20 @@ interface AddCardToSlotSettings extends AddCardSettings {
     slot?: SlotId;
 }
 
+/**
+ * A stock with fixed slots (some can be empty)
+ */
 class SlotStock<T> extends LineStock<T> {
     protected slotsIds: SlotId[] = [];
     protected slots: HTMLDivElement[] = [];
     protected slotClasses: string[];
     protected mapCardToSlot?: (card: T) => SlotId;
 
+    /**
+     * @param manager the card manager  
+     * @param element the stock element (should be an empty HTML Element)
+     * @param settings a `SlotStockSettings` object
+     */
     constructor(protected manager: CardManager<T>, protected element: HTMLElement, settings: SlotStockSettings<T>) {
         super(manager, element, settings);
         element.classList.add('slot-stock');
@@ -49,6 +57,14 @@ class SlotStock<T> extends LineStock<T> {
         this.slots[slotId].classList.add(...['slot', ...this.slotClasses]);
     }
 
+    /**
+     * Add a card to the stock.
+     *
+     * @param card the card to add  
+     * @param animation a `CardAnimation` object
+     * @param settings a `AddCardToSlotSettings` object
+     * @returns the promise when the animation is done (true if it was animated, false if it wasn't)
+     */
     public addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardToSlotSettings): Promise<boolean> {
         const slotId = settings?.slot ?? this.mapCardToSlot?.(card);
         if (slotId === undefined) {
@@ -65,6 +81,11 @@ class SlotStock<T> extends LineStock<T> {
         return super.addCard(card, animation, newSettings);
     }
 
+    /**
+     * Change the slots ids. Will empty the stock before re-creating the slots.
+     * 
+     * @param slotsIds the new slotsIds. Will replace the old ones.
+     */
     public setSlotsIds(slotsIds: SlotId[]) {
         if (slotsIds.length == this.slotsIds.length && slotsIds.every((slotId, index) => this.slotsIds[index] === slotId)) {
             // no change
