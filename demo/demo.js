@@ -1,6 +1,7 @@
 let cardsManager;
 let lineStock;
 let hiddenDeck;
+let visibleDeck;
 
 let game = {
     addTooltipHtml: (divId, tooltip) => { document.getElementById(divId).title = tooltip },
@@ -68,8 +69,24 @@ function setHiddenDeckCardNumber(cardNumber) {
     hiddenDeck.setCardNumber(cardNumber);
 }
 
+function initVisibleDeck() {
+    visibleDeck = new VisibleDeck(cardsManager, document.getElementById('visible-deck'), {
+        width: 100,
+        height: 150,
+        cardNumber: 5,
+    });
+    visibleDeck.addCard(
+        { id: 5, type: 2, type_arg: 3, location: 'table', location_arg: 0 },
+    );
+}
+
+function setVisibleDeckCardNumber(cardNumber) {
+    visibleDeck.setCardNumber(cardNumber);
+}
+
 function init() {
     initManager();
     initLineStock();
     initHiddenDeck();
+    initVisibleDeck();
 };

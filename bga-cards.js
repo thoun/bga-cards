@@ -562,8 +562,8 @@ var HiddenDeck = /** @class */ (function (_super) {
 }(Deck));
 var VisibleDeck = /** @class */ (function (_super) {
     __extends(VisibleDeck, _super);
-    function VisibleDeck(manager, element) {
-        var _this = _super.call(this, manager, element) || this;
+    function VisibleDeck(manager, element, settings) {
+        var _this = _super.call(this, manager, element, settings) || this;
         _this.manager = manager;
         _this.element = element;
         element.classList.add('visible-deck');
@@ -579,7 +579,7 @@ var VisibleDeck = /** @class */ (function (_super) {
         return _super.prototype.addCard.call(this, card, animation, settings);
     };
     return VisibleDeck;
-}(CardStock));
+}(Deck));
 var AllVisibleDeck = /** @class */ (function (_super) {
     __extends(AllVisibleDeck, _super);
     function AllVisibleDeck(manager, element, width, height, shift) {

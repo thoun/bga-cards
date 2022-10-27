@@ -85,15 +85,6 @@ body > .card {
   visibility: hidden;
 }
 
-.card-stock.visible-deck {
-  position: relative;
-}
-.card-stock.visible-deck > .card.under {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
 .card-stock.all-visible-deck {
   position: absolute;
   --tile-count: 1;

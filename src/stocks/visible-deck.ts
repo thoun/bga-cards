@@ -1,6 +1,6 @@
-class VisibleDeck<T> extends CardStock<T> {
-    constructor(protected manager: CardManager<T>, protected element: HTMLElement) {
-        super(manager, element);
+class VisibleDeck<T> extends Deck<T> {
+    constructor(protected manager: CardManager<T>, protected element: HTMLElement, settings: DeckSettings) {
+        super(manager, element, settings);
         element.classList.add('visible-deck');
     }
 

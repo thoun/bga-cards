@@ -303,10 +303,10 @@ declare class HiddenDeck<T> extends Deck<T> {
     constructor(manager: CardManager<T>, element: HTMLElement, settings: DeckSettings);
     addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean>;
 }
-declare class VisibleDeck<T> extends CardStock<T> {
+declare class VisibleDeck<T> extends Deck<T> {
     protected manager: CardManager<T>;
     protected element: HTMLElement;
-    constructor(manager: CardManager<T>, element: HTMLElement);
+    constructor(manager: CardManager<T>, element: HTMLElement, settings: DeckSettings);
     addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean>;
 }
 declare class AllVisibleDeck<T> extends CardStock<T> {
