@@ -11,6 +11,7 @@
     "files": [
       "src/framework.d.ts",
       "src/animations.ts",
+      "src/animations-functions.ts",
       "src/stocks/card-stock.ts",
       "src/stocks/line-stock.ts",
       "src/stocks/slot-stock.ts",

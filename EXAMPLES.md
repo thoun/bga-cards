@@ -29,7 +29,7 @@ function (dojo, declare, debounce, gamegui, /*...,*/ bgaCards) {
                 this.addTooltipHtml(div.id, `tooltip de ${card.type}`);
             },
             setupBackDiv: (card, div) => {
-                div.style.background = 'url(' + g_gamethemeurl + 'img/card-back.jpg');
+                div.style.background = 'url(' + g_gamethemeurl + 'img/card-back.jpg)';
             },
         });
 

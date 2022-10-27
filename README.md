@@ -1,7 +1,7 @@
 # Links
 [Documentation](./doc/index.html)
 
-[Examples](./EXAMPLES.md)
+[Demo](./demo/index.html)
 
 # Concept
 ## CardManager, Stocks and Card

@@ -8,4 +8,5 @@ define({
     HiddenDeck,
     VisibleDeck,
     AllVisibleDeck,
+    stockSlideAnimation,
  });

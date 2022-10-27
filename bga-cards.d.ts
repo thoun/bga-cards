@@ -42,6 +42,12 @@ interface AnimationSettings {
      */
     animation?: (settings: AnimationSettings) => Promise<boolean>;
 }
+/**
+ * Linear slide of the card from origin to destination.
+ *
+ * @param settings an `AnimationSettings` object
+ * @returns a promise when animation ends
+ */
 declare function stockSlideAnimation(settings: AnimationSettings): Promise<boolean>;
 interface AddCardSettings {
     /**
