@@ -11,29 +11,38 @@
     </head>
     <body>
         <h1>Stocks</h1>
+        
+        <div class="flex">
+            <div class="block">
+                <h2>LineStock</h2>
+                <div id="line-stock"></div>
+                <button onclick="addCardToLineStockWithAnimation(this, false)">Add card with default animation (slide)</button>
+                <button onclick="addCardToLineStockWithAnimation(this, true)">Add card with custom function (slide with double loop)</button>
+                <div>
+                    Last selection change event : <span id="line-stock-last-selection-change"></span>
+                </div>
+            </div>
 
-        <h2>LineStock</h2>
-        <div id="line-stock"></div>
-        <button onclick="addCardToLineStockWithAnimation(this, false)">Add card with default animation (slide)</button>
-        <button onclick="addCardToLineStockWithAnimation(this, true)">Add card with custom function (slide with double loop)</button>
-        <div>
-            Last selection change event : <span id="line-stock-last-selection-change"></span>
+            <div class="block">
+                <h2>SlotStock</h2>
+                <div id="slot-stock"></div>
+            </div>
         </div>
         
         <div class="flex">
-            <div>
+            <div class="block">
                 <h2>HiddenDeck</h2>
                 Set card number : <input type="number" value="5" onchange="setHiddenDeckCardNumber(this.value)" min="0">
                 <div id="hidden-deck"></div>
             </div>
                 
-            <div>
+            <div class="block">
                 <h2>VisibleDeck</h2>
                 Set card number : <input type="number" value="5" onchange="setVisibleDeckCardNumber(this.value)" min="0">
                 <div id="visible-deck"></div>
             </div>
                 
-            <div>
+            <div class="block">
                 <h2>AllVisibleDeck</h2>
                 <input type="checkbox" id="all-visible-deck-opened" onchange="setAllVisibleDeckOpen(this.checked)">
                 <label for="all-visible-deck-opened">Force opened</label>

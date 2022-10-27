@@ -6,6 +6,16 @@ html {
     display: flex;
     gap: 50px;
     flex-wrap: wrap;
+    margin-bottom: 50px;
+}
+
+.flex > div {
+    flex: 1;
+}
+
+.flex .block {
+    background: #FFFFFF99;
+    border-radius: 8px;
 }
 
 .mygame-card {
@@ -36,4 +46,11 @@ html {
 .hidden-deck[data-empty="true"] {
     background-color: #FFFFFF99;
     border-radius: 5px;
+}
+
+.mygame-slot {
+    width: 120px;
+    height: 170px;
+    padding: 10px;
+    background: lightcyan;
 }

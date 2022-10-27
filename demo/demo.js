@@ -1,5 +1,6 @@
 let cardsManager;
 let lineStock;
+let slotStock;
 let hiddenDeck;
 let visibleDeck;
 let allVisibleDeck;
@@ -58,6 +59,20 @@ function addCardToLineStockWithAnimation(fromElement, customAnimation) {
     );
 }
 
+function initSlotStock() {
+    slotStock = new SlotStock(cardsManager, document.getElementById('slot-stock'), {
+        slotsIds: ['A', 'B', 'C'],
+        slotClasses: ['mygame-slot'],
+        mapCardToSlot: (card) => card.location,
+    });
+
+    // add cards
+    slotStock.addCards([
+        { id: 1, type: 3, type_arg: 2, location: 'A', location_arg: 0 },
+        { id: 2, type: 3, type_arg: 5, location: 'C', location_arg: 0 },
+    ]);
+}
+
 function initHiddenDeck() {
     hiddenDeck = new HiddenDeck(cardsManager, document.getElementById('hidden-deck'), {
         width: 100,
@@ -105,6 +120,7 @@ function setAllVisibleDeckOpen(opened) {
 function init() {
     initManager();
     initLineStock();
+    initSlotStock();
     initHiddenDeck();
     initVisibleDeck();
     initAllVisibleDeck();
