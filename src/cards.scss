@@ -5,6 +5,8 @@ body > .card {
 }
 
 .card {
+    flex-shrink: 0;
+    
     &[data-side="back"] {
         .card-sides { 
             transform: rotateY(180deg);

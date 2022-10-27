@@ -4,6 +4,9 @@ body > .card {
   top: -9999px;
 }
 
+.card {
+  flex-shrink: 0;
+}
 .card[data-side=back] .card-sides {
   transform: rotateY(180deg);
 }
@@ -65,6 +68,27 @@ body > .card {
   flex-direction: var(--direction);
 }
 .card-stock.slot-stock[data-center=true] {
+  justify-content: center;
+}
+
+.card-stock.scrollable-stock {
+  display: flex;
+  gap: var(--button-gap);
+}
+.card-stock.scrollable-stock[data-scrollbar-visible=false] {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.card-stock.scrollable-stock[data-scrollbar-visible=false]::-webkit-scrollbar {
+  display: none;
+}
+.card-stock.scrollable-stock .scrollable-stock-inner {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: var(--gap);
+}
+.card-stock.scrollable-stock .scrollable-stock-inner[data-center=true] {
   justify-content: center;
 }
 

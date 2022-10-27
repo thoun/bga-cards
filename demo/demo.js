@@ -1,6 +1,7 @@
 let cardsManager;
 let lineStock;
 let slotStock;
+let scrollableStock;
 let hiddenDeck;
 let visibleDeck;
 let allVisibleDeck;
@@ -19,8 +20,8 @@ function initManager() {
             div.classList.add('mygame-card-front');
             div.style.background = 'white';
             div.innerHTML = `
-                <div class="type">card type = ${card.type}</div>
-                <div>card type_arg = ${card.type_arg}</div>
+                <div class="type" data-type="${card.type}">Type ${card.type}</div>
+                <div>SubType ${card.type_arg}</div>
             `;
             div.id = `card-${card.id}-front`;
             game.addTooltipHtml(div.id, `tooltip de ${card.type}`);
@@ -39,7 +40,7 @@ function initLineStock() {
     // add cards
     lineStock.addCards([
         { id: 3, type: 3, type_arg: 2, location: 'table', location_arg: 0 },
-        { id: 4, type: 3, type_arg: 5, location: 'table', location_arg: 0 },
+        { id: 4, type: 1, type_arg: 5, location: 'table', location_arg: 0 },
     ]);
 }
 
@@ -69,7 +70,28 @@ function initSlotStock() {
     // add cards
     slotStock.addCards([
         { id: 1, type: 3, type_arg: 2, location: 'A', location_arg: 0 },
-        { id: 2, type: 3, type_arg: 5, location: 'C', location_arg: 0 },
+        { id: 2, type: 1, type_arg: 5, location: 'C', location_arg: 0 },
+    ]);
+}
+
+function initScrollableStock() {
+    scrollableStock = new ScrollableStock(cardsManager, document.getElementById('scrollable-stock'), {
+        leftButton: {
+            html: '&lt;'
+        },
+        rightButton: {
+            html: '&gt;'
+        },
+    });
+
+    // add cards
+    scrollableStock.addCards([
+        { id: 101, type: 3, type_arg: 2, location: 'table', location_arg: 0 },
+        { id: 102, type: 1, type_arg: 5, location: 'table', location_arg: 0 },
+        { id: 103, type: 3, type_arg: 2, location: 'table', location_arg: 0 },
+        { id: 104, type: 4, type_arg: 5, location: 'table', location_arg: 0 },
+        { id: 105, type: 3, type_arg: 2, location: 'table', location_arg: 0 },
+        { id: 106, type: 4, type_arg: 6, location: 'table', location_arg: 0 },
     ]);
 }
 
@@ -121,6 +143,7 @@ function init() {
     initManager();
     initLineStock();
     initSlotStock();
+    initScrollableStock();
     initHiddenDeck();
     initVisibleDeck();
     initAllVisibleDeck();

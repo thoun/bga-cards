@@ -1,0 +1,26 @@
+.card-stock {
+
+    &.scrollable-stock {
+        display: flex;
+        gap: var(--button-gap);
+
+        &[data-scrollbar-visible="false"] {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            &::-webkit-scrollbar {
+                display: none;
+            }
+        }
+
+        .scrollable-stock-inner {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            gap: var(--gap);
+
+            &[data-center="true"] {
+                justify-content: center;
+            }
+        }
+    }
+}

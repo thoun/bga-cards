@@ -526,23 +526,69 @@ var SlotStock = /** @class */ (function (_super) {
         var _this = this;
         if (slotsIds.length == this.slotsIds.length && slotsIds.every(function (slotId, index) { return _this.slotsIds[index] === slotId; })) {
             // no change
-            console.warn('no change', slotsIds, this.slotsIds);
             return;
         }
-        console.warn('change!');
         this.removeAll();
         this.element.innerHTML = '';
         this.slotsIds = slotsIds !== null && slotsIds !== void 0 ? slotsIds : [];
         this.slotsIds.forEach(function (slotId) {
             _this.createSlot(slotId);
         });
-        console.log('setSlotsIds', this.element.innerHTML);
     };
     SlotStock.prototype.cardElementInStock = function (element) {
         return (element === null || element === void 0 ? void 0 : element.parentElement.parentElement) == this.element;
     };
     return SlotStock;
 }(LineStock));
+/**
+ * A stock with button to scroll left/right if content is bigger than available width
+ */
+var ScrollableStock = /** @class */ (function (_super) {
+    __extends(ScrollableStock, _super);
+    /**
+     * @param manager the card manager
+     * @param element the stock element (should be an empty HTML Element)
+     * @param settings a `SlotStockSettings` object
+     */
+    function ScrollableStock(manager, elementWrapper, settings) {
+        var _this = this;
+        var _a, _b, _c, _d, _e;
+        _this = _super.call(this, manager, elementWrapper) || this;
+        _this.manager = manager;
+        elementWrapper.classList.add('scrollable-stock');
+        elementWrapper.dataset.center = ((_a = settings.center) !== null && _a !== void 0 ? _a : true).toString();
+        elementWrapper.style.setProperty('--button-gap', (_b = settings.buttonGap) !== null && _b !== void 0 ? _b : '0');
+        elementWrapper.style.setProperty('--gap', (_c = settings.gap) !== null && _c !== void 0 ? _c : '8px');
+        _this.scrollStep = (_d = settings.scrollStep) !== null && _d !== void 0 ? _d : 100;
+        elementWrapper.dataset.scrollbarVisible = ((_e = settings.scrollbarVisible) !== null && _e !== void 0 ? _e : true).toString();
+        elementWrapper.appendChild(_this.createButton('left', settings.leftButton));
+        _this.element = document.createElement('div');
+        _this.element.classList.add('scrollable-stock-inner');
+        elementWrapper.appendChild(_this.element);
+        elementWrapper.appendChild(_this.createButton('right', settings.rightButton));
+        return _this;
+    }
+    ScrollableStock.prototype.createButton = function (side, settings) {
+        var _a;
+        var _this = this;
+        var _b;
+        var button = document.createElement('button');
+        button.type = 'button';
+        (_a = button.classList).add.apply(_a, __spreadArray([side], ((_b = settings.classes) !== null && _b !== void 0 ? _b : []), false));
+        if (settings.html) {
+            button.innerHTML = settings.html;
+        }
+        button.addEventListener('click', function () { return _this.scroll(side); });
+        return button;
+    };
+    ScrollableStock.prototype.scroll = function (side) {
+        this.element.scrollBy({
+            left: this.scrollStep * (side === 'left' ? -1 : 1),
+            behavior: 'smooth'
+        });
+    };
+    return ScrollableStock;
+}(CardStock));
 var HiddenDeck = /** @class */ (function (_super) {
     __extends(HiddenDeck, _super);
     function HiddenDeck(manager, element, settings) {

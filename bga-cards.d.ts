@@ -297,6 +297,62 @@ declare class SlotStock<T> extends LineStock<T> {
     setSlotsIds(slotsIds: SlotId[]): void;
     protected cardElementInStock(element: HTMLElement): boolean;
 }
+interface ScrollableStockButtonSettings {
+    /**
+     * The HTML applied in the button
+     */
+    html?: string;
+    /**
+     * The classes added the button
+     */
+    classes?: string[];
+}
+interface ScrollableStockSettings {
+    /**
+     * Setting for the left button
+     */
+    leftButton: ScrollableStockButtonSettings;
+    /**
+     * Setting for the right button
+     */
+    rightButton: ScrollableStockButtonSettings;
+    /**
+     * indicate the scroll (in px) when clicking the buttons
+     */
+    scrollStep?: number;
+    /**
+     * indicate if the scrollbar is visible (default true)
+     */
+    scrollbarVisible?: boolean;
+    /**
+    * CSS to set the gap between the buttons and the card container. '0' if unset.
+    */
+    buttonGap?: string;
+    /**
+     * indicate if the line should be centered (default yes)
+     */
+    center?: boolean;
+    /**
+    * CSS to set the gap between cards. '8px' if unset.
+    */
+    gap?: string;
+}
+/**
+ * A stock with button to scroll left/right if content is bigger than available width
+ */
+declare class ScrollableStock<T> extends CardStock<T> {
+    protected manager: CardManager<T>;
+    protected scrollStep: number;
+    protected element: HTMLElement;
+    /**
+     * @param manager the card manager
+     * @param element the stock element (should be an empty HTML Element)
+     * @param settings a `SlotStockSettings` object
+     */
+    constructor(manager: CardManager<T>, elementWrapper: HTMLElement, settings: ScrollableStockSettings);
+    protected createButton(side: 'left' | 'right', settings: ScrollableStockButtonSettings): HTMLButtonElement;
+    protected scroll(side: 'left' | 'right'): void;
+}
 declare class HiddenDeck<T> extends Deck<T> {
     protected manager: CardManager<T>;
     protected element: HTMLElement;

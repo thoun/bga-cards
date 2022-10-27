@@ -89,10 +89,8 @@ class SlotStock<T> extends LineStock<T> {
     public setSlotsIds(slotsIds: SlotId[]) {
         if (slotsIds.length == this.slotsIds.length && slotsIds.every((slotId, index) => this.slotsIds[index] === slotId)) {
             // no change
-            console.warn('no change', slotsIds, this.slotsIds);
             return;
         }
-        console.warn('change!');
 
         this.removeAll();
         this.element.innerHTML = '';
@@ -100,7 +98,6 @@ class SlotStock<T> extends LineStock<T> {
         this.slotsIds.forEach(slotId => {
             this.createSlot(slotId);
         });
-        console.log('setSlotsIds',this.element.innerHTML);
     }
 
     protected cardElementInStock(element: HTMLElement): boolean {
