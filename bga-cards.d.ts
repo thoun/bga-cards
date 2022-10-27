@@ -278,6 +278,10 @@ interface DeckSettings {
      * Indicate the thresholds to add 1px to the thickness of the pile. Default [0, 2, 5, 10, 20, 30].
      */
     thicknesses: number[];
+    /**
+     * Shadow direction. Default 'bottom-right'.
+     */
+    shadowDirection?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top' | 'bottom' | 'left' | 'right';
 }
 /**
  * Abstract stock to represent a deck. (pile of cards, with a fake 3d effect of thickness).

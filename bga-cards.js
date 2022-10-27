@@ -502,16 +502,22 @@ var Deck = /** @class */ (function (_super) {
     __extends(Deck, _super);
     function Deck(manager, element, settings) {
         var _this = this;
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         _this = _super.call(this, manager, element) || this;
         _this.manager = manager;
         _this.element = element;
         element.classList.add('deck');
-        _this.thicknesses = (_a = settings === null || settings === void 0 ? void 0 : settings.thicknesses) !== null && _a !== void 0 ? _a : [0, 2, 5, 10, 20, 30];
-        _this.setCardNumber((_b = settings === null || settings === void 0 ? void 0 : settings.cardNumber) !== null && _b !== void 0 ? _b : 52);
-        _this.autoUpdateCardNumber = (_c = settings === null || settings === void 0 ? void 0 : settings.autoUpdateCardNumber) !== null && _c !== void 0 ? _c : true;
         _this.element.style.setProperty('--width', settings.width + 'px');
         _this.element.style.setProperty('--height', settings.height + 'px');
+        _this.thicknesses = (_a = settings.thicknesses) !== null && _a !== void 0 ? _a : [0, 2, 5, 10, 20, 30];
+        _this.setCardNumber((_b = settings.cardNumber) !== null && _b !== void 0 ? _b : 52);
+        _this.autoUpdateCardNumber = (_c = settings.autoUpdateCardNumber) !== null && _c !== void 0 ? _c : true;
+        var shadowDirection = (_d = settings.shadowDirection) !== null && _d !== void 0 ? _d : 'bottom-right';
+        var shadowDirectionSplit = shadowDirection.split('-');
+        var xShadowShift = shadowDirectionSplit.includes('right') ? 1 : (shadowDirectionSplit.includes('left') ? -1 : 0);
+        var yShadowShift = shadowDirectionSplit.includes('bottom') ? 1 : (shadowDirectionSplit.includes('top') ? -1 : 0);
+        _this.element.style.setProperty('--xShadowShift', '' + xShadowShift);
+        _this.element.style.setProperty('--yShadowShift', '' + yShadowShift);
         return _this;
     }
     Deck.prototype.setCardNumber = function (cardNumber) {

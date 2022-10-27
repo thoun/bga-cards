@@ -6,11 +6,11 @@
 
         &>.card {            
             position: absolute;
-            top: calc(var(--thickness) * -1);
-            left: calc(var(--thickness) * -1);
+            top: calc(var(--thickness) * var(--xShadowShift) * -1);
+            left: calc(var(--thickness) * var(--yShadowShift) * -1);
 
             &:first-child {
-                box-shadow: var(--thickness) var(--thickness) 0px 0px #111, var(--thickness) var(--thickness) 2px 1px rgba(0,0,0,0.5);
+                box-shadow: calc(var(--thickness) * var(--xShadowShift)) calc(var(--thickness) * var(--yShadowShift)) 0px 0px #111, calc(var(--thickness) * var(--xShadowShift)) calc(var(--thickness) * var(--yShadowShift)) 2px 1px rgba(0,0,0,0.5);
             }
         }
     

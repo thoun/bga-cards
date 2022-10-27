@@ -22,6 +22,11 @@ interface DeckSettings {
      * Indicate the thresholds to add 1px to the thickness of the pile. Default [0, 2, 5, 10, 20, 30].
      */
     thicknesses: number[];
+
+    /**
+     * Shadow direction. Default 'bottom-right'.
+     */
+    shadowDirection?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top' | 'bottom' | 'left' | 'right';
 }
 
 /**
@@ -35,11 +40,18 @@ class Deck<T> extends CardStock<T> {
     constructor(protected manager: CardManager<T>, protected element: HTMLElement, settings: DeckSettings) {
         super(manager, element);
         element.classList.add('deck');
-        this.thicknesses = settings?.thicknesses ?? [0, 2, 5, 10, 20, 30];
-        this.setCardNumber(settings?.cardNumber ?? 52);
-        this.autoUpdateCardNumber = settings?.autoUpdateCardNumber ?? true;
         this.element.style.setProperty('--width', settings.width+'px');
         this.element.style.setProperty('--height', settings.height+'px');
+        this.thicknesses = settings.thicknesses ?? [0, 2, 5, 10, 20, 30];
+        this.setCardNumber(settings.cardNumber ?? 52);
+        this.autoUpdateCardNumber = settings.autoUpdateCardNumber ?? true;
+
+        const shadowDirection = settings.shadowDirection ?? 'bottom-right';
+        const shadowDirectionSplit = shadowDirection.split('-');
+        const xShadowShift = shadowDirectionSplit.includes('right') ? 1 : (shadowDirectionSplit.includes('left') ? -1 : 0);
+        const yShadowShift = shadowDirectionSplit.includes('bottom') ? 1 : (shadowDirectionSplit.includes('top') ? -1 : 0);
+        this.element.style.setProperty('--xShadowShift', ''+xShadowShift);
+        this.element.style.setProperty('--yShadowShift', ''+yShadowShift);
     }
 
     public setCardNumber(cardNumber: number) {
