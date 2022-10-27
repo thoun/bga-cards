@@ -6,7 +6,7 @@
   "scripts": {
     "build:ts": "tsc",
     "build:scss": "sass --no-source-map src/bga-cards.scss bga-cards.css",
-    "doc": "typedoc --out doc ./src/**.ts ./src/stocks/**.ts"
+    "doc": "typedoc --out docs ./src/**.ts ./src/stocks/**.ts"
   },
   "author": "",
   "license": "ISC",
