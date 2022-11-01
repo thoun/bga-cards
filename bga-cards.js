@@ -228,6 +228,9 @@ var CardStock = /** @class */ (function () {
         if (index !== -1) {
             this.cards.splice(index, 1);
         }
+        if (this.selectedCards.find(function (c) { return _this.manager.getId(c) == _this.manager.getId(card); })) {
+            this.unselectCard(card);
+        }
     };
     /**
      * Remove all cards from the stock.

@@ -215,6 +215,9 @@ class CardStock<T> {
         if (index !== -1) {
             this.cards.splice(index, 1);
         }
+        if (this.selectedCards.find(c => this.manager.getId(c) == this.manager.getId(card))) {
+            this.unselectCard(card);
+        }
     }
 
     /**
