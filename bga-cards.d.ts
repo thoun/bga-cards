@@ -376,6 +376,29 @@ declare class HandStock<T> extends CardStock<T> {
     cardRemoved(card: T): void;
     protected updateAngles(): void;
 }
+/**
+ * A stock with manually placed cards
+ */
+declare class ManualPositionStock<T> extends CardStock<T> {
+    protected manager: CardManager<T>;
+    protected element: HTMLElement;
+    protected updateDisplay: (element: HTMLElement, cards: T[], lastCard: T, stock: ManualPositionStock<T>) => any;
+    /**
+     * @param manager the card manager
+     * @param element the stock element (should be an empty HTML Element)
+     */
+    constructor(manager: CardManager<T>, element: HTMLElement, updateDisplay: (element: HTMLElement, cards: T[], lastCard: T, stock: ManualPositionStock<T>) => any);
+    /**
+     * Add a card to the stock.
+     *
+     * @param card the card to add
+     * @param animation a `CardAnimation` object
+     * @param settings a `AddCardSettings` object
+     * @returns the promise when the animation is done (true if it was animated, false if it wasn't)
+     */
+    addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean>;
+    cardRemoved(card: T): void;
+}
 declare class HiddenDeck<T> extends Deck<T> {
     protected manager: CardManager<T>;
     protected element: HTMLElement;

@@ -18,6 +18,7 @@
       "src/stocks/slot-stock.ts",
       "src/stocks/scrollable-stock.ts",
       "src/stocks/hand-stock.ts",
+      "src/stocks/manual-position-stock.ts",
       "src/stocks/hidden-deck.ts",
       "src/stocks/visible-deck.ts",
       "src/stocks/all-visible-deck.ts",

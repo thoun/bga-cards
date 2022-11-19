@@ -21,6 +21,7 @@ h1, h2 {
     background: #FFFFFF99;
     border-radius: 8px;
     padding: 10px;
+    min-width: 500px;
 }
 
 .mygame-card {
@@ -34,7 +35,7 @@ h1, h2 {
 }
 
 .mygame-card-front {
-    background: white;
+    background: url('cards.jpg');
     text-align: center;
     border-radius: 5px;
 }
@@ -58,7 +59,8 @@ h1, h2 {
 }
 
 .mygame-card-back {
-    background: darkblue;
+    background: url('cards.jpg');
+    background-position: 100% 0%;
     border-radius: 5px;
 }
 
@@ -76,4 +78,19 @@ h1, h2 {
 
 .scrollable-stock {
     width: 400px;
+}
+
+#manual-position-stocks {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    min-width: 650px;
+}
+#manual-position-stocks > div {
+    display: inline-block;
+}
+
+#manual-position-curve-stock .card {
+    opacity: 0.6;
 }

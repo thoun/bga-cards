@@ -628,6 +628,43 @@ var HandStock = /** @class */ (function (_super) {
     };
     return HandStock;
 }(CardStock));
+/**
+ * A stock with manually placed cards
+ */
+var ManualPositionStock = /** @class */ (function (_super) {
+    __extends(ManualPositionStock, _super);
+    /**
+     * @param manager the card manager
+     * @param element the stock element (should be an empty HTML Element)
+     */
+    function ManualPositionStock(manager, element, updateDisplay) {
+        var _this = _super.call(this, manager, element) || this;
+        _this.manager = manager;
+        _this.element = element;
+        _this.updateDisplay = updateDisplay;
+        element.classList.add('manual-position-stock');
+        return _this;
+    }
+    /**
+     * Add a card to the stock.
+     *
+     * @param card the card to add
+     * @param animation a `CardAnimation` object
+     * @param settings a `AddCardSettings` object
+     * @returns the promise when the animation is done (true if it was animated, false if it wasn't)
+     */
+    ManualPositionStock.prototype.addCard = function (card, animation, settings) {
+        var promise = _super.prototype.addCard.call(this, card, animation, settings);
+        console.log('addCard');
+        this.updateDisplay(this.element, this.getCards(), card, this);
+        return promise;
+    };
+    ManualPositionStock.prototype.cardRemoved = function (card) {
+        _super.prototype.cardRemoved.call(this, card);
+        this.updateDisplay(this.element, this.getCards(), card, this);
+    };
+    return ManualPositionStock;
+}(CardStock));
 var HiddenDeck = /** @class */ (function (_super) {
     __extends(HiddenDeck, _super);
     function HiddenDeck(manager, element, settings) {
@@ -788,6 +825,7 @@ define({
     SlotStock: SlotStock,
     ScrollableStock: ScrollableStock,
     HandStock: HandStock,
+    ManualPositionStock: ManualPositionStock,
     HiddenDeck: HiddenDeck,
     VisibleDeck: VisibleDeck,
     AllVisibleDeck: AllVisibleDeck,

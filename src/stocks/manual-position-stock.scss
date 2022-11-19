@@ -1,0 +1,10 @@
+.card-stock {
+
+    &.manual-position-stock {
+        position: relative;
+
+        .card {
+            position: absolute;
+        }
+    }
+}

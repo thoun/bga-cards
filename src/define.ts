@@ -8,6 +8,7 @@ define({
     SlotStock,
     ScrollableStock,
     HandStock,
+    ManualPositionStock,
     HiddenDeck,
     VisibleDeck,
     AllVisibleDeck,

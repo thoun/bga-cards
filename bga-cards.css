@@ -103,6 +103,13 @@ body > .card {
   margin-left: calc(-1 * var(--card-overlap));
 }
 
+.card-stock.manual-position-stock {
+  position: relative;
+}
+.card-stock.manual-position-stock .card {
+  position: absolute;
+}
+
 .card-stock.deck {
   position: relative;
   width: var(--width);
