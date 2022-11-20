@@ -655,7 +655,6 @@ var ManualPositionStock = /** @class */ (function (_super) {
      */
     ManualPositionStock.prototype.addCard = function (card, animation, settings) {
         var promise = _super.prototype.addCard.call(this, card, animation, settings);
-        console.log('addCard');
         this.updateDisplay(this.element, this.getCards(), card, this);
         return promise;
     };

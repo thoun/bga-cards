@@ -22,7 +22,6 @@ class ManualPositionStock<T> extends CardStock<T> {
      */
     public addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean> {
         const promise = super.addCard(card, animation, settings);
-        console.log('addCard');
         this.updateDisplay(this.element, this.getCards(), card, this);
         return promise;
     }
