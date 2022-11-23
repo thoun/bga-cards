@@ -399,6 +399,27 @@ declare class ManualPositionStock<T> extends CardStock<T> {
     addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean>;
     cardRemoved(card: T): void;
 }
+/**
+ * A stock to make cards disappear (to automatically remove discarded cards, or to represent a bag)
+ */
+declare class VoidStock<T> extends CardStock<T> {
+    protected manager: CardManager<T>;
+    protected element: HTMLElement;
+    /**
+     * @param manager the card manager
+     * @param element the stock element (should be an empty HTML Element)
+     */
+    constructor(manager: CardManager<T>, element: HTMLElement);
+    /**
+     * Add a card to the stock.
+     *
+     * @param card the card to add
+     * @param animation a `CardAnimation` object
+     * @param settings a `AddCardSettings` object
+     * @returns the promise when the animation is done (true if it was animated, false if it wasn't)
+     */
+    addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean>;
+}
 declare class HiddenDeck<T> extends Deck<T> {
     protected manager: CardManager<T>;
     protected element: HTMLElement;

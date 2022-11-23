@@ -1,0 +1,10 @@
+.card-stock {
+
+    &.void-stock {
+        position: relative;
+
+        .card {
+            position: absolute;
+        }
+    }
+}

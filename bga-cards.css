@@ -110,6 +110,13 @@ body > .card {
   position: absolute;
 }
 
+.card-stock.void-stock {
+  position: relative;
+}
+.card-stock.void-stock .card {
+  position: absolute;
+}
+
 .card-stock.deck {
   position: relative;
   width: var(--width);

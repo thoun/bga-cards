@@ -9,6 +9,7 @@ define({
     ScrollableStock,
     HandStock,
     ManualPositionStock,
+    VoidStock,
     HiddenDeck,
     VisibleDeck,
     AllVisibleDeck,

@@ -10,6 +10,7 @@
         <script src="./manager.js" type="text/javascript"></script>
         <script src="./stocks.js" type="text/javascript"></script>
         <script src="./manual-position-stock.js" type="text/javascript"></script>
+        <script src="./void-stock.js" type="text/javascript"></script>
         <script src="./decks.js" type="text/javascript"></script>
         <script src="./custom-animation-function.js" type="text/javascript"></script>
     </head>
@@ -51,6 +52,12 @@
                     </div>
                 </div>
             </div>
+
+            <div class="block">
+                <h2>VoidStock</h2>
+                <div id="void-stock"></div>
+                <button onclick="addCardToVoidStock(this)">Add card from LineStock</button>
+            </div>
         </div>
         
         <h1>Decks</h1>
@@ -84,6 +91,7 @@
             initHandStock();
             initManualPositionDiagonalStock();
             initManualPositionCurveStock();
+            initVoidStock();
             initHiddenDeck();
             initVisibleDeck();
             initAllVisibleDeck();

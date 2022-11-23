@@ -94,3 +94,13 @@ h1, h2 {
 #manual-position-curve-stock .card {
     opacity: 0.6;
 }
+
+#void-stock {
+    width: 74px;
+    height: 80px;
+    margin: 5px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background: url(./bag.png);
+}

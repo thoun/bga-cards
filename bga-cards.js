@@ -664,6 +664,44 @@ var ManualPositionStock = /** @class */ (function (_super) {
     };
     return ManualPositionStock;
 }(CardStock));
+/**
+ * A stock to make cards disappear (to automatically remove discarded cards, or to represent a bag)
+ */
+var VoidStock = /** @class */ (function (_super) {
+    __extends(VoidStock, _super);
+    /**
+     * @param manager the card manager
+     * @param element the stock element (should be an empty HTML Element)
+     */
+    function VoidStock(manager, element) {
+        var _this = _super.call(this, manager, element) || this;
+        _this.manager = manager;
+        _this.element = element;
+        element.classList.add('void-stock');
+        return _this;
+    }
+    /**
+     * Add a card to the stock.
+     *
+     * @param card the card to add
+     * @param animation a `CardAnimation` object
+     * @param settings a `AddCardSettings` object
+     * @returns the promise when the animation is done (true if it was animated, false if it wasn't)
+     */
+    VoidStock.prototype.addCard = function (card, animation, settings) {
+        var _this = this;
+        var promise = _super.prototype.addCard.call(this, card, animation, settings);
+        // center the element
+        var cardElement = this.getCardElement(card);
+        cardElement.style.left = "".concat((this.element.clientWidth - cardElement.clientWidth) / 2, "px");
+        cardElement.style.top = "".concat((this.element.clientHeight - cardElement.clientHeight) / 2, "px");
+        return promise.then(function (result) {
+            _this.removeCard(card);
+            return result;
+        });
+    };
+    return VoidStock;
+}(CardStock));
 var HiddenDeck = /** @class */ (function (_super) {
     __extends(HiddenDeck, _super);
     function HiddenDeck(manager, element, settings) {
@@ -825,6 +863,7 @@ define({
     ScrollableStock: ScrollableStock,
     HandStock: HandStock,
     ManualPositionStock: ManualPositionStock,
+    VoidStock: VoidStock,
     HiddenDeck: HiddenDeck,
     VisibleDeck: VisibleDeck,
     AllVisibleDeck: AllVisibleDeck,
