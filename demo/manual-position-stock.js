@@ -1,5 +1,6 @@
 let manualPositionDiagonalStock;
 let manualPositionCurveStock;
+let manualPositionFitStock;
 
 function manualPositionDiagonalUpdateDisplay(element, cards, lastCard, stock) {
     cards.forEach((card, index) => {
@@ -17,9 +18,9 @@ function initManualPositionDiagonalStock() {
 
     // add cards
     manualPositionDiagonalStock.addCards([
-        { id: 301, type: 3, type_arg: 2, location: 'table', location_arg: 0 },
-        { id: 302, type: 1, type_arg: 5, location: 'table', location_arg: 0 },
-        { id: 303, type: 3, type_arg: 2, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 3, type_arg: 2, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 1, type_arg: 5, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 3, type_arg: 2, location: 'table', location_arg: 0 },
     ]);
 }
 
@@ -52,9 +53,6 @@ function manualPositionCurveUpdateDisplay(element, cards, lastCard, stock) {
         cardDiv.style.left = `${left}px`;
         cardDiv.style.top = `${y * curveYScale - cardHeight / 2}px`;
     });
-
-    element.style.width = `${ 100 * cards.length + 10 * (cards.length - 1) }px`;
-    element.style.height = `${ 150 + 10 * (cards.length - 1) }px`;
 }
 
 function initManualPositionCurveStock() {
@@ -85,8 +83,53 @@ function initManualPositionCurveStock() {
 
     // add cards
     manualPositionCurveStock.addCards([
-        { id: 351, type: 3, type_arg: 2, location: 'table', location_arg: 0 },
-        { id: 352, type: 1, type_arg: 5, location: 'table', location_arg: 0 },
-        { id: 353, type: 3, type_arg: 2, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 3, type_arg: 2, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 1, type_arg: 5, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 3, type_arg: 2, location: 'table', location_arg: 0 },
     ]);
+}
+
+function manualPositionFitUpdateDisplay(element, cards, lastCard, stock) {
+    const halfClientWidth = element.clientWidth / 2;
+    const MARGIN = 8;
+    const CARD_WIDTH = 100;
+    let cardDistance = CARD_WIDTH + MARGIN;
+    const containerWidth = element.clientWidth;
+    const uncompressedWidth = (cards.length * CARD_WIDTH) + ((cards.length - 1) * MARGIN);
+    if (uncompressedWidth > containerWidth) {
+        cardDistance = Math.floor(CARD_WIDTH * containerWidth / (cards.length * CARD_WIDTH));
+    }
+
+    cards.forEach((card, index) => {
+        const cardDiv = stock.getCardElement(card);
+        const cardLeft = halfClientWidth + cardDistance * (index - (cards.length - 1) / 2);
+
+        cardDiv.style.left = `${ cardLeft - CARD_WIDTH / 2 }px`;
+    });
+}
+
+function initManualPositionFitStock() {
+    manualPositionFitStock = new ManualPositionStock(cardsManager, document.getElementById('manual-position-fit-stock'), manualPositionFitUpdateDisplay);
+
+    // add cards
+    manualPositionFitStock.addCards([
+        { id: getCardId(), type: 3, type_arg: 2, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 1, type_arg: 5, location: 'table', location_arg: 0 },
+    ]);
+}
+
+function addCardToManualFitStock(fromElement) {
+    manualPositionFitStock.addCard(
+        { id: getCardId(), type: 3, type_arg: 2, location: 'table', location_arg: 0 },
+        {
+            fromElement: fromElement,
+            originalSide: 'back'
+        }
+    );
+}
+
+function removeCardToManualFitStock() {
+    if (!manualPositionFitStock.isEmpty()) {
+        manualPositionFitStock.removeCard(manualPositionFitStock.getCards()[0]);
+    }
 }

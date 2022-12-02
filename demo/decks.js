@@ -21,7 +21,7 @@ function initVisibleDeck() {
         cardNumber: 5,
     });
     visibleDeck.addCard(
-        { id: 5, type: 2, type_arg: 3, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 2, type_arg: 3, location: 'table', location_arg: 0 },
     );
 }
 
@@ -36,9 +36,9 @@ function initAllVisibleDeck() {
         shift: '8px',
     });
     allVisibleDeck.addCards([
-        { id: 6, type: 3, type_arg: 2, location: 'table', location_arg: 0 },
-        { id: 7, type: 3, type_arg: 5, location: 'table', location_arg: 0 },
-        { id: 8, type: 3, type_arg: 6, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 3, type_arg: 2, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 3, type_arg: 5, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 3, type_arg: 6, location: 'table', location_arg: 0 },
     ]);
 }
 

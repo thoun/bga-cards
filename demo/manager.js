@@ -30,3 +30,8 @@ function initManager() {
         },
     });
 }
+
+let cardId = 1;
+function getCardId() {
+    return cardId++;
+}

@@ -47,9 +47,13 @@
                 <h2>ManualPositionStock</h2>
                 <div id="manual-position-stocks">
                     <div id="manual-position-diagonal-stock"></div>
-                    <div id="manual-position-curve-stock" style="min-width: 400px;">
-                        <canvas id="curveCanvas" width="400" height="200" style="border:1px solid lightgray;"></canvas>
+                    <div id="manual-position-curve-stock" style="width: 400px;">
+                        <canvas id="curveCanvas" width="400" height="200"></canvas>
                     </div>
+                    <div id="manual-position-fit-stock" style="width: 400px; height: 150px;">
+                    </div>
+                    <button onclick="addCardToManualFitStock(this)">Add card to fit stock</button>
+                    <button onclick="removeCardToManualFitStock()">Remove card from fit stock</button>
                 </div>
             </div>
 
@@ -91,6 +95,7 @@
             initHandStock();
             initManualPositionDiagonalStock();
             initManualPositionCurveStock();
+            initManualPositionFitStock();
             initVoidStock();
             initHiddenDeck();
             initVisibleDeck();

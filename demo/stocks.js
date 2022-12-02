@@ -10,8 +10,8 @@ function initLineStock() {
 
     // add cards
     lineStock.addCards([
-        { id: 3, type: 3, type_arg: 2, location: 'table', location_arg: 0 },
-        { id: 4, type: 1, type_arg: 5, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 3, type_arg: 2, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 1, type_arg: 5, location: 'table', location_arg: 0 },
     ]);
 }
 
@@ -26,7 +26,7 @@ function addCardToLineStockWithAnimation(fromElement, customAnimation) {
     }
 
     lineStock.addCard(
-        { id: new Date().getTime(), type: 3, type_arg: 2, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 3, type_arg: 2, location: 'table', location_arg: 0 },
         animationSettings
     );
 }
@@ -40,8 +40,8 @@ function initSlotStock() {
 
     // add cards
     slotStock.addCards([
-        { id: 1, type: 3, type_arg: 2, location: 'A', location_arg: 0 },
-        { id: 2, type: 1, type_arg: 5, location: 'C', location_arg: 0 },
+        { id: getCardId(), type: 3, type_arg: 2, location: 'A', location_arg: 0 },
+        { id: getCardId(), type: 1, type_arg: 5, location: 'C', location_arg: 0 },
     ]);
 }
 
@@ -57,12 +57,12 @@ function initScrollableStock() {
 
     // add cards
     scrollableStock.addCards([
-        { id: 101, type: 3, type_arg: 2, location: 'table', location_arg: 0 },
-        { id: 102, type: 1, type_arg: 5, location: 'table', location_arg: 0 },
-        { id: 103, type: 3, type_arg: 2, location: 'table', location_arg: 0 },
-        { id: 104, type: 4, type_arg: 5, location: 'table', location_arg: 0 },
-        { id: 105, type: 3, type_arg: 2, location: 'table', location_arg: 0 },
-        { id: 106, type: 4, type_arg: 6, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 3, type_arg: 2, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 1, type_arg: 5, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 3, type_arg: 2, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 4, type_arg: 5, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 3, type_arg: 2, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 4, type_arg: 6, location: 'table', location_arg: 0 },
     ]);
 }
 
@@ -72,11 +72,11 @@ function initHandStock() {
 
     // add cards
     handStock.addCards([
-        { id: 201, type: 3, type_arg: 2, location: 'table', location_arg: 0 },
-        { id: 202, type: 1, type_arg: 5, location: 'table', location_arg: 0 },
-        { id: 203, type: 3, type_arg: 2, location: 'table', location_arg: 0 },
-        { id: 204, type: 4, type_arg: 5, location: 'table', location_arg: 0 },
-        { id: 205, type: 3, type_arg: 2, location: 'table', location_arg: 0 },
-        { id: 206, type: 4, type_arg: 6, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 3, type_arg: 2, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 1, type_arg: 5, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 3, type_arg: 2, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 4, type_arg: 5, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 3, type_arg: 2, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 4, type_arg: 6, location: 'table', location_arg: 0 },
     ]);
 }
