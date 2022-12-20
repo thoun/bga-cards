@@ -1,4 +1,4 @@
-interface AllVisibleDeckSettings {
+interface AllVisibleDeckSettings extends CardStockSettings {
     /**
      * Indicate the width of a card, in CSS with unit
      */
@@ -17,7 +17,7 @@ interface AllVisibleDeckSettings {
 
 class AllVisibleDeck<T> extends CardStock<T> {
     constructor(protected manager: CardManager<T>, protected element: HTMLElement, settings: AllVisibleDeckSettings) {
-        super(manager, element);
+        super(manager, element, settings);
         element.classList.add('all-visible-deck');
         element.style.setProperty('--width', settings.width);
         element.style.setProperty('--height', settings.height);

@@ -14,7 +14,7 @@ function manualPositionDiagonalUpdateDisplay(element, cards, lastCard, stock) {
 }
 
 function initManualPositionDiagonalStock() {
-    manualPositionDiagonalStock = new ManualPositionStock(cardsManager, document.getElementById('manual-position-diagonal-stock'), manualPositionDiagonalUpdateDisplay);
+    manualPositionDiagonalStock = new ManualPositionStock(cardsManager, document.getElementById('manual-position-diagonal-stock'), undefined, manualPositionDiagonalUpdateDisplay);
 
     // add cards
     manualPositionDiagonalStock.addCards([
@@ -79,7 +79,7 @@ function initManualPositionCurveStock() {
     }
     ctx.stroke();
 
-    manualPositionCurveStock = new ManualPositionStock(cardsManager, document.getElementById('manual-position-curve-stock'), manualPositionCurveUpdateDisplay);
+    manualPositionCurveStock = new ManualPositionStock(cardsManager, document.getElementById('manual-position-curve-stock'), undefined, manualPositionCurveUpdateDisplay);
 
     // add cards
     manualPositionCurveStock.addCards([
@@ -109,7 +109,7 @@ function manualPositionFitUpdateDisplay(element, cards, lastCard, stock) {
 }
 
 function initManualPositionFitStock() {
-    manualPositionFitStock = new ManualPositionStock(cardsManager, document.getElementById('manual-position-fit-stock'), manualPositionFitUpdateDisplay);
+    manualPositionFitStock = new ManualPositionStock(cardsManager, document.getElementById('manual-position-fit-stock'), undefined, manualPositionFitUpdateDisplay);
 
     // add cards
     manualPositionFitStock.addCards([

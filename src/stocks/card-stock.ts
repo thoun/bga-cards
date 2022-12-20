@@ -1,3 +1,12 @@
+interface CardStockSettings {
+    /**
+     * Indicate the card sorting (unset means no sorting, new cards will be added at the end).
+     * For example, use `sort: sortFunction('type', '-type_arg')` to sort by type then type_arg (in reversed order if prefixed with `-`). 
+     * Be sure you typed the values correctly! Else '11' will be before '2'.
+     */
+    sort?: SortFunction;
+}
+
 interface AddCardSettings {
     /**
      * If the card will be on its visible side on the stock
@@ -5,6 +14,8 @@ interface AddCardSettings {
     visible?: boolean;
 
     forceToElement?: HTMLElement;
+
+    index?: number;
 }
 
 type CardSelectionMode = 'none' | 'single' | 'multiple';
@@ -16,6 +27,7 @@ class CardStock<T> {
     protected cards: T[] = [];
     protected selectedCards: T[] = [];
     protected selectionMode: CardSelectionMode = 'none';
+    protected sort?: SortFunction; 
 
     /**
      * Called when selection change. Returns the selection.
@@ -36,10 +48,12 @@ class CardStock<T> {
      * @param manager the card manager  
      * @param element the stock element (should be an empty HTML Element)
      */
-    constructor(protected manager: CardManager<T>, protected element: HTMLElement) {
+    constructor(protected manager: CardManager<T>, protected element: HTMLElement, settings?: CardStockSettings) {
         manager.addStock(this);
         element?.classList.add('card-stock'/*, this.constructor.name.split(/(?=[A-Z])/).join('-').toLowerCase()* doesn't work in production because of minification */);
         this.bindClick();
+
+        this.sort = settings?.sort;
     }
 
     /**
@@ -106,29 +120,66 @@ class CardStock<T> {
         // we check if card is in stock then we ignore animation
         const currentStock = this.manager.getCardStock(card);
 
+        const index = this.getNewCardIndex(card);
+        const settingsWithIndex: AddCardSettings = {
+            index,
+            ...(settings ?? {})
+        };
+
         if (currentStock?.cardInStock(card)) {
             let element = document.getElementById(this.manager.getId(card));
-            promise = this.moveFromOtherStock(card, element, { ...animation, fromStock: currentStock,  }, settings);
-            element.dataset.side = (settings?.visible ?? true) ? 'front' : 'back';
+            promise = this.moveFromOtherStock(card, element, { ...animation, fromStock: currentStock,  }, settingsWithIndex);
+            element.dataset.side = (settingsWithIndex?.visible ?? true) ? 'front' : 'back';
         } else if (animation?.fromStock && animation.fromStock.cardInStock(card)) {
             let element = document.getElementById(this.manager.getId(card));
-            promise = this.moveFromOtherStock(card, element, animation, settings);
+            promise = this.moveFromOtherStock(card, element, animation, settingsWithIndex);
         } else {
-            const element = this.manager.createCardElement(card, (settings?.visible ?? true));
-            promise = this.moveFromElement(card, element, animation, settings);
+            const element = this.manager.createCardElement(card, (settingsWithIndex?.visible ?? true));
+            promise = this.moveFromElement(card, element, animation, settingsWithIndex);
         }
 
         this.setSelectableCard(card, this.selectionMode != 'none');
 
-        this.cards.push(card);
+        if (settingsWithIndex.index !== null && settingsWithIndex.index !== undefined) {
+            this.cards.splice(index, 0, card);
+        } else {
+            this.cards.push(card);
+        }
 
         return promise;
+    }
+
+    protected getNewCardIndex(card: T): number | undefined {
+        if (this.sort) {
+            const otherCards = this.getCards();
+            for (let i = 0; i<otherCards.length; i++) {
+                const otherCard = otherCards[i];
+
+                if (this.sort(card, otherCard) < 0) {
+                    return i;
+                }
+            }
+            return otherCards.length;
+        } else {
+            return undefined;
+        }
+    }
+
+    protected addCardElementToParent(cardElement: HTMLElement, settings?: AddCardSettings) {
+        const parent = settings?.forceToElement ?? this.element;
+
+        if (settings?.index === null || settings?.index === undefined || !parent.children.length || settings?.index >= parent.children.length) {
+            parent.appendChild(cardElement);
+        } else {
+            parent.insertBefore(cardElement, parent.children[settings.index]);
+        }
     }
 
     protected moveFromOtherStock(card: T, cardElement: HTMLElement, animation: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean> {
         let promise: Promise<boolean>;
 
-        (settings?.forceToElement ?? this.element).appendChild(cardElement);
+        this.addCardElementToParent(cardElement, settings);
+
         cardElement.classList.remove('selectable', 'selected', 'disabled');
         promise = this.animationFromElement({
             element: cardElement, 
@@ -145,7 +196,7 @@ class CardStock<T> {
     protected moveFromElement(card: T, cardElement: HTMLElement, animation: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean> {
         let promise: Promise<boolean>;
 
-        (settings?.forceToElement ?? this.element).appendChild(cardElement);
+        this.addCardElementToParent(cardElement, settings);
     
         if (animation) {
             if (animation.fromStock) {

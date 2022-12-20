@@ -49,12 +49,23 @@ interface AnimationSettings {
  * @returns a promise when animation ends
  */
 declare function stockSlideAnimation(settings: AnimationSettings): Promise<boolean>;
+declare type SortFunction = (a: any, b: any) => number;
+declare function sortFunction(...sortedFields: string[]): SortFunction;
+interface CardStockSettings {
+    /**
+     * Indicate the card sorting (unset means no sorting, new cards will be added at the end).
+     * For example, use `sort: sortFunction('type', '-type_arg')` to sort by type then type_arg (in reversed order if prefixed with `-`).
+     * Be sure you typed the values correctly! Else '11' will be before '2'.
+     */
+    sort?: SortFunction;
+}
 interface AddCardSettings {
     /**
      * If the card will be on its visible side on the stock
      */
     visible?: boolean;
     forceToElement?: HTMLElement;
+    index?: number;
 }
 declare type CardSelectionMode = 'none' | 'single' | 'multiple';
 /**
@@ -66,6 +77,7 @@ declare class CardStock<T> {
     protected cards: T[];
     protected selectedCards: T[];
     protected selectionMode: CardSelectionMode;
+    protected sort?: SortFunction;
     /**
      * Called when selection change. Returns the selection.
      *
@@ -83,7 +95,7 @@ declare class CardStock<T> {
      * @param manager the card manager
      * @param element the stock element (should be an empty HTML Element)
      */
-    constructor(manager: CardManager<T>, element: HTMLElement);
+    constructor(manager: CardManager<T>, element: HTMLElement, settings?: CardStockSettings);
     /**
      * @returns the cards on the stock
      */
@@ -117,6 +129,8 @@ declare class CardStock<T> {
      * @returns the promise when the animation is done (true if it was animated, false if it wasn't)
      */
     addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean>;
+    protected getNewCardIndex(card: T): number | undefined;
+    protected addCardElementToParent(cardElement: HTMLElement, settings?: AddCardSettings): void;
     protected moveFromOtherStock(card: T, cardElement: HTMLElement, animation: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean>;
     protected moveFromElement(card: T, cardElement: HTMLElement, animation: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean>;
     /**
@@ -211,7 +225,7 @@ declare class Deck<T> extends CardStock<T> {
     addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean>;
     cardRemoved(card: T): void;
 }
-interface LineStockSettings {
+interface LineStockSettings extends CardStockSettings {
     /**
      * Indicate if the line should wrap when needed (default wrap)
      */
@@ -307,7 +321,7 @@ interface ScrollableStockButtonSettings {
      */
     classes?: string[];
 }
-interface ScrollableStockSettings {
+interface ScrollableStockSettings extends CardStockSettings {
     /**
      * Setting for the left button
      */
@@ -353,7 +367,7 @@ declare class ScrollableStock<T> extends CardStock<T> {
     protected createButton(side: 'left' | 'right', settings: ScrollableStockButtonSettings): HTMLButtonElement;
     protected scroll(side: 'left' | 'right'): void;
 }
-interface HandStockSettings {
+interface HandStockSettings extends CardStockSettings {
     /**
      * card overlap, in CSS with unit. Default 60px
      */
@@ -387,7 +401,7 @@ declare class ManualPositionStock<T> extends CardStock<T> {
      * @param manager the card manager
      * @param element the stock element (should be an empty HTML Element)
      */
-    constructor(manager: CardManager<T>, element: HTMLElement, updateDisplay: (element: HTMLElement, cards: T[], lastCard: T, stock: ManualPositionStock<T>) => any);
+    constructor(manager: CardManager<T>, element: HTMLElement, settings: CardStockSettings, updateDisplay: (element: HTMLElement, cards: T[], lastCard: T, stock: ManualPositionStock<T>) => any);
     /**
      * Add a card to the stock.
      *
@@ -432,7 +446,7 @@ declare class VisibleDeck<T> extends Deck<T> {
     constructor(manager: CardManager<T>, element: HTMLElement, settings: DeckSettings);
     addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean>;
 }
-interface AllVisibleDeckSettings {
+interface AllVisibleDeckSettings extends CardStockSettings {
     /**
      * Indicate the width of a card, in CSS with unit
      */

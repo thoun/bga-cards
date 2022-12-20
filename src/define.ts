@@ -14,4 +14,5 @@ define({
     VisibleDeck,
     AllVisibleDeck,
     stockSlideAnimation,
+    sortFunction,
  });

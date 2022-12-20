@@ -1,4 +1,4 @@
-interface HandStockSettings {
+interface HandStockSettings extends CardStockSettings {
     /**
      * card overlap, in CSS with unit. Default 60px
      */
@@ -19,7 +19,7 @@ class HandStock<T> extends CardStock<T> {
     protected inclination: number;
 
     constructor(protected manager: CardManager<T>, protected element: HTMLElement, settings: HandStockSettings) {
-        super(manager, element);
+        super(manager, element, settings);
         element.classList.add('hand-stock');
         element.style.setProperty('--card-overlap', settings.cardOverlap ?? '60px');
         element.style.setProperty('--card-shift', settings.cardShift ?? '15px');

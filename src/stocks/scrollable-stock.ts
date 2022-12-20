@@ -10,7 +10,7 @@ interface ScrollableStockButtonSettings {
     classes?: string[];
 }
 
-interface ScrollableStockSettings {
+interface ScrollableStockSettings extends CardStockSettings {
     /**
      * Setting for the left button
      */
@@ -61,7 +61,7 @@ class ScrollableStock<T> extends CardStock<T> {
      * @param settings a `SlotStockSettings` object
      */
     constructor(protected manager: CardManager<T>, elementWrapper: HTMLElement, settings: ScrollableStockSettings) {
-        super(manager, elementWrapper);
+        super(manager, elementWrapper, settings);
         elementWrapper.classList.add('scrollable-stock');
         elementWrapper.dataset.center = (settings.center ?? true).toString();
         elementWrapper.style.setProperty('--button-gap', settings.buttonGap ?? '0');

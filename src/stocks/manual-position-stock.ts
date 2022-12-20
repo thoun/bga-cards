@@ -7,8 +7,8 @@ class ManualPositionStock<T> extends CardStock<T> {
      * @param manager the card manager  
      * @param element the stock element (should be an empty HTML Element)
      */
-    constructor(protected manager: CardManager<T>, protected element: HTMLElement, protected updateDisplay: (element: HTMLElement, cards: T[], lastCard: T, stock: ManualPositionStock<T>) => any) {
-        super(manager, element);
+    constructor(protected manager: CardManager<T>, protected element: HTMLElement, settings: CardStockSettings, protected updateDisplay: (element: HTMLElement, cards: T[], lastCard: T, stock: ManualPositionStock<T>) => any) {
+        super(manager, element, settings);
         element.classList.add('manual-position-stock');
     }
 

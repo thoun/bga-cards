@@ -1,4 +1,4 @@
-interface LineStockSettings {
+interface LineStockSettings extends CardStockSettings {
     /**
      * Indicate if the line should wrap when needed (default wrap)
      */
@@ -30,7 +30,7 @@ class LineStock<T> extends CardStock<T> {
      * @param settings a `LineStockSettings` object
      */
     constructor(protected manager: CardManager<T>, protected element: HTMLElement, settings?: LineStockSettings) {
-        super(manager, element);
+        super(manager, element, settings);
         element.classList.add('line-stock');
 
         element.dataset.center = (settings?.center ?? true).toString();

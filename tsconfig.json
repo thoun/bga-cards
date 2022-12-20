@@ -12,6 +12,7 @@
       "src/framework.d.ts",
       "src/animations.ts",
       "src/animations-functions.ts",
+      "src/sort.ts",
       "src/stocks/card-stock.ts",
       "src/stocks/deck.ts",
       "src/stocks/line-stock.ts",

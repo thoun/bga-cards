@@ -45,19 +45,6 @@ h1, h2 {
     text-decoration: underline 2px;
 }
 
-.mygame-card-front .type[data-type="1"] {
-    text-decoration-color: red;
-}
-.mygame-card-front .type[data-type="2"] {
-    text-decoration-color: blue;
-}
-.mygame-card-front .type[data-type="3"] {
-    text-decoration-color: green;
-}
-.mygame-card-front .type[data-type="4"] {
-    text-decoration-color: yellow;
-}
-
 .mygame-card-back {
     background: url('cards.jpg');
     background-position: 100% 0%;

@@ -37,6 +37,39 @@ function stockSlideAnimation(settings) {
     });
     return promise;
 }
+function sortFunction() {
+    var sortedFields = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        sortedFields[_i] = arguments[_i];
+    }
+    return function (a, b) {
+        for (var i = 0; i < sortedFields.length; i++) {
+            var direction = 1;
+            var field = sortedFields[i];
+            if (field[0] == '-') {
+                direction = -1;
+                field = field.substring(1);
+            }
+            else if (field[0] == '+') {
+                field = field.substring(1);
+            }
+            var type = typeof a[field];
+            if (type === 'string') {
+                var compare = a[field].localeCompare(b[field]);
+                if (compare !== 0) {
+                    return compare;
+                }
+            }
+            else if (type === 'number') {
+                var compare = (a[field] - b[field]) * direction;
+                if (compare !== 0) {
+                    return compare * direction;
+                }
+            }
+        }
+        return 0;
+    };
+}
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -56,7 +89,7 @@ var CardStock = /** @class */ (function () {
      * @param manager the card manager
      * @param element the stock element (should be an empty HTML Element)
      */
-    function CardStock(manager, element) {
+    function CardStock(manager, element, settings) {
         this.manager = manager;
         this.element = element;
         this.cards = [];
@@ -65,6 +98,7 @@ var CardStock = /** @class */ (function () {
         manager.addStock(this);
         element === null || element === void 0 ? void 0 : element.classList.add('card-stock' /*, this.constructor.name.split(/(?=[A-Z])/).join('-').toLowerCase()* doesn't work in production because of minification */);
         this.bindClick();
+        this.sort = settings === null || settings === void 0 ? void 0 : settings.sort;
     }
     /**
      * @returns the cards on the stock
@@ -123,27 +157,58 @@ var CardStock = /** @class */ (function () {
         var promise;
         // we check if card is in stock then we ignore animation
         var currentStock = this.manager.getCardStock(card);
+        var index = this.getNewCardIndex(card);
+        var settingsWithIndex = __assign({ index: index }, (settings !== null && settings !== void 0 ? settings : {}));
         if (currentStock === null || currentStock === void 0 ? void 0 : currentStock.cardInStock(card)) {
             var element = document.getElementById(this.manager.getId(card));
-            promise = this.moveFromOtherStock(card, element, __assign(__assign({}, animation), { fromStock: currentStock }), settings);
-            element.dataset.side = ((_a = settings === null || settings === void 0 ? void 0 : settings.visible) !== null && _a !== void 0 ? _a : true) ? 'front' : 'back';
+            promise = this.moveFromOtherStock(card, element, __assign(__assign({}, animation), { fromStock: currentStock }), settingsWithIndex);
+            element.dataset.side = ((_a = settingsWithIndex === null || settingsWithIndex === void 0 ? void 0 : settingsWithIndex.visible) !== null && _a !== void 0 ? _a : true) ? 'front' : 'back';
         }
         else if ((animation === null || animation === void 0 ? void 0 : animation.fromStock) && animation.fromStock.cardInStock(card)) {
             var element = document.getElementById(this.manager.getId(card));
-            promise = this.moveFromOtherStock(card, element, animation, settings);
+            promise = this.moveFromOtherStock(card, element, animation, settingsWithIndex);
         }
         else {
-            var element = this.manager.createCardElement(card, ((_b = settings === null || settings === void 0 ? void 0 : settings.visible) !== null && _b !== void 0 ? _b : true));
-            promise = this.moveFromElement(card, element, animation, settings);
+            var element = this.manager.createCardElement(card, ((_b = settingsWithIndex === null || settingsWithIndex === void 0 ? void 0 : settingsWithIndex.visible) !== null && _b !== void 0 ? _b : true));
+            promise = this.moveFromElement(card, element, animation, settingsWithIndex);
         }
         this.setSelectableCard(card, this.selectionMode != 'none');
-        this.cards.push(card);
+        if (settingsWithIndex.index !== null && settingsWithIndex.index !== undefined) {
+            this.cards.splice(index, 0, card);
+        }
+        else {
+            this.cards.push(card);
+        }
         return promise;
     };
-    CardStock.prototype.moveFromOtherStock = function (card, cardElement, animation, settings) {
+    CardStock.prototype.getNewCardIndex = function (card) {
+        if (this.sort) {
+            var otherCards = this.getCards();
+            for (var i = 0; i < otherCards.length; i++) {
+                var otherCard = otherCards[i];
+                if (this.sort(card, otherCard) < 0) {
+                    return i;
+                }
+            }
+            return otherCards.length;
+        }
+        else {
+            return undefined;
+        }
+    };
+    CardStock.prototype.addCardElementToParent = function (cardElement, settings) {
         var _a;
+        var parent = (_a = settings === null || settings === void 0 ? void 0 : settings.forceToElement) !== null && _a !== void 0 ? _a : this.element;
+        if ((settings === null || settings === void 0 ? void 0 : settings.index) === null || (settings === null || settings === void 0 ? void 0 : settings.index) === undefined || !parent.children.length || (settings === null || settings === void 0 ? void 0 : settings.index) >= parent.children.length) {
+            parent.appendChild(cardElement);
+        }
+        else {
+            parent.insertBefore(cardElement, parent.children[settings.index]);
+        }
+    };
+    CardStock.prototype.moveFromOtherStock = function (card, cardElement, animation, settings) {
         var promise;
-        ((_a = settings === null || settings === void 0 ? void 0 : settings.forceToElement) !== null && _a !== void 0 ? _a : this.element).appendChild(cardElement);
+        this.addCardElementToParent(cardElement, settings);
         cardElement.classList.remove('selectable', 'selected', 'disabled');
         promise = this.animationFromElement({
             element: cardElement,
@@ -156,9 +221,8 @@ var CardStock = /** @class */ (function () {
         return promise;
     };
     CardStock.prototype.moveFromElement = function (card, cardElement, animation, settings) {
-        var _a;
         var promise;
-        ((_a = settings === null || settings === void 0 ? void 0 : settings.forceToElement) !== null && _a !== void 0 ? _a : this.element).appendChild(cardElement);
+        this.addCardElementToParent(cardElement, settings);
         if (animation) {
             if (animation.fromStock) {
                 promise = this.animationFromElement({
@@ -445,7 +509,7 @@ var LineStock = /** @class */ (function (_super) {
     function LineStock(manager, element, settings) {
         var _this = this;
         var _a, _b, _c, _d;
-        _this = _super.call(this, manager, element) || this;
+        _this = _super.call(this, manager, element, settings) || this;
         _this.manager = manager;
         _this.element = element;
         element.classList.add('line-stock');
@@ -556,7 +620,7 @@ var ScrollableStock = /** @class */ (function (_super) {
     function ScrollableStock(manager, elementWrapper, settings) {
         var _this = this;
         var _a, _b, _c, _d, _e;
-        _this = _super.call(this, manager, elementWrapper) || this;
+        _this = _super.call(this, manager, elementWrapper, settings) || this;
         _this.manager = manager;
         elementWrapper.classList.add('scrollable-stock');
         elementWrapper.dataset.center = ((_a = settings.center) !== null && _a !== void 0 ? _a : true).toString();
@@ -597,7 +661,7 @@ var HandStock = /** @class */ (function (_super) {
     function HandStock(manager, element, settings) {
         var _this = this;
         var _a, _b, _c, _d;
-        _this = _super.call(this, manager, element) || this;
+        _this = _super.call(this, manager, element, settings) || this;
         _this.manager = manager;
         _this.element = element;
         element.classList.add('hand-stock');
@@ -637,8 +701,8 @@ var ManualPositionStock = /** @class */ (function (_super) {
      * @param manager the card manager
      * @param element the stock element (should be an empty HTML Element)
      */
-    function ManualPositionStock(manager, element, updateDisplay) {
-        var _this = _super.call(this, manager, element) || this;
+    function ManualPositionStock(manager, element, settings, updateDisplay) {
+        var _this = _super.call(this, manager, element, settings) || this;
         _this.manager = manager;
         _this.element = element;
         _this.updateDisplay = updateDisplay;
@@ -750,7 +814,7 @@ var AllVisibleDeck = /** @class */ (function (_super) {
     function AllVisibleDeck(manager, element, settings) {
         var _this = this;
         var _a;
-        _this = _super.call(this, manager, element) || this;
+        _this = _super.call(this, manager, element, settings) || this;
         _this.manager = manager;
         _this.element = element;
         element.classList.add('all-visible-deck');
@@ -868,4 +932,5 @@ define({
     VisibleDeck: VisibleDeck,
     AllVisibleDeck: AllVisibleDeck,
     stockSlideAnimation: stockSlideAnimation,
+    sortFunction: sortFunction,
 });
