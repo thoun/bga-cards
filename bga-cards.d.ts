@@ -519,6 +519,7 @@ interface CardManagerSettings<T> {
 interface FlipCardSettings {
     updateFront: boolean;
     updateBack: boolean;
+    updateData: boolean;
 }
 declare class CardManager<T> {
     game: Game;

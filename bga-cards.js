@@ -947,14 +947,27 @@ var CardManager = /** @class */ (function () {
      * @param card the card informations
      */
     CardManager.prototype.setCardVisible = function (card, visible, settings) {
-        var _a, _b, _c, _d, _e, _f;
+        var _this = this;
+        var _a, _b, _c, _d, _e, _f, _g;
         var element = this.getCardElement(card);
+        if (!element) {
+            return;
+        }
         element.dataset.side = visible ? 'front' : 'back';
         if ((_a = settings === null || settings === void 0 ? void 0 : settings.updateFront) !== null && _a !== void 0 ? _a : true) {
             (_c = (_b = this.settings).setupFrontDiv) === null || _c === void 0 ? void 0 : _c.call(_b, card, element.getElementsByClassName('front')[0]);
         }
         if ((_d = settings === null || settings === void 0 ? void 0 : settings.updateBack) !== null && _d !== void 0 ? _d : false) {
             (_f = (_e = this.settings).setupBackDiv) === null || _f === void 0 ? void 0 : _f.call(_e, card, element.getElementsByClassName('back')[0]);
+        }
+        if ((_g = settings === null || settings === void 0 ? void 0 : settings.updateData) !== null && _g !== void 0 ? _g : true) {
+            // card data has changed
+            var stock = this.getCardStock(card);
+            var cards = stock.getCards();
+            var cardIndex = cards.findIndex(function (c) { return _this.getId(c) === _this.getId(card); });
+            if (cardIndex !== -1) {
+                stock.cards = cards.splice(cardIndex, 1, card);
+            }
         }
     };
     /**
