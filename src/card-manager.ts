@@ -131,7 +131,7 @@ class CardManager<T> {
             const cards = stock.getCards();
             const cardIndex = cards.findIndex(c => this.getId(c) === this.getId(card));
             if (cardIndex !== -1) {
-                (stock as any).cards = cards.splice(cardIndex, 1, card);
+                (stock as any).cards.splice(cardIndex, 1, card);
             }
         }
     }

@@ -966,7 +966,7 @@ var CardManager = /** @class */ (function () {
             var cards = stock.getCards();
             var cardIndex = cards.findIndex(function (c) { return _this.getId(c) === _this.getId(card); });
             if (cardIndex !== -1) {
-                stock.cards = cards.splice(cardIndex, 1, card);
+                stock.cards.splice(cardIndex, 1, card);
             }
         }
     };
