@@ -420,8 +420,8 @@ class CardStock<T> {
      * 
      * @param card the card informations
      */
-    public setCardVisible(card: T, visible: boolean): void {
-        this.manager.setCardVisible(card, visible);
+    public setCardVisible(card: T, visible: boolean, settings?: FlipCardSettings): void {
+        this.manager.setCardVisible(card, visible, settings);
     }
 
     /**
@@ -429,7 +429,7 @@ class CardStock<T> {
      * 
      * @param card the card informations
      */
-    public flipCard(card: T): void {
-        this.manager.flipCard(card);
+    public flipCard(card: T, settings?: FlipCardSettings): void {
+        this.manager.flipCard(card, settings);
     }
 }

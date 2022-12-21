@@ -195,13 +195,13 @@ declare class CardStock<T> {
      *
      * @param card the card informations
      */
-    setCardVisible(card: T, visible: boolean): void;
+    setCardVisible(card: T, visible: boolean, settings?: FlipCardSettings): void;
     /**
      * Flips the card.
      *
      * @param card the card informations
      */
-    flipCard(card: T): void;
+    flipCard(card: T, settings?: FlipCardSettings): void;
 }
 interface DeckSettings {
     /**
@@ -516,6 +516,10 @@ interface CardManagerSettings<T> {
      */
     setupBackDiv?: (card: T, element: HTMLDivElement) => void;
 }
+interface FlipCardSettings {
+    updateFront: boolean;
+    updateBack: boolean;
+}
 declare class CardManager<T> {
     game: Game;
     private settings;
@@ -548,12 +552,12 @@ declare class CardManager<T> {
      *
      * @param card the card informations
      */
-    setCardVisible(card: T, visible: boolean): void;
+    setCardVisible(card: T, visible: boolean, settings?: FlipCardSettings): void;
     /**
      * Flips the card.
      *
      * @param card the card informations
      */
-    flipCard(card: T): void;
+    flipCard(card: T, settings?: FlipCardSettings): void;
 }
 declare const define: any;

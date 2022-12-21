@@ -445,16 +445,16 @@ var CardStock = /** @class */ (function () {
      *
      * @param card the card informations
      */
-    CardStock.prototype.setCardVisible = function (card, visible) {
-        this.manager.setCardVisible(card, visible);
+    CardStock.prototype.setCardVisible = function (card, visible, settings) {
+        this.manager.setCardVisible(card, visible, settings);
     };
     /**
      * Flips the card.
      *
      * @param card the card informations
      */
-    CardStock.prototype.flipCard = function (card) {
-        this.manager.flipCard(card);
+    CardStock.prototype.flipCard = function (card, settings) {
+        this.manager.flipCard(card, settings);
     };
     return CardStock;
 }());
@@ -946,19 +946,26 @@ var CardManager = /** @class */ (function () {
      *
      * @param card the card informations
      */
-    CardManager.prototype.setCardVisible = function (card, visible) {
+    CardManager.prototype.setCardVisible = function (card, visible, settings) {
+        var _a, _b, _c, _d, _e, _f;
         var element = this.getCardElement(card);
         element.dataset.side = visible ? 'front' : 'back';
+        if ((_a = settings === null || settings === void 0 ? void 0 : settings.updateFront) !== null && _a !== void 0 ? _a : true) {
+            (_c = (_b = this.settings).setupFrontDiv) === null || _c === void 0 ? void 0 : _c.call(_b, card, element.getElementsByClassName('front')[0]);
+        }
+        if ((_d = settings === null || settings === void 0 ? void 0 : settings.updateBack) !== null && _d !== void 0 ? _d : false) {
+            (_f = (_e = this.settings).setupBackDiv) === null || _f === void 0 ? void 0 : _f.call(_e, card, element.getElementsByClassName('back')[0]);
+        }
     };
     /**
      * Flips the card.
      *
      * @param card the card informations
      */
-    CardManager.prototype.flipCard = function (card) {
+    CardManager.prototype.flipCard = function (card, settings) {
         var element = this.getCardElement(card);
         var currentlyVisible = element.dataset.side === 'front';
-        this.setCardVisible(card, !currentlyVisible);
+        this.setCardVisible(card, !currentlyVisible, settings);
     };
     return CardManager;
 }());

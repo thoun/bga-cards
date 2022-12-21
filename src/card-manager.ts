@@ -25,6 +25,11 @@ interface CardManagerSettings<T> {
     setupBackDiv?: (card: T, element: HTMLDivElement) => void;
 }
 
+interface FlipCardSettings {
+    updateFront: boolean;
+    updateBack: boolean;
+}
+
 class CardManager<T> {
     private stocks: CardStock<T>[] = [];
 
@@ -105,9 +110,15 @@ class CardManager<T> {
      * 
      * @param card the card informations
      */
-    public setCardVisible(card: T, visible: boolean): void {
+    public setCardVisible(card: T, visible: boolean, settings?: FlipCardSettings): void {
         const element = this.getCardElement(card);
         element.dataset.side = visible ? 'front' : 'back';
+        if (settings?.updateFront ?? true) {
+            this.settings.setupFrontDiv?.(card, element.getElementsByClassName('front')[0] as HTMLDivElement);
+        }
+        if (settings?.updateBack ?? false) {
+            this.settings.setupBackDiv?.(card, element.getElementsByClassName('back')[0] as HTMLDivElement);
+        }
     }
 
     /**
@@ -115,9 +126,9 @@ class CardManager<T> {
      * 
      * @param card the card informations
      */
-    public flipCard(card: T): void {
+    public flipCard(card: T, settings?: FlipCardSettings): void {
         const element = this.getCardElement(card);
         const currentlyVisible = element.dataset.side === 'front';
-        this.setCardVisible(card, !currentlyVisible);
+        this.setCardVisible(card, !currentlyVisible, settings);
     }
 }
