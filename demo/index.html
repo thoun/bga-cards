@@ -21,11 +21,15 @@
         <div class="flex">
             <div class="block">
                 <h2>LineStock</h2>
-                <div id="line-stock"></div>
-                <button onclick="addCardToLineStockWithAnimation(this, false)">Add card with default animation (slide)</button>
-                <button onclick="addCardToLineStockWithAnimation(this, true)">Add card with custom function (slide with double loop)</button>
-                <div>
-                    Last selection change event : <span id="line-stock-last-selection-change"></span>
+                <div id="line-stocks">
+                    <div id="line-stock"></div>
+                    <button onclick="addCardToLineStockWithAnimation(this, false)">Add card with default animation (slide)</button>
+                    <button onclick="addCardToLineStockWithAnimation(this, true)">Add card with custom function (slide with double loop)</button>
+                    <div>
+                        Last selection change event : <span id="line-stock-last-selection-change"></span>
+                    </div>
+                    <div id="line-stock-overlap"></div>
+                    <div id="line-stock-vertical-overlap"></div>
                 </div>
             </div>
 
@@ -89,8 +93,10 @@
         </div>
 
         <script>
-            initManager();            
+            initManager();
             initLineStock();
+            initLineStockOverlap();
+            initLineStockVerticalOverlap();
             initSlotStock();
             initScrollableStock();
             initHandStock();

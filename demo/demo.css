@@ -63,6 +63,31 @@ h1, h2 {
     background: lightcyan;
 }
 
+#line-stocks {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+#line-stocks > div {
+    border: 1px solid lightgray;
+}
+
+#line-stock-overlap {
+    padding-left: 80px;
+}
+#line-stock-overlap .card {
+    margin-left: -80px;
+}
+
+#line-stock-vertical-overlap {
+    padding-top: 100px;
+}
+#line-stock-vertical-overlap .card {
+    margin-top: -100px;
+}
+
 .scrollable-stock {
     width: 400px;
 }
