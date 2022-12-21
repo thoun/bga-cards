@@ -297,6 +297,15 @@ var CardStock = /** @class */ (function () {
         }
     };
     /**
+     * Remove a set of card from the stock.
+     *
+     * @param cards the cards to remove
+     */
+    CardStock.prototype.removeCards = function (cards) {
+        var _this = this;
+        cards.forEach(function (card) { return _this.removeCard(card); });
+    };
+    /**
      * Remove all cards from the stock.
      */
     CardStock.prototype.removeAll = function () {
@@ -430,6 +439,22 @@ var CardStock = /** @class */ (function () {
         else {
             return Promise.resolve(false);
         }
+    };
+    /**
+     * Set the card to its front (visible) or back (not visible) side.
+     *
+     * @param card the card informations
+     */
+    CardStock.prototype.setCardVisible = function (card, visible) {
+        this.manager.setCardVisible(card, visible);
+    };
+    /**
+     * Flips the card.
+     *
+     * @param card the card informations
+     */
+    CardStock.prototype.flipCard = function (card) {
+        this.manager.flipCard(card);
     };
     return CardStock;
 }());
@@ -915,6 +940,25 @@ var CardManager = /** @class */ (function () {
      */
     CardManager.prototype.getCardStock = function (card) {
         return this.stocks.find(function (stock) { return stock.contains(card); });
+    };
+    /**
+     * Set the card to its front (visible) or back (not visible) side.
+     *
+     * @param card the card informations
+     */
+    CardManager.prototype.setCardVisible = function (card, visible) {
+        var element = this.getCardElement(card);
+        element.dataset.side = visible ? 'front' : 'back';
+    };
+    /**
+     * Flips the card.
+     *
+     * @param card the card informations
+     */
+    CardManager.prototype.flipCard = function (card) {
+        var element = this.getCardElement(card);
+        var currentlyVisible = element.dataset.side === 'front';
+        this.setCardVisible(card, !currentlyVisible);
     };
     return CardManager;
 }());

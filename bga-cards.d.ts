@@ -150,6 +150,12 @@ declare class CardStock<T> {
     removeCard(card: T): void;
     cardRemoved(card: T): void;
     /**
+     * Remove a set of card from the stock.
+     *
+     * @param cards the cards to remove
+     */
+    removeCards(cards: T[]): void;
+    /**
      * Remove all cards from the stock.
      */
     removeAll(): void;
@@ -184,6 +190,18 @@ declare class CardStock<T> {
     protected bindClick(): void;
     protected cardClick(card: T): void;
     protected animationFromElement(settings: AnimationSettings): Promise<boolean>;
+    /**
+     * Set the card to its front (visible) or back (not visible) side.
+     *
+     * @param card the card informations
+     */
+    setCardVisible(card: T, visible: boolean): void;
+    /**
+     * Flips the card.
+     *
+     * @param card the card informations
+     */
+    flipCard(card: T): void;
 }
 interface DeckSettings {
     /**
@@ -525,5 +543,17 @@ declare class CardManager<T> {
      * @return the stock containing the card
      */
     getCardStock(card: T): CardStock<T>;
+    /**
+     * Set the card to its front (visible) or back (not visible) side.
+     *
+     * @param card the card informations
+     */
+    setCardVisible(card: T, visible: boolean): void;
+    /**
+     * Flips the card.
+     *
+     * @param card the card informations
+     */
+    flipCard(card: T): void;
 }
 declare const define: any;

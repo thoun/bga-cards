@@ -272,6 +272,15 @@ class CardStock<T> {
     }
 
     /**
+     * Remove a set of card from the stock.
+     * 
+     * @param cards the cards to remove
+     */
+    public removeCards(cards: T[]) {
+        cards.forEach(card => this.removeCard(card));
+    }
+
+    /**
      * Remove all cards from the stock.
      */
     public removeAll() {
@@ -404,5 +413,23 @@ class CardStock<T> {
         } else {
             return Promise.resolve(false);
         }
+    }
+
+    /**
+     * Set the card to its front (visible) or back (not visible) side.
+     * 
+     * @param card the card informations
+     */
+    public setCardVisible(card: T, visible: boolean): void {
+        this.manager.setCardVisible(card, visible);
+    }
+
+    /**
+     * Flips the card.
+     * 
+     * @param card the card informations
+     */
+    public flipCard(card: T): void {
+        this.manager.flipCard(card);
     }
 }

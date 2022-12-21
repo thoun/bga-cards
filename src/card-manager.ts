@@ -99,4 +99,25 @@ class CardManager<T> {
     public getCardStock(card: T): CardStock<T> {
         return this.stocks.find(stock => stock.contains(card));
     }
+
+    /**
+     * Set the card to its front (visible) or back (not visible) side.
+     * 
+     * @param card the card informations
+     */
+    public setCardVisible(card: T, visible: boolean): void {
+        const element = this.getCardElement(card);
+        element.dataset.side = visible ? 'front' : 'back';
+    }
+
+    /**
+     * Flips the card.
+     * 
+     * @param card the card informations
+     */
+    public flipCard(card: T): void {
+        const element = this.getCardElement(card);
+        const currentlyVisible = element.dataset.side === 'front';
+        this.setCardVisible(card, !currentlyVisible);
+    }
 }
