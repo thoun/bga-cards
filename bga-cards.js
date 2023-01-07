@@ -142,6 +142,16 @@ var CardStock = /** @class */ (function () {
         return document.getElementById(this.manager.getId(card));
     };
     /**
+     * Checks if the card can be added. By default, only if it isn't already present in the stock.
+     *
+     * @param card the card to add
+     * @param settings the addCard settings
+     * @returns if the card can be added
+     */
+    CardStock.prototype.canAddCard = function (card, settings) {
+        return !this.cardInStock(card);
+    };
+    /**
      * Add a card to the stock.
      *
      * @param card the card to add
@@ -151,7 +161,7 @@ var CardStock = /** @class */ (function () {
      */
     CardStock.prototype.addCard = function (card, animation, settings) {
         var _a, _b;
-        if (this.cardInStock(card)) {
+        if (!this.canAddCard(card, settings)) {
             return Promise.resolve(false);
         }
         var promise;
@@ -217,7 +227,10 @@ var CardStock = /** @class */ (function () {
             rotationDelta: animation.rotationDelta,
             animation: animation.animation,
         });
-        animation.fromStock.removeCard(card);
+        // in the case the card was move inside the same stock we don't remove it
+        if (animation.fromStock != this) {
+            animation.fromStock.removeCard(card);
+        }
         return promise;
     };
     CardStock.prototype.moveFromElement = function (card, cardElement, animation, settings) {
@@ -629,6 +642,17 @@ var SlotStock = /** @class */ (function (_super) {
     };
     SlotStock.prototype.cardElementInStock = function (element) {
         return (element === null || element === void 0 ? void 0 : element.parentElement.parentElement) == this.element;
+    };
+    SlotStock.prototype.canAddCard = function (card, settings) {
+        var _a, _b;
+        if (!this.cardInStock(card)) {
+            return true;
+        }
+        else {
+            var currentCardSlot = this.getCardElement(card).closest('.slot').dataset.slotId;
+            var slotId = (_a = settings === null || settings === void 0 ? void 0 : settings.slot) !== null && _a !== void 0 ? _a : (_b = this.mapCardToSlot) === null || _b === void 0 ? void 0 : _b.call(this, card);
+            return currentCardSlot != slotId;
+        }
     };
     return SlotStock;
 }(LineStock));

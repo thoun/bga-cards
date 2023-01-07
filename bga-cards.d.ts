@@ -121,6 +121,14 @@ declare class CardStock<T> {
      */
     getCardElement(card: T): HTMLElement;
     /**
+     * Checks if the card can be added. By default, only if it isn't already present in the stock.
+     *
+     * @param card the card to add
+     * @param settings the addCard settings
+     * @returns if the card can be added
+     */
+    protected canAddCard(card: T, settings?: AddCardSettings): boolean;
+    /**
      * Add a card to the stock.
      *
      * @param card the card to add
@@ -328,6 +336,7 @@ declare class SlotStock<T> extends LineStock<T> {
      */
     setSlotsIds(slotsIds: SlotId[]): void;
     protected cardElementInStock(element: HTMLElement): boolean;
+    protected canAddCard(card: T, settings?: AddCardToSlotSettings): boolean;
 }
 interface ScrollableStockButtonSettings {
     /**

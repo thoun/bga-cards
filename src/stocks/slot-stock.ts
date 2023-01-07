@@ -103,4 +103,14 @@ class SlotStock<T> extends LineStock<T> {
     protected cardElementInStock(element: HTMLElement): boolean {
         return element?.parentElement.parentElement == this.element;
     }
+
+    protected canAddCard(card: T, settings?: AddCardToSlotSettings) {
+        if (!this.cardInStock(card)) {
+            return true;
+        } else {
+            const currentCardSlot = (this.getCardElement(card).closest('.slot') as HTMLDivElement).dataset.slotId;
+            const slotId = settings?.slot ?? this.mapCardToSlot?.(card);
+            return currentCardSlot != slotId;
+        }
+    }
 }

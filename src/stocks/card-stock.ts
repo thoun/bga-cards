@@ -103,6 +103,17 @@ class CardStock<T> {
     }
 
     /**
+     * Checks if the card can be added. By default, only if it isn't already present in the stock.
+     * 
+     * @param card the card to add
+     * @param settings the addCard settings
+     * @returns if the card can be added
+     */
+    protected canAddCard(card: T, settings?: AddCardSettings) {
+        return !this.cardInStock(card);
+    }
+
+    /**
      * Add a card to the stock.
      * 
      * @param card the card to add  
@@ -111,7 +122,7 @@ class CardStock<T> {
      * @returns the promise when the animation is done (true if it was animated, false if it wasn't)
      */
     public addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean> {
-        if (this.cardInStock(card)) {
+        if (!this.canAddCard(card, settings)) {
             return Promise.resolve(false);
         }
 
@@ -188,7 +199,10 @@ class CardStock<T> {
             rotationDelta: animation.rotationDelta,
             animation: animation.animation,
         });
-        animation.fromStock.removeCard(card);
+        // in the case the card was move inside the same stock we don't remove it
+        if (animation.fromStock != this) {
+            animation.fromStock.removeCard(card);
+        }
 
         return promise;
     }
