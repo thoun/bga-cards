@@ -189,6 +189,10 @@ var CardStock = /** @class */ (function () {
         else {
             this.cards.push(card);
         }
+        if (!promise) {
+            console.warn("CardStock.addCard didn't return a Promise");
+            return Promise.resolve(false);
+        }
         return promise;
     };
     CardStock.prototype.getNewCardIndex = function (card) {
@@ -231,6 +235,10 @@ var CardStock = /** @class */ (function () {
         if (animation.fromStock != this) {
             animation.fromStock.removeCard(card);
         }
+        if (!promise) {
+            console.warn("CardStock.moveFromOtherStock didn't return a Promise");
+            promise = Promise.resolve(false);
+        }
         return promise;
     };
     CardStock.prototype.moveFromElement = function (card, cardElement, animation, settings) {
@@ -256,6 +264,13 @@ var CardStock = /** @class */ (function () {
                     animation: animation.animation,
                 });
             }
+        }
+        else {
+            promise = Promise.resolve(false);
+        }
+        if (!promise) {
+            console.warn("CardStock.moveFromElement didn't return a Promise");
+            promise = Promise.resolve(false);
         }
         return promise;
     };
@@ -808,6 +823,10 @@ var VoidStock = /** @class */ (function (_super) {
         var cardElement = this.getCardElement(card);
         cardElement.style.left = "".concat((this.element.clientWidth - cardElement.clientWidth) / 2, "px");
         cardElement.style.top = "".concat((this.element.clientHeight - cardElement.clientHeight) / 2, "px");
+        if (!promise) {
+            console.warn("VoidStock.addCard didn't return a Promise");
+            promise = Promise.resolve(false);
+        }
         return promise.then(function (result) {
             _this.removeCard(card);
             return result;
@@ -949,11 +968,14 @@ var CardManager = /** @class */ (function () {
         return document.getElementById(this.getId(card));
     };
     CardManager.prototype.removeCard = function (card) {
+        var _a;
         var id = this.getId(card);
         var div = document.getElementById(id);
         if (!div) {
             return;
         }
+        // if the card is in a stock, notify the stock about removal
+        (_a = this.getCardStock(card)) === null || _a === void 0 ? void 0 : _a.cardRemoved(card);
         div.id = "deleted".concat(id);
         // TODO this.removeVisibleInformations(div);
         div.remove();

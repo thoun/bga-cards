@@ -157,6 +157,10 @@ class CardStock<T> {
             this.cards.push(card);
         }
 
+        if (!promise) {
+            console.warn(`CardStock.addCard didn't return a Promise`);
+            return Promise.resolve(false);
+        }
         return promise;
     }
 
@@ -203,6 +207,11 @@ class CardStock<T> {
         if (animation.fromStock != this) {
             animation.fromStock.removeCard(card);
         }
+        
+        if (!promise) {
+            console.warn(`CardStock.moveFromOtherStock didn't return a Promise`);
+            promise = Promise.resolve(false);
+        }
 
         return promise;
     }
@@ -231,6 +240,13 @@ class CardStock<T> {
                     animation: animation.animation,
                 });
             }
+        } else {
+            promise = Promise.resolve(false);
+        }
+        
+        if (!promise) {
+            console.warn(`CardStock.moveFromElement didn't return a Promise`);
+            promise = Promise.resolve(false);
         }
 
         return promise;

@@ -21,12 +21,17 @@ class VoidStock<T> extends CardStock<T> {
      * @returns the promise when the animation is done (true if it was animated, false if it wasn't)
      */
     public addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean> {
-        const promise = super.addCard(card, animation, settings);
+        let promise = super.addCard(card, animation, settings);
 
         // center the element
         const cardElement = this.getCardElement(card);
         cardElement.style.left = `${(this.element.clientWidth - cardElement.clientWidth) / 2}px`;
         cardElement.style.top = `${(this.element.clientHeight - cardElement.clientHeight) / 2}px`;
+
+        if (!promise) {
+            console.warn(`VoidStock.addCard didn't return a Promise`);
+            promise = Promise.resolve(false);
+        }
 
         return promise.then<boolean>(result => {
             this.removeCard(card);

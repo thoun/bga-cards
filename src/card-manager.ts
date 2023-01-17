@@ -93,6 +93,9 @@ class CardManager<T> {
             return;
         }
 
+        // if the card is in a stock, notify the stock about removal
+        this.getCardStock(card)?.cardRemoved(card);
+
         div.id = `deleted${id}`;
         // TODO this.removeVisibleInformations(div);
         div.remove();
