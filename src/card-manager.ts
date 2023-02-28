@@ -23,6 +23,13 @@ interface CardManagerSettings<T> {
      * @return the id for a card
      */
     setupBackDiv?: (card: T, element: HTMLDivElement) => void;
+
+    /**
+     * @param card the card informations
+     * @param element  the card back Div element. You can add a class, change dataset, set background for the back side
+     * @return the id for a card
+     */
+    animationManager?: AnimationManager;
 }
 
 interface FlipCardSettings {
@@ -32,6 +39,8 @@ interface FlipCardSettings {
 }
 
 class CardManager<T> {
+    public animationManager: AnimationManager;
+
     private stocks: CardStock<T>[] = [];
 
     /**
@@ -39,6 +48,7 @@ class CardManager<T> {
      * @param settings: a `CardManagerSettings` object
      */
     constructor(public game: Game, private settings: CardManagerSettings<T>) {
+        this.animationManager = settings.animationManager ?? new AnimationManager(game);
     }
 
     public addStock(stock: CardStock<T>) {

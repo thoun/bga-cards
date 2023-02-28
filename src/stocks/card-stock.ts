@@ -196,9 +196,7 @@ class CardStock<T> {
         this.addCardElementToParent(cardElement, settings);
 
         cardElement.classList.remove('selectable', 'selected', 'disabled');
-        promise = this.animationFromElement({
-            element: cardElement, 
-            fromElement: animation.fromStock.element, 
+        promise = this.animationFromElement(cardElement, animation.fromStock.element, {
             originalSide: animation.originalSide, 
             rotationDelta: animation.rotationDelta,
             animation: animation.animation,
@@ -223,18 +221,14 @@ class CardStock<T> {
     
         if (animation) {
             if (animation.fromStock) {
-                promise = this.animationFromElement({
-                    element: cardElement, 
-                    fromElement: animation.fromStock.element, 
+                promise = this.animationFromElement(cardElement, animation.fromStock.element, {
                     originalSide: animation.originalSide, 
                     rotationDelta: animation.rotationDelta,
                     animation: animation.animation,
                 });
                 animation.fromStock.removeCard(card);
             } else if (animation.fromElement) {
-                promise = this.animationFromElement({
-                    element: cardElement, 
-                    fromElement: animation.fromElement, 
+                promise = this.animationFromElement(cardElement,  animation.fromElement, {
                     originalSide: animation.originalSide, 
                     rotationDelta: animation.rotationDelta,
                     animation: animation.animation,
@@ -436,13 +430,32 @@ class CardStock<T> {
         this.onCardClick?.(card);
     }
 
-    protected animationFromElement(settings: AnimationSettings): Promise<boolean> {
-        if (document.visibilityState !== 'hidden' && !(this.manager.game as any).instantaneousMode) {
-            const animation = settings.animation ?? stockSlideAnimation;
-            return animation(settings);
-        } else {
-            return Promise.resolve(false);
+    /**
+     * @param element The element to animate. The element is added to the destination stock before the animation starts. 
+     * @param fromElement The HTMLElement to animate from.
+     */
+    protected animationFromElement(element: HTMLElement, fromElement: HTMLElement, settings: CardAnimationSettings): Promise<boolean> {
+        const side = element.dataset.side;
+        if (settings.originalSide && settings.originalSide != side) {
+            const cardSides = element.getElementsByClassName('card-sides')[0] as HTMLDivElement;
+            cardSides.style.transition = 'none';
+            element.dataset.side = settings.originalSide;
+            setTimeout(() => {
+                cardSides.style.transition = null;
+                element.dataset.side = side;
+            });
         }
+
+        const animation: AnimationFunction = settings.animation ?? slideAnimation;
+        return animation(element, <AnimationWithOriginSettings>{
+            duration: this.manager.animationManager.getSettings()?.duration ?? 500,
+            scale: this.manager.animationManager.getZoomManager()?.zoom ?? undefined,
+
+            ...settings ?? {},
+
+            game: this.manager.game,
+            fromElement
+        }) ?? Promise.resolve(false);
     }
 
     /**

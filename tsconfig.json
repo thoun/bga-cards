@@ -10,8 +10,11 @@
     },
     "files": [
       "src/framework.d.ts",
+      "node_modules/bga-animations/src/animations.ts",
+      "node_modules/bga-animations/src/animations/slide-animation.ts",
+      "node_modules/bga-animations/src/animations-utils.ts",
+      "node_modules/bga-animations/src/animation-manager.ts",
       "src/animations.ts",
-      "src/animations-functions.ts",
       "src/sort.ts",
       "src/stocks/card-stock.ts",
       "src/stocks/deck.ts",

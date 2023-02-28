@@ -20,26 +20,17 @@ interface CardAnimation<T> {
     rotationDelta?: number;
 
     /**
-     * An animation function, based on the `AnimationSettings` settings, that return a Promise at the end of animation (the promise returns true if animation ended, false otherwise)
+     * An animation function, that return a Promise at the end of animation (the promise returns true if animation ended, false otherwise)
      */
-    animation?: (settings: AnimationSettings) => Promise<boolean>;
+    animation?: AnimationFunction;
 }
 
-interface AnimationSettings {
-    /**
-     * The element to animate. The element is added to the destination stock before the animation starts. 
-     */
-    element: HTMLElement;
-
-    /**
-     * The HTMLElement to animate from.
-     */
-    fromElement: HTMLElement;
+interface CardAnimationSettings {
 
     /**
      * The side before animation.
      */
-     originalSide?: 'front' | 'back';
+    originalSide?: 'front' | 'back';
 
     /**
      * If the card is rotated at the start of animation.
@@ -47,7 +38,7 @@ interface AnimationSettings {
     rotationDelta?: number;
 
     /**
-     * An animation function, based on the `AnimationSettings` settings, that return a Promise at the end of animation (the promise returns true if animation ended, false otherwise)
+     * An animation function, that return a Promise at the end of animation (the promise returns true if animation ended, false otherwise)
      */
-    animation?: (settings: AnimationSettings) => Promise<boolean>;
+    animation?: AnimationFunction;
 }
