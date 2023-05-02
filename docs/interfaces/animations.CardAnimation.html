@@ -26,7 +26,7 @@
 <ul class="tsd-hierarchy">
 <li><span class="target">CardAnimation</span></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/animations.ts#L1">animations.ts:1</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/9887593/src/animations.ts#L1">animations.ts:1</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -44,52 +44,39 @@
 <h2>Properties</h2>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface"><a id="animation" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>animation</span><a href="#animation" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" id="icon-anchor-a"></path><path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" id="icon-anchor-b"></path><path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" id="icon-anchor-c"></path></svg></a></h3>
-<div class="tsd-signature">animation<span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>settings<span class="tsd-signature-symbol">: </span><a href="animations.AnimationSettings.html" class="tsd-signature-type" data-tsd-kind="Interface">AnimationSettings</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span></div>
-<div class="tsd-type-declaration">
-<h4>Type declaration</h4>
-<ul class="tsd-parameters">
-<li class="tsd-parameter-signature">
-<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-interface">
-<li class="tsd-signature" id="__type.__type-1"><span class="tsd-signature-symbol">(</span>settings<span class="tsd-signature-symbol">: </span><a href="animations.AnimationSettings.html" class="tsd-signature-type" data-tsd-kind="Interface">AnimationSettings</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
-<li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>An animation function, based on the <code>AnimationSettings</code> settings, that return a Promise at the end of animation (the promise returns true if animation ended, false otherwise)</p>
-</div>
-<div class="tsd-parameters">
-<h4 class="tsd-parameters-title">Parameters</h4>
-<ul class="tsd-parameter-list">
-<li>
-<h5>settings: <a href="animations.AnimationSettings.html" class="tsd-signature-type" data-tsd-kind="Interface">AnimationSettings</a></h5></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4></li></ul></li></ul></div><aside class="tsd-sources">
+<div class="tsd-signature">animation<span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">AnimationFunction</span></div>
+<div class="tsd-comment tsd-typography"><p>An animation function, that return a Promise at the end of animation (the promise returns true if animation ended, false otherwise)</p>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/animations.ts#L25">animations.ts:25</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/9887593/src/animations.ts#L25">animations.ts:25</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface"><a id="fromElement" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>from<wbr/>Element</span><a href="#fromElement" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">from<wbr/>Element<span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">HTMLElement</span></div>
 <div class="tsd-comment tsd-typography"><p>The element to move the card from.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/animations.ts#L10">animations.ts:10</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/9887593/src/animations.ts#L10">animations.ts:10</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface"><a id="fromStock" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>from<wbr/>Stock</span><a href="#fromStock" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">from<wbr/>Stock<span class="tsd-signature-symbol">?:</span> <a href="../classes/stocks_card_stock.CardStock.html" class="tsd-signature-type" data-tsd-kind="Class">CardStock</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type" data-tsd-kind="Type parameter">T</span><span class="tsd-signature-symbol">&gt;</span></div>
 <div class="tsd-comment tsd-typography"><p>The stock to take the card. It will automatically remove the card from the other stock.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/animations.ts#L5">animations.ts:5</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/9887593/src/animations.ts#L5">animations.ts:5</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface"><a id="originalSide" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>original<wbr/>Side</span><a href="#originalSide" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">original<wbr/>Side<span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">&quot;front&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;back&quot;</span></div>
 <div class="tsd-comment tsd-typography"><p>The side before animation.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/animations.ts#L15">animations.ts:15</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/9887593/src/animations.ts#L15">animations.ts:15</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface"><a id="rotationDelta" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>rotation<wbr/>Delta</span><a href="#rotationDelta" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">rotation<wbr/>Delta<span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">number</span></div>
 <div class="tsd-comment tsd-typography"><p>If the card is rotated at the start of animation.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/7241d37/src/animations.ts#L20">animations.ts:20</a></li></ul></aside></section></section></div>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/9887593/src/animations.ts#L20">animations.ts:20</a></li></ul></aside></section></section></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tsd-navigation settings">
 <details class="tsd-index-accordion"><summary class="tsd-accordion-summary">
@@ -112,17 +99,21 @@
 <li class="current"><a href="../index.html">bga-<wbr/>cards</a>
 <ul>
 <li class="current tsd-kind-module"><a href="../modules/animations.html">animations</a></li>
-<li class="tsd-kind-module"><a href="../modules/animations_functions.html">animations-<wbr/>functions</a></li>
 <li class="tsd-kind-module"><a href="../modules/card_manager.html">card-<wbr/>manager</a></li>
 <li class="tsd-kind-module"><a href="../modules/define.html">define</a></li>
 <li class="tsd-kind-module"><a href="../modules/framework.html">framework</a></li>
+<li class="tsd-kind-module"><a href="../modules/sort.html">sort</a></li>
 <li class="tsd-kind-module"><a href="../modules/stocks_all_visible_deck.html">stocks/all-<wbr/>visible-<wbr/>deck</a></li>
 <li class="tsd-kind-module"><a href="../modules/stocks_card_stock.html">stocks/card-<wbr/>stock</a></li>
 <li class="tsd-kind-module"><a href="../modules/stocks_deck.html">stocks/deck</a></li>
+<li class="tsd-kind-module"><a href="../modules/stocks_hand_stock.html">stocks/hand-<wbr/>stock</a></li>
 <li class="tsd-kind-module"><a href="../modules/stocks_hidden_deck.html">stocks/hidden-<wbr/>deck</a></li>
 <li class="tsd-kind-module"><a href="../modules/stocks_line_stock.html">stocks/line-<wbr/>stock</a></li>
+<li class="tsd-kind-module"><a href="../modules/stocks_manual_position_stock.html">stocks/manual-<wbr/>position-<wbr/>stock</a></li>
+<li class="tsd-kind-module"><a href="../modules/stocks_scrollable_stock.html">stocks/scrollable-<wbr/>stock</a></li>
 <li class="tsd-kind-module"><a href="../modules/stocks_slot_stock.html">stocks/slot-<wbr/>stock</a></li>
-<li class="tsd-kind-module"><a href="../modules/stocks_visible_deck.html">stocks/visible-<wbr/>deck</a></li></ul></li></ul></div></details></nav>
+<li class="tsd-kind-module"><a href="../modules/stocks_visible_deck.html">stocks/visible-<wbr/>deck</a></li>
+<li class="tsd-kind-module"><a href="../modules/stocks_void_stock.html">stocks/void-<wbr/>stock</a></li></ul></li></ul></div></details></nav>
 <nav class="tsd-navigation secondary menu-sticky">
 <ul>
 <li class="current tsd-kind-interface tsd-parent-kind-module"><a href="animations.CardAnimation.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-interface)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-256-path"></rect><path d="M9.51 16V15.016H11.298V8.224H9.51V7.24H14.19V8.224H12.402V15.016H14.19V16H9.51Z" fill="var(--color-text)" id="icon-256-text"></path></svg><span>Card<wbr/>Animation</span></a>

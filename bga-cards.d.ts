@@ -652,7 +652,7 @@ interface CardManagerSettings<T> {
     setupDiv?: (card: T, element: HTMLDivElement) => void;
     /**
      * @param card the card informations
-     * @param element the card main Div element. You can add a class (to set width/height), change dataset, ... based on the card informations. There should be no visual informations on it, as it will be set on front/back Divs.
+     * @param element the card front Div element. You can add a class, change dataset, set background for the back side
      * @return the id for a card
      */
     setupFrontDiv?: (card: T, element: HTMLDivElement) => void;
@@ -663,9 +663,7 @@ interface CardManagerSettings<T> {
      */
     setupBackDiv?: (card: T, element: HTMLDivElement) => void;
     /**
-     * @param card the card informations
-     * @param element  the card back Div element. You can add a class, change dataset, set background for the back side
-     * @return the id for a card
+     * The animation manager used in the game. If not provided, a new one will be instanciated for this card manager. Useful if you use AnimationManager outside of card manager, to avoid double instanciation.
      */
     animationManager?: AnimationManager;
 }
