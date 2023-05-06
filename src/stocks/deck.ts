@@ -14,7 +14,7 @@ interface DeckSettings {
     cardNumber?: number;
 
     /**
-     * Indicate if the line should be centered (default yes)
+     * Indicate if the card count is automatically updated when a card is added or removed.
      */
     autoUpdateCardNumber?: boolean;
 
@@ -27,6 +27,13 @@ interface DeckSettings {
      * Shadow direction. Default 'bottom-right'.
      */
     shadowDirection?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top' | 'bottom' | 'left' | 'right';
+}
+
+interface AddCardToDeckSettings extends AddCardSettings {
+    /**
+     * Indicate if the card count is automatically updated when a card is added or removed.
+     */
+    autoUpdateCardNumber?: boolean;
 }
 
 /**
@@ -68,7 +75,11 @@ class Deck<T> extends CardStock<T> {
         this.element.style.setProperty('--thickness', thickness+'px');
     }
 
-    public addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean> {
+    public addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardToDeckSettings): Promise<boolean> {
+        if (this.autoUpdateCardNumber && (settings?.autoUpdateCardNumber ?? true)) {
+            this.setCardNumber(this.cardNumber + 1);
+        }
+
         return super.addCard(card, animation, settings);
     }
 

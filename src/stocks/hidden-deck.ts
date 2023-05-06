@@ -6,8 +6,8 @@ class HiddenDeck<T> extends Deck<T> {
         this.element.appendChild(this.manager.createCardElement({ id: `${element.id}-hidden-deck-back` } as any, false));
     }
 
-    public addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean> {
-        const newSettings: AddCardSettings = {
+    public addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardToDeckSettings): Promise<boolean> {
+        const newSettings: AddCardToDeckSettings = {
             ...settings,
             visible: settings?.visible ?? false
         }

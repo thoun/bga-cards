@@ -4,7 +4,7 @@ class VisibleDeck<T> extends Deck<T> {
         element.classList.add('visible-deck');
     }
 
-    public addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean> {
+    public addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardToDeckSettings): Promise<boolean> {
         const currentCard = this.cards[this.cards.length - 1];
         if (currentCard) {
             // we remove the card under, only when the animation is done. TODO use promise result

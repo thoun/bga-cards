@@ -66,6 +66,30 @@ declare type AnimationFunction = (element: HTMLElement, settings: AnimationSetti
  * @param settings an `AnimationSettings` object
  * @returns a promise when animation ends
  */
+declare function cumulatedAnimations(element: HTMLElement, animations: AnimationFunction[], settingsOrSettingsArray?: AnimationSettings | AnimationSettings[]): Promise<boolean>;
+/**
+ * Show the element at the center of the screen
+ *
+ * @param element the element to animate
+ * @param settings an `AnimationSettings` object
+ * @returns a promise when animation ends
+ */
+declare function showScreenCenterAnimation(element: HTMLElement, settings: AnimationSettings): Promise<boolean>;
+/**
+ * Show the element at the center of the screen
+ *
+ * @param element the element to animate
+ * @param settings an `AnimationSettings` object
+ * @returns a promise when animation ends
+ */
+declare function pauseAnimation(element: HTMLElement, settings: AnimationSettings): Promise<boolean>;
+/**
+ * Linear slide of the card from origin to destination.
+ *
+ * @param element the element to animate. The element should be attached to the destination element before the animation starts.
+ * @param settings an `AnimationSettings` object
+ * @returns a promise when animation ends
+ */
 declare function slideAnimation(element: HTMLElement, settings: AnimationWithOriginSettings): Promise<boolean>;
 declare function shouldAnimate(settings?: AnimationSettings): boolean;
 /**
@@ -363,7 +387,7 @@ interface DeckSettings {
      */
     cardNumber?: number;
     /**
-     * Indicate if the line should be centered (default yes)
+     * Indicate if the card count is automatically updated when a card is added or removed.
      */
     autoUpdateCardNumber?: boolean;
     /**
@@ -374,6 +398,12 @@ interface DeckSettings {
      * Shadow direction. Default 'bottom-right'.
      */
     shadowDirection?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top' | 'bottom' | 'left' | 'right';
+}
+interface AddCardToDeckSettings extends AddCardSettings {
+    /**
+     * Indicate if the card count is automatically updated when a card is added or removed.
+     */
+    autoUpdateCardNumber?: boolean;
 }
 /**
  * Abstract stock to represent a deck. (pile of cards, with a fake 3d effect of thickness).
@@ -386,7 +416,7 @@ declare class Deck<T> extends CardStock<T> {
     private thicknesses;
     constructor(manager: CardManager<T>, element: HTMLElement, settings: DeckSettings);
     setCardNumber(cardNumber: number): void;
-    addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean>;
+    addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardToDeckSettings): Promise<boolean>;
     cardRemoved(card: T): void;
 }
 interface LineStockSettings extends CardStockSettings {
@@ -603,13 +633,13 @@ declare class HiddenDeck<T> extends Deck<T> {
     protected manager: CardManager<T>;
     protected element: HTMLElement;
     constructor(manager: CardManager<T>, element: HTMLElement, settings: DeckSettings);
-    addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean>;
+    addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardToDeckSettings): Promise<boolean>;
 }
 declare class VisibleDeck<T> extends Deck<T> {
     protected manager: CardManager<T>;
     protected element: HTMLElement;
     constructor(manager: CardManager<T>, element: HTMLElement, settings: DeckSettings);
-    addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean>;
+    addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardToDeckSettings): Promise<boolean>;
 }
 interface AllVisibleDeckSettings extends CardStockSettings {
     /**
