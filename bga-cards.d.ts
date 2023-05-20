@@ -224,6 +224,7 @@ interface AddCardSettings {
     visible?: boolean;
     forceToElement?: HTMLElement;
     index?: number;
+    updateInformations?: boolean;
 }
 declare type CardSelectionMode = 'none' | 'single' | 'multiple';
 /**
@@ -766,6 +767,18 @@ interface FlipCardSettings {
      * Default false
      */
     updateBack?: boolean;
+    /**
+     * Delay before updateFront (in ms).
+     * Allow the card front to be visible during the flip animation.
+     * Default 500
+     */
+    updateFrontDelay?: number;
+    /**
+     * Delay before updateBackDelay (in ms).
+     * Allow the card back to be visible during the flip animation.
+     * Default 0
+     */
+    updateBackDelay?: number;
 }
 declare class CardManager<T> {
     game: Game;

@@ -16,6 +16,8 @@ interface AddCardSettings {
     forceToElement?: HTMLElement;
 
     index?: number;
+
+    updateInformations?: boolean;
 }
 
 type CardSelectionMode = 'none' | 'single' | 'multiple';
@@ -128,10 +130,14 @@ class CardStock<T> {
             ...(settings ?? {})
         };
 
+        const updateInformations = settingsWithIndex.updateInformations ?? true;
+
         if (originStock?.contains(card)) {
             let element = this.getCardElement(card);
             promise = this.moveFromOtherStock(card, element, { ...animation, fromStock: originStock,  }, settingsWithIndex);
-            element.dataset.side = (settingsWithIndex?.visible ?? this.manager.isCardVisible(card)) ? 'front' : 'back';
+            if (!updateInformations) {
+                element.dataset.side = (settingsWithIndex?.visible ?? this.manager.isCardVisible(card)) ? 'front' : 'back';
+            }
         } else if (animation?.fromStock && animation.fromStock.contains(card)) {
             let element = this.getCardElement(card);
             promise = this.moveFromOtherStock(card, element, animation, settingsWithIndex);
@@ -146,6 +152,10 @@ class CardStock<T> {
             this.cards.splice(index, 0, card);
         } else {
             this.cards.push(card);
+        }
+
+        if (updateInformations) { // after splice/push
+            this.manager.updateCardInformations(card);
         }
 
         if (!promise) {

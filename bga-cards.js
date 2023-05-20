@@ -389,7 +389,7 @@ var CardStock = /** @class */ (function () {
      * @returns the promise when the animation is done (true if it was animated, false if it wasn't)
      */
     CardStock.prototype.addCard = function (card, animation, settings) {
-        var _a, _b;
+        var _a, _b, _c;
         if (!this.canAddCard(card, settings)) {
             return Promise.resolve(false);
         }
@@ -398,17 +398,20 @@ var CardStock = /** @class */ (function () {
         var originStock = this.manager.getCardStock(card);
         var index = this.getNewCardIndex(card);
         var settingsWithIndex = __assign({ index: index }, (settings !== null && settings !== void 0 ? settings : {}));
+        var updateInformations = (_a = settingsWithIndex.updateInformations) !== null && _a !== void 0 ? _a : true;
         if (originStock === null || originStock === void 0 ? void 0 : originStock.contains(card)) {
             var element = this.getCardElement(card);
             promise = this.moveFromOtherStock(card, element, __assign(__assign({}, animation), { fromStock: originStock }), settingsWithIndex);
-            element.dataset.side = ((_a = settingsWithIndex === null || settingsWithIndex === void 0 ? void 0 : settingsWithIndex.visible) !== null && _a !== void 0 ? _a : this.manager.isCardVisible(card)) ? 'front' : 'back';
+            if (!updateInformations) {
+                element.dataset.side = ((_b = settingsWithIndex === null || settingsWithIndex === void 0 ? void 0 : settingsWithIndex.visible) !== null && _b !== void 0 ? _b : this.manager.isCardVisible(card)) ? 'front' : 'back';
+            }
         }
         else if ((animation === null || animation === void 0 ? void 0 : animation.fromStock) && animation.fromStock.contains(card)) {
             var element = this.getCardElement(card);
             promise = this.moveFromOtherStock(card, element, animation, settingsWithIndex);
         }
         else {
-            var element = this.manager.createCardElement(card, ((_b = settingsWithIndex === null || settingsWithIndex === void 0 ? void 0 : settingsWithIndex.visible) !== null && _b !== void 0 ? _b : this.manager.isCardVisible(card)));
+            var element = this.manager.createCardElement(card, ((_c = settingsWithIndex === null || settingsWithIndex === void 0 ? void 0 : settingsWithIndex.visible) !== null && _c !== void 0 ? _c : this.manager.isCardVisible(card)));
             promise = this.moveFromElement(card, element, animation, settingsWithIndex);
         }
         this.setSelectableCard(card, this.selectionMode != 'none');
@@ -417,6 +420,9 @@ var CardStock = /** @class */ (function () {
         }
         else {
             this.cards.push(card);
+        }
+        if (updateInformations) { // after splice/push
+            this.manager.updateCardInformations(card);
         }
         if (!promise) {
             console.warn("CardStock.addCard didn't return a Promise");
@@ -1316,7 +1322,7 @@ var CardManager = /** @class */ (function () {
      */
     CardManager.prototype.setCardVisible = function (card, visible, settings) {
         var _this = this;
-        var _a, _b, _c, _d, _e, _f, _g;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
         var element = this.getCardElement(card);
         if (!element) {
             return;
@@ -1324,12 +1330,24 @@ var CardManager = /** @class */ (function () {
         var isVisible = visible !== null && visible !== void 0 ? visible : this.isCardVisible(card);
         element.dataset.side = isVisible ? 'front' : 'back';
         if ((_a = settings === null || settings === void 0 ? void 0 : settings.updateFront) !== null && _a !== void 0 ? _a : true) {
-            (_c = (_b = this.settings).setupFrontDiv) === null || _c === void 0 ? void 0 : _c.call(_b, card, element.getElementsByClassName('front')[0]);
+            var updateFrontDelay = (_b = settings.updateFrontDelay) !== null && _b !== void 0 ? _b : 500;
+            if (!isVisible && updateFrontDelay > 0) {
+                setTimeout(function () { var _a, _b; return (_b = (_a = _this.settings).setupFrontDiv) === null || _b === void 0 ? void 0 : _b.call(_a, card, element.getElementsByClassName('front')[0]); }, updateFrontDelay);
+            }
+            else {
+                (_d = (_c = this.settings).setupFrontDiv) === null || _d === void 0 ? void 0 : _d.call(_c, card, element.getElementsByClassName('front')[0]);
+            }
         }
-        if ((_d = settings === null || settings === void 0 ? void 0 : settings.updateBack) !== null && _d !== void 0 ? _d : false) {
-            (_f = (_e = this.settings).setupBackDiv) === null || _f === void 0 ? void 0 : _f.call(_e, card, element.getElementsByClassName('back')[0]);
+        if ((_e = settings === null || settings === void 0 ? void 0 : settings.updateBack) !== null && _e !== void 0 ? _e : false) {
+            var updateBackDelay = (_f = settings.updateBackDelay) !== null && _f !== void 0 ? _f : 0;
+            if (isVisible && updateBackDelay > 0) {
+                setTimeout(function () { var _a, _b; return (_b = (_a = _this.settings).setupBackDiv) === null || _b === void 0 ? void 0 : _b.call(_a, card, element.getElementsByClassName('back')[0]); }, updateBackDelay);
+            }
+            else {
+                (_h = (_g = this.settings).setupBackDiv) === null || _h === void 0 ? void 0 : _h.call(_g, card, element.getElementsByClassName('back')[0]);
+            }
         }
-        if ((_g = settings === null || settings === void 0 ? void 0 : settings.updateData) !== null && _g !== void 0 ? _g : true) {
+        if ((_j = settings === null || settings === void 0 ? void 0 : settings.updateData) !== null && _j !== void 0 ? _j : true) {
             // card data has changed
             var stock = this.getCardStock(card);
             var cards = stock.getCards();
@@ -1356,7 +1374,7 @@ var CardManager = /** @class */ (function () {
      * @param card the card informations
      */
     CardManager.prototype.updateCardInformations = function (card, settings) {
-        var newSettings = settings ? __assign(__assign({}, settings), { updateData: true }) : { updateData: true, };
+        var newSettings = __assign(__assign({}, (settings !== null && settings !== void 0 ? settings : {})), { updateData: true });
         this.setCardVisible(card, undefined, newSettings);
     };
     /**

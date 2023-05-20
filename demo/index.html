@@ -76,13 +76,16 @@
 
         <div class="flex">
             <div class="block">
-                <h2>HiddenDeck</h2>
+                <h2>Deck (hidden)</h2>
                 Set card number : <input type="number" value="5" onchange="setHiddenDeckCardNumber(this.value)" min="0">
                 <div id="hidden-deck"></div>
+                <button onclick="addCardToHiddenDeck(false)">Add hidden card to deck from LineStock</button>
+                <button onclick="addCardToHiddenDeck(true)">Add visible card to deck from LineStock</button>
+                
             </div>
                 
             <div class="block">
-                <h2>VisibleDeck</h2>
+                <h2>Deck (visible)</h2>
                 Set card number : <input type="number" value="5" onchange="setVisibleDeckCardNumber(this.value)" min="0">
                 <div id="visible-deck"></div>
             </div>

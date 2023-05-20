@@ -83,6 +83,20 @@ interface FlipCardSettings {
      * Default false
      */
     updateBack?: boolean;
+
+    /**
+     * Delay before updateFront (in ms).
+     * Allow the card front to be visible during the flip animation. 
+     * Default 500
+     */
+    updateFrontDelay?: number;
+
+    /**
+     * Delay before updateBackDelay (in ms).
+     * Allow the card back to be visible during the flip animation. 
+     * Default 0
+     */
+    updateBackDelay?: number;
 }
 
 class CardManager<T> {
@@ -199,10 +213,21 @@ class CardManager<T> {
         element.dataset.side = isVisible ? 'front' : 'back';
 
         if (settings?.updateFront ?? true) {
-            this.settings.setupFrontDiv?.(card, element.getElementsByClassName('front')[0] as HTMLDivElement);
+            const updateFrontDelay = settings.updateFrontDelay ?? 500;
+
+            if (!isVisible && updateFrontDelay > 0) {
+                setTimeout(() => this.settings.setupFrontDiv?.(card, element.getElementsByClassName('front')[0] as HTMLDivElement), updateFrontDelay);
+            } else {
+                this.settings.setupFrontDiv?.(card, element.getElementsByClassName('front')[0] as HTMLDivElement);
+            }
         }
         if (settings?.updateBack ?? false) {
-            this.settings.setupBackDiv?.(card, element.getElementsByClassName('back')[0] as HTMLDivElement);
+            const updateBackDelay = settings.updateBackDelay ?? 0;
+            if (isVisible && updateBackDelay > 0) {
+                setTimeout(() => this.settings.setupBackDiv?.(card, element.getElementsByClassName('back')[0] as HTMLDivElement), updateBackDelay);
+            } else {
+                this.settings.setupBackDiv?.(card, element.getElementsByClassName('back')[0] as HTMLDivElement);
+            }
         }
 
         if (settings?.updateData ?? true) {
@@ -234,7 +259,7 @@ class CardManager<T> {
      * @param card the card informations
      */
     public updateCardInformations(card: T, settings?: Omit<FlipCardSettings, 'updateData'>): void {
-        const newSettings = settings ? { ...settings, updateData: true, } : { updateData: true, };
+        const newSettings = { ...(settings ?? {}), updateData: true, };
         this.setCardVisible(card, undefined, newSettings);
     }
 

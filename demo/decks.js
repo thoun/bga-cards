@@ -17,6 +17,18 @@ function setHiddenDeckCardNumber(cardNumber) {
     hiddenDeck.setCardNumber(cardNumber);
 }
 
+function addCardToHiddenDeck(visible) {
+    if (lineStock.isEmpty()) {
+        throw new Error('no card in LineStock');
+    }
+
+    let card = lineStock.getCards()[0];
+    if (!visible) {
+        card = { id: card.id };
+    } 
+    hiddenDeck.addCard(card);
+}
+
 function initVisibleDeck() {
     visibleDeck = new Deck(cardsManager, document.getElementById('visible-deck'), {
         cardNumber: 5,
