@@ -670,28 +670,46 @@ declare class AllVisibleDeck<T> extends CardStock<T> {
 }
 interface CardManagerSettings<T> {
     /**
+     * Define the id that will be set to each card div. It must generate a unique id for each different card, so it's often linked to card id.
+     * If you use different cards types that couldhave the same ids, you must define this method to make it different for each type (for example : `getId: (card) => 'other-card-type-' + card.id`).
+     *
+     * Default: the id will be set to `card-${card.id}`.
+     *
      * @param card the card informations
      * @return the id for a card
      */
     getId?: (card: T) => string;
     /**
+     * Allow to populate the main div of the card. You can set classes or dataset, if it's informations shared by both sides.
+     *
      * @param card the card informations
      * @param element the card main Div element. You can add a class (to set width/height), change dataset, ... based on the card informations. There should be no visual informations on it, as it will be set on front/back Divs.
      * @return the id for a card
      */
     setupDiv?: (card: T, element: HTMLDivElement) => void;
     /**
+     * Allow to populate the front div of the card. You can set classes or dataset to show the correct card face.
+     * You can also add some translated text on the card at this moment.
+     *
      * @param card the card informations
      * @param element the card front Div element. You can add a class, change dataset, set background for the back side
      * @return the id for a card
      */
     setupFrontDiv?: (card: T, element: HTMLDivElement) => void;
     /**
+     * Allow to populate the back div of the card. You can set classes or dataset to show the correct card face.
+     * You can also add some translated text on the card at this moment.
+     *
      * @param card the card informations
      * @param element  the card back Div element. You can add a class, change dataset, set background for the back side
      * @return the id for a card
      */
     setupBackDiv?: (card: T, element: HTMLDivElement) => void;
+    /**
+     * @param card the card informations
+     * @param element  the card back Div element. You can add a class, change dataset, set background for the back side
+     * @return the id for a card
+     */
     /**
      * The animation manager used in the game. If not provided, a new one will be instanciated for this card manager. Useful if you use AnimationManager outside of card manager, to avoid double instanciation.
      */
