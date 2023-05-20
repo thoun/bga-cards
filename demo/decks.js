@@ -3,10 +3,13 @@ let visibleDeck;
 let allVisibleDeck;
 
 function initHiddenDeck() {
-    hiddenDeck = new HiddenDeck(cardsManager, document.getElementById('hidden-deck'), {
-        width: 100,
-        height: 150,
+    hiddenDeck = new Deck(cardsManager, document.getElementById('hidden-deck'), {
         cardNumber: 5,
+        topCard: { id: getCardId() },
+        counter: {
+            position: 'center',
+            extraClasses: 'text-shadow',
+        }
     });
 }
 
@@ -15,14 +18,13 @@ function setHiddenDeckCardNumber(cardNumber) {
 }
 
 function initVisibleDeck() {
-    visibleDeck = new VisibleDeck(cardsManager, document.getElementById('visible-deck'), {
-        width: 100,
-        height: 150,
+    visibleDeck = new Deck(cardsManager, document.getElementById('visible-deck'), {
         cardNumber: 5,
+        topCard: { id: getCardId(), type: 2, type_arg: 3, location: 'table', location_arg: 0 },
+        counter: {
+            hideWhenEmpty: true,
+        },
     });
-    visibleDeck.addCard(
-        { id: getCardId(), type: 2, type_arg: 3, location: 'table', location_arg: 0 },
-    );
 }
 
 function setVisibleDeckCardNumber(cardNumber) {

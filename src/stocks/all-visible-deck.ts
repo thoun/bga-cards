@@ -1,14 +1,5 @@
 interface AllVisibleDeckSettings extends CardStockSettings {
     /**
-     * Indicate the width of a card, in CSS with unit
-     */
-    width: string;
-    /**
-     * Indicate the height of a card, in CSS with unit
-     */
-    height: string;
-
-    /**
      * The shift between each card (default 3)
      */
     shift?: string;
@@ -19,8 +10,15 @@ class AllVisibleDeck<T> extends CardStock<T> {
     constructor(protected manager: CardManager<T>, protected element: HTMLElement, settings: AllVisibleDeckSettings) {
         super(manager, element, settings);
         element.classList.add('all-visible-deck');
-        element.style.setProperty('--width', settings.width);
-        element.style.setProperty('--height', settings.height);
+
+        const cardWidth = this.manager.getCardWidth();
+        const cardHeight = this.manager.getCardHeight();
+        if (cardWidth && cardHeight) {
+            this.element.style.setProperty('--width', `${cardWidth}px`);
+            this.element.style.setProperty('--height', `${cardHeight}px`);
+        } else {
+            throw new Error(`You need to set cardWidth and cardHeight in the card manager to use Deck.`);
+        }
         element.style.setProperty('--shift', settings.shift ?? '3px');
     }        
 

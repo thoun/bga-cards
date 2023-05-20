@@ -10,8 +10,6 @@ define({
     HandStock,
     ManualPositionStock,
     VoidStock,
-    HiddenDeck,
-    VisibleDeck,
     AllVisibleDeck,
     sortFunction,
  });

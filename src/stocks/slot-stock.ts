@@ -100,17 +100,54 @@ class SlotStock<T> extends LineStock<T> {
         });
     }
 
-    protected cardElementInStock(element: HTMLElement): boolean {
-        return element?.parentElement.parentElement == this.element;
-    }
-
     protected canAddCard(card: T, settings?: AddCardToSlotSettings) {
-        if (!this.cardInStock(card)) {
+        if (!this.contains(card)) {
             return true;
         } else {
             const currentCardSlot = (this.getCardElement(card).closest('.slot') as HTMLDivElement).dataset.slotId;
             const slotId = settings?.slot ?? this.mapCardToSlot?.(card);
             return currentCardSlot != slotId;
         }
+    }
+
+    /**
+     * Swap cards inside the slot stock.
+     * 
+     * @param cards the cards to swap
+     */
+    public swapCards(cards: T[]) {
+        if (!this.mapCardToSlot) {
+            throw new Error('You need to define SlotStock.mapCardToSlot to use SlotStock.swapCards');
+        }
+
+        const promises: Promise<boolean>[] = [];
+
+        const elements = cards.map(card => this.manager.getCardElement(card));
+        const elementsRects = elements.map(element => element.getBoundingClientRect());
+        const cssPositions = elements.map(element => element.style.position);
+
+        // we set to absolute so it doesn't mess with slide coordinates when 2 div arer at the same place
+        elements.forEach(element => element.style.position = 'absolute');
+
+        cards.forEach((card, index) => {
+            const cardElement = elements[index];
+
+            let promise: Promise<boolean>;
+            const slotId = this.mapCardToSlot?.(card);
+            this.slots[slotId].appendChild(cardElement);
+            cardElement.style.position = cssPositions[index];
+
+            cardElement.classList.remove('selectable', 'selected', 'disabled');
+            promise = this.animationFromElement(cardElement, elementsRects[index], {});
+            
+            if (!promise) {
+                console.warn(`CardStock.moveFromOtherStock didn't return a Promise`);
+                promise = Promise.resolve(false);
+            }
+
+            promises.push(promise);
+        });
+
+        return Promise.all(promises);
     }
 }

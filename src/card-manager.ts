@@ -44,12 +44,22 @@ interface CardManagerSettings<T> {
      * @param element  the card back Div element. You can add a class, change dataset, set background for the back side
      * @return the id for a card
      */
-    // WIP isCardVisible?: (card: T) => boolean;
+    isCardVisible?: (card: T) => boolean;
 
     /**
      * The animation manager used in the game. If not provided, a new one will be instanciated for this card manager. Useful if you use AnimationManager outside of card manager, to avoid double instanciation.
      */
     animationManager?: AnimationManager;
+
+    /**
+     * Indicate the width of a card (in px). Used for Deck stocks.
+     */
+    cardWidth: number;
+
+    /**
+     * Indicate the height of a card (in px). Used for Deck stocks.
+     */
+    cardHeight: number;
 }
 
 interface FlipCardSettings {
@@ -104,7 +114,10 @@ class CardManager<T> {
         const id = this.getId(card);
         const side = visible ? 'front' : 'back';
 
-        // TODO check if exists
+        if (this.getCardElement(card)) {
+            throw new Error('This card already exists ' + JSON.stringify(card));
+        }
+
         const element = document.createElement("div");
         element.id = id;
         element.dataset.side = ''+side;
@@ -144,11 +157,12 @@ class CardManager<T> {
         this.getCardStock(card)?.cardRemoved(card);
 
         div.id = `deleted${id}`;
-        // TODO this.removeVisibleInformations(div);
         div.remove();
     }
 
     /**
+     * Returns the stock containing the card.
+     * 
      * @param card the card informations
      * @return the stock containing the card
      */
@@ -157,19 +171,33 @@ class CardManager<T> {
     }
 
     /**
+     * Return if the card passed as parameter is suppose to be visible or not.
+     * Use `isCardVisible` from settings if set, else will check if `card.type` is defined
+     * 
+     * @param card the card informations
+     * @return the visiblility of the card (true means front side should be displayed)
+     */
+    public isCardVisible(card: T): boolean {
+        return this.settings.isCardVisible?.(card) ?? ((card as any).type ?? false);
+    }
+
+    /**
      * Set the card to its front (visible) or back (not visible) side.
      * 
      * @param card the card informations
-     * @param visible if the card is set to visible face
+     * @param visible if the card is set to visible face. If unset, will use isCardVisible(card)
      * @param settings the flip params (to update the card in current stock)
      */
-    public setCardVisible(card: T, visible: boolean, settings?: FlipCardSettings): void {
+    public setCardVisible(card: T, visible?: boolean, settings?: FlipCardSettings): void {
         const element = this.getCardElement(card);
         if (!element) {
             return;
         }
 
-        element.dataset.side = visible ? 'front' : 'back';
+        const isVisible = visible ?? this.isCardVisible(card);
+
+        element.dataset.side = isVisible ? 'front' : 'back';
+
         if (settings?.updateFront ?? true) {
             this.settings.setupFrontDiv?.(card, element.getElementsByClassName('front')[0] as HTMLDivElement);
         }
@@ -198,5 +226,29 @@ class CardManager<T> {
         const element = this.getCardElement(card);
         const currentlyVisible = element.dataset.side === 'front';
         this.setCardVisible(card, !currentlyVisible, settings);
+    }
+
+    /**
+     * Update the card informations. Used when a card with just an id (back shown) should be revealed, with all data needed to populate the front.
+     * 
+     * @param card the card informations
+     */
+    public updateCardInformations(card: T, settings?: Omit<FlipCardSettings, 'updateData'>): void {
+        const newSettings = settings ? { ...settings, updateData: true, } : { updateData: true, };
+        this.setCardVisible(card, undefined, newSettings);
+    }
+
+    /**
+     * @returns the card with set in the settings (undefined if unset)
+     */
+    public getCardWidth(): number | undefined {
+        return this.settings?.cardWidth;
+    }
+
+    /**
+     * @returns the card height set in the settings (undefined if unset)
+     */
+    public getCardHeight(): number | undefined {
+        return this.settings?.cardHeight;
     }
 }

@@ -23,11 +23,15 @@ function initManager() {
                 <div>SubType ${card.type_arg}</div>
             `;*/
             div.id = `card-${card.id}-front`;
-            game.addTooltipHtml(div.id, `tooltip de ${card.type} > ${card.type_arg}`);
+            if (card.type) {
+                game.addTooltipHtml(div.id, `tooltip de ${card.type} > ${card.type_arg}`);
+            }
         },
         setupBackDiv: (card, div) => {
             div.classList.add('mygame-card-back');
         },
+        cardWidth: 100,
+        cardHeight: 150,
     });
 }
 

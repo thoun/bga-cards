@@ -18,6 +18,45 @@
             &>.card { 
                 visibility: hidden;
             }
+
+            .bga-cards-deck-counter.hide-when-empty {
+                display: none;
+            }
         }
+    }
+}
+
+.bga-cards-deck-counter {
+    --bga-cards-deck-counter-size: 20px;
+
+    position: absolute;
+    z-index: 1;
+
+    width: var(--bga-cards-deck-counter-size);
+    height: var(--bga-cards-deck-counter-size);
+
+    left: calc(var(--bga-cards-deck-left) - (var(--bga-cards-deck-counter-size) / 2));
+    top: calc(var(--bga-cards-deck-top) - (var(--bga-cards-deck-counter-size) / 2));
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &.round {
+        color: black;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 0 2px 1px black;
+        font-size: 14px;
+    }
+
+    &.text-shadow {
+        color: white;
+        text-shadow: 0 0 1px black, 0 0 2px black, 0 0 3px black, 0 0 4px black;
+        font-size: 20px;
+    }
+
+    &.hidden {
+        display: none;
     }
 }

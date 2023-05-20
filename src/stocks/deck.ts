@@ -1,15 +1,36 @@
-interface DeckSettings {
+type SideOrAngle = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top' | 'bottom' | 'left' | 'right';
+type SideOrAngleOrCenter = SideOrAngle | 'center';
+
+interface DeckCounter {
     /**
-     * Indicate the width of the deck (should be the width of a card, in px)
+     * Show a card counter on the deck. Default true.
      */
-    width: number;
-    /**
-     * Indicate the height of the deck (should be the height of a card, in px)
-     */
-    height: number;
+    show?: boolean;
 
     /**
-     * Indicate the current number of cards in the deck (default 52)
+     * Counter position. Default 'bottom'.
+     */
+    position?: SideOrAngleOrCenter;
+
+    /**
+     * Classes to add to counter (separated with spaces). Pre-built are `round` and `text-shadow`. Default `round`.
+     */
+    extraClasses?: string;
+
+    /**
+     * Show the counter when empty. Default true.
+     */
+    hideWhenEmpty?: boolean;
+}
+
+interface DeckSettings<T> {
+    /**
+     * Indicate the current top card.
+     */
+    topCard?: T;
+
+    /**
+     * Indicate the current number of cards in the deck (default 52).
      */
     cardNumber?: number;
 
@@ -26,7 +47,12 @@ interface DeckSettings {
     /**
      * Shadow direction. Default 'bottom-right'.
      */
-    shadowDirection?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top' | 'bottom' | 'left' | 'right';
+    shadowDirection?: SideOrAngle;
+
+    /**
+     * Show a card counter on the deck. Not visible if unset.
+     */
+    counter?: DeckCounter;
 }
 
 interface AddCardToDeckSettings extends AddCardSettings {
@@ -37,18 +63,26 @@ interface AddCardToDeckSettings extends AddCardSettings {
 }
 
 /**
- * Abstract stock to represent a deck. (pile of cards, with a fake 3d effect of thickness).
+ * Abstract stock to represent a deck. (pile of cards, with a fake 3d effect of thickness). * 
+ * Needs cardWidth and cardHeight to be set in the card manager.
  */
 class Deck<T> extends CardStock<T> {
     protected cardNumber: number;
     protected autoUpdateCardNumber: boolean;
     private thicknesses: number[];
 
-    constructor(protected manager: CardManager<T>, protected element: HTMLElement, settings: DeckSettings) {
+    constructor(protected manager: CardManager<T>, protected element: HTMLElement, settings: DeckSettings<T>) {
         super(manager, element);
+        
         element.classList.add('deck');
-        this.element.style.setProperty('--width', settings.width+'px');
-        this.element.style.setProperty('--height', settings.height+'px');
+        const cardWidth = this.manager.getCardWidth();
+        const cardHeight = this.manager.getCardHeight();
+        if (cardWidth && cardHeight) {
+            this.element.style.setProperty('--width', `${cardWidth}px`);
+            this.element.style.setProperty('--height', `${cardHeight}px`);
+        } else {
+            throw new Error(`You need to set cardWidth and cardHeight in the card manager to use Deck.`);
+        }
         this.thicknesses = settings.thicknesses ?? [0, 2, 5, 10, 20, 30];
         this.setCardNumber(settings.cardNumber ?? 52);
         this.autoUpdateCardNumber = settings.autoUpdateCardNumber ?? true;
@@ -59,6 +93,37 @@ class Deck<T> extends CardStock<T> {
         const yShadowShift = shadowDirectionSplit.includes('bottom') ? 1 : (shadowDirectionSplit.includes('top') ? -1 : 0);
         this.element.style.setProperty('--xShadowShift', ''+xShadowShift);
         this.element.style.setProperty('--yShadowShift', ''+yShadowShift);
+
+        if (settings.topCard) {
+            this.addCard(settings.topCard, undefined);
+        } else if (settings.cardNumber > 0) {
+            console.warn(`Deck is defined with ${settings.cardNumber} cards but no top card !`);
+        }
+
+        if (settings.counter && (settings.counter.show ?? true)) {
+            if (settings.cardNumber ?? false) {
+                this.createCounter(settings.counter.position ?? 'bottom', settings.counter.extraClasses ?? 'round');
+
+                if (settings.counter?.hideWhenEmpty) {
+                    this.element.querySelector('.bga-cards-deck-counter').classList.add('hide-when-empty');
+                }
+            } else {
+                throw new Error(`You need to set cardNumber if you want to show the counter`);
+            }
+        }
+        
+        this.setCardNumber(settings.cardNumber ?? 52);
+    }
+
+    protected createCounter(counterPosition: SideOrAngleOrCenter, extraClasses: string) {
+        const left = counterPosition.includes('right') ? 100 : (counterPosition.includes('left') ? 0 : 50);
+        const top = counterPosition.includes('bottom') ? 100 : (counterPosition.includes('top') ? 0 : 50);
+        this.element.style.setProperty('--bga-cards-deck-left', `${left}%`);
+        this.element.style.setProperty('--bga-cards-deck-top', `${top}%`);
+
+        this.element.insertAdjacentHTML('beforeend', `
+            <div class="bga-cards-deck-counter ${extraClasses}"></div>
+        `);
     }
 
     public setCardNumber(cardNumber: number) {
@@ -72,7 +137,12 @@ class Deck<T> extends CardStock<T> {
                 thickness = index;
             }
         });
-        this.element.style.setProperty('--thickness', thickness+'px');
+        this.element.style.setProperty('--thickness', `${thickness}px`);
+
+        const counterDiv = this.element.querySelector('.bga-cards-deck-counter');
+        if (counterDiv) {
+            counterDiv.innerHTML = `${cardNumber}`;
+        }
     }
 
     public addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardToDeckSettings): Promise<boolean> {

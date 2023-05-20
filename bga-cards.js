@@ -363,20 +363,12 @@ var CardStock = /** @class */ (function () {
         var _this = this;
         return this.cards.some(function (c) { return _this.manager.getId(c) == _this.manager.getId(card); });
     };
-    // TODO keep only one ?
-    CardStock.prototype.cardInStock = function (card) {
-        var element = document.getElementById(this.manager.getId(card));
-        return element ? this.cardElementInStock(element) : false;
-    };
-    CardStock.prototype.cardElementInStock = function (element) {
-        return (element === null || element === void 0 ? void 0 : element.parentElement) == this.element;
-    };
     /**
      * @param card a card in the stock
      * @returns the HTML element generated for the card
      */
     CardStock.prototype.getCardElement = function (card) {
-        return document.getElementById(this.manager.getId(card));
+        return this.manager.getCardElement(card);
     };
     /**
      * Checks if the card can be added. By default, only if it isn't already present in the stock.
@@ -386,7 +378,7 @@ var CardStock = /** @class */ (function () {
      * @returns if the card can be added
      */
     CardStock.prototype.canAddCard = function (card, settings) {
-        return !this.cardInStock(card);
+        return !this.contains(card);
     };
     /**
      * Add a card to the stock.
@@ -402,21 +394,21 @@ var CardStock = /** @class */ (function () {
             return Promise.resolve(false);
         }
         var promise;
-        // we check if card is in stock then we ignore animation
-        var currentStock = this.manager.getCardStock(card);
+        // we check if card is in a stock
+        var originStock = this.manager.getCardStock(card);
         var index = this.getNewCardIndex(card);
         var settingsWithIndex = __assign({ index: index }, (settings !== null && settings !== void 0 ? settings : {}));
-        if (currentStock === null || currentStock === void 0 ? void 0 : currentStock.cardInStock(card)) {
-            var element = document.getElementById(this.manager.getId(card));
-            promise = this.moveFromOtherStock(card, element, __assign(__assign({}, animation), { fromStock: currentStock }), settingsWithIndex);
-            element.dataset.side = ((_a = settingsWithIndex === null || settingsWithIndex === void 0 ? void 0 : settingsWithIndex.visible) !== null && _a !== void 0 ? _a : true) ? 'front' : 'back';
+        if (originStock === null || originStock === void 0 ? void 0 : originStock.contains(card)) {
+            var element = this.getCardElement(card);
+            promise = this.moveFromOtherStock(card, element, __assign(__assign({}, animation), { fromStock: originStock }), settingsWithIndex);
+            element.dataset.side = ((_a = settingsWithIndex === null || settingsWithIndex === void 0 ? void 0 : settingsWithIndex.visible) !== null && _a !== void 0 ? _a : this.manager.isCardVisible(card)) ? 'front' : 'back';
         }
-        else if ((animation === null || animation === void 0 ? void 0 : animation.fromStock) && animation.fromStock.cardInStock(card)) {
-            var element = document.getElementById(this.manager.getId(card));
+        else if ((animation === null || animation === void 0 ? void 0 : animation.fromStock) && animation.fromStock.contains(card)) {
+            var element = this.getCardElement(card);
             promise = this.moveFromOtherStock(card, element, animation, settingsWithIndex);
         }
         else {
-            var element = this.manager.createCardElement(card, ((_b = settingsWithIndex === null || settingsWithIndex === void 0 ? void 0 : settingsWithIndex.visible) !== null && _b !== void 0 ? _b : true));
+            var element = this.manager.createCardElement(card, ((_b = settingsWithIndex === null || settingsWithIndex === void 0 ? void 0 : settingsWithIndex.visible) !== null && _b !== void 0 ? _b : this.manager.isCardVisible(card)));
             promise = this.moveFromElement(card, element, animation, settingsWithIndex);
         }
         this.setSelectableCard(card, this.selectionMode != 'none');
@@ -459,15 +451,17 @@ var CardStock = /** @class */ (function () {
     };
     CardStock.prototype.moveFromOtherStock = function (card, cardElement, animation, settings) {
         var promise;
+        var element = animation.fromStock.contains(card) ? this.manager.getCardElement(card) : animation.fromStock.element;
+        var fromRect = element.getBoundingClientRect();
         this.addCardElementToParent(cardElement, settings);
         cardElement.classList.remove('selectable', 'selected', 'disabled');
-        promise = this.animationFromElement(cardElement, animation.fromStock.element, {
+        promise = this.animationFromElement(cardElement, fromRect, {
             originalSide: animation.originalSide,
             rotationDelta: animation.rotationDelta,
             animation: animation.animation,
         });
         // in the case the card was move inside the same stock we don't remove it
-        if (animation.fromStock != this) {
+        if (animation.fromStock && animation.fromStock != this) {
             animation.fromStock.removeCard(card);
         }
         if (!promise) {
@@ -481,7 +475,7 @@ var CardStock = /** @class */ (function () {
         this.addCardElementToParent(cardElement, settings);
         if (animation) {
             if (animation.fromStock) {
-                promise = this.animationFromElement(cardElement, animation.fromStock.element, {
+                promise = this.animationFromElement(cardElement, animation.fromStock.element.getBoundingClientRect(), {
                     originalSide: animation.originalSide,
                     rotationDelta: animation.rotationDelta,
                     animation: animation.animation,
@@ -489,7 +483,7 @@ var CardStock = /** @class */ (function () {
                 animation.fromStock.removeCard(card);
             }
             else if (animation.fromElement) {
-                promise = this.animationFromElement(cardElement, animation.fromElement, {
+                promise = this.animationFromElement(cardElement, animation.fromElement.getBoundingClientRect(), {
                     originalSide: animation.originalSide,
                     rotationDelta: animation.rotationDelta,
                     animation: animation.animation,
@@ -540,7 +534,7 @@ var CardStock = /** @class */ (function () {
      * @param card the card to remove
      */
     CardStock.prototype.removeCard = function (card) {
-        if (this.cardInStock(card)) {
+        if (this.contains(card) && this.element.contains(this.getCardElement(card))) {
             this.manager.removeCard(card);
         }
         this.cardRemoved(card);
@@ -590,6 +584,28 @@ var CardStock = /** @class */ (function () {
         this.cards.forEach(function (card) { return _this.setSelectableCard(card, selectionMode != 'none'); });
         this.element.classList.toggle('selectable', selectionMode != 'none');
         this.selectionMode = selectionMode;
+    };
+    /**
+     * Set the selectable class for each card.
+     *
+     * @param selectableCards the selectable cards. If unset, all cards are marked selectable. Default unset.
+     * @param unselectableCardsClass the class to add to unselectable cards (for example to mark them as disabled). Default 'disabled'.
+     */
+    CardStock.prototype.setSelectableCards = function (selectableCards, unselectableCardsClass) {
+        var _this = this;
+        if (unselectableCardsClass === void 0) { unselectableCardsClass = 'disabled'; }
+        if (this.selectionMode === 'none') {
+            return;
+        }
+        var selectableCardsIds = (selectableCards !== null && selectableCards !== void 0 ? selectableCards : this.getCards()).map(function (card) { return _this.manager.getId(card); });
+        this.cards.forEach(function (card) {
+            var element = _this.getCardElement(card);
+            var selectable = selectableCardsIds.includes(_this.manager.getId(card));
+            element.classList.toggle('selectable', selectable);
+            if (unselectableCardsClass) {
+                element.classList.toggle(unselectableCardsClass, !selectable);
+            }
+        });
     };
     /**
      * Set selected state to a card.
@@ -693,7 +709,7 @@ var CardStock = /** @class */ (function () {
      * @param element The element to animate. The element is added to the destination stock before the animation starts.
      * @param fromElement The HTMLElement to animate from.
      */
-    CardStock.prototype.animationFromElement = function (element, fromElement, settings) {
+    CardStock.prototype.animationFromElement = function (element, fromRect, settings) {
         var _a, _b, _c, _d, _e, _f;
         var side = element.dataset.side;
         if (settings.originalSide && settings.originalSide != side) {
@@ -706,7 +722,7 @@ var CardStock = /** @class */ (function () {
             });
         }
         var animation = (_a = settings.animation) !== null && _a !== void 0 ? _a : slideAnimation;
-        return (_f = animation(element, __assign(__assign({ duration: (_c = (_b = this.manager.animationManager.getSettings()) === null || _b === void 0 ? void 0 : _b.duration) !== null && _c !== void 0 ? _c : 500, scale: (_e = (_d = this.manager.animationManager.getZoomManager()) === null || _d === void 0 ? void 0 : _d.zoom) !== null && _e !== void 0 ? _e : undefined }, settings !== null && settings !== void 0 ? settings : {}), { game: this.manager.game, fromElement: fromElement }))) !== null && _f !== void 0 ? _f : Promise.resolve(false);
+        return (_f = animation(element, __assign(__assign({ duration: (_c = (_b = this.manager.animationManager.getSettings()) === null || _b === void 0 ? void 0 : _b.duration) !== null && _c !== void 0 ? _c : 500, scale: (_e = (_d = this.manager.animationManager.getZoomManager()) === null || _d === void 0 ? void 0 : _d.zoom) !== null && _e !== void 0 ? _e : undefined }, settings !== null && settings !== void 0 ? settings : {}), { game: this.manager.game, fromRect: fromRect }))) !== null && _f !== void 0 ? _f : Promise.resolve(false);
     };
     /**
      * Set the card to its front (visible) or back (not visible) side.
@@ -742,19 +758,27 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 /**
- * Abstract stock to represent a deck. (pile of cards, with a fake 3d effect of thickness).
+ * Abstract stock to represent a deck. (pile of cards, with a fake 3d effect of thickness). *
+ * Needs cardWidth and cardHeight to be set in the card manager.
  */
 var Deck = /** @class */ (function (_super) {
     __extends(Deck, _super);
     function Deck(manager, element, settings) {
         var _this = this;
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
         _this = _super.call(this, manager, element) || this;
         _this.manager = manager;
         _this.element = element;
         element.classList.add('deck');
-        _this.element.style.setProperty('--width', settings.width + 'px');
-        _this.element.style.setProperty('--height', settings.height + 'px');
+        var cardWidth = _this.manager.getCardWidth();
+        var cardHeight = _this.manager.getCardHeight();
+        if (cardWidth && cardHeight) {
+            _this.element.style.setProperty('--width', "".concat(cardWidth, "px"));
+            _this.element.style.setProperty('--height', "".concat(cardHeight, "px"));
+        }
+        else {
+            throw new Error("You need to set cardWidth and cardHeight in the card manager to use Deck.");
+        }
         _this.thicknesses = (_a = settings.thicknesses) !== null && _a !== void 0 ? _a : [0, 2, 5, 10, 20, 30];
         _this.setCardNumber((_b = settings.cardNumber) !== null && _b !== void 0 ? _b : 52);
         _this.autoUpdateCardNumber = (_c = settings.autoUpdateCardNumber) !== null && _c !== void 0 ? _c : true;
@@ -764,8 +788,33 @@ var Deck = /** @class */ (function (_super) {
         var yShadowShift = shadowDirectionSplit.includes('bottom') ? 1 : (shadowDirectionSplit.includes('top') ? -1 : 0);
         _this.element.style.setProperty('--xShadowShift', '' + xShadowShift);
         _this.element.style.setProperty('--yShadowShift', '' + yShadowShift);
+        if (settings.topCard) {
+            _this.addCard(settings.topCard, undefined);
+        }
+        else if (settings.cardNumber > 0) {
+            console.warn("Deck is defined with ".concat(settings.cardNumber, " cards but no top card !"));
+        }
+        if (settings.counter && ((_e = settings.counter.show) !== null && _e !== void 0 ? _e : true)) {
+            if ((_f = settings.cardNumber) !== null && _f !== void 0 ? _f : false) {
+                _this.createCounter((_g = settings.counter.position) !== null && _g !== void 0 ? _g : 'bottom', (_h = settings.counter.extraClasses) !== null && _h !== void 0 ? _h : 'round');
+                if ((_j = settings.counter) === null || _j === void 0 ? void 0 : _j.hideWhenEmpty) {
+                    _this.element.querySelector('.bga-cards-deck-counter').classList.add('hide-when-empty');
+                }
+            }
+            else {
+                throw new Error("You need to set cardNumber if you want to show the counter");
+            }
+        }
+        _this.setCardNumber((_k = settings.cardNumber) !== null && _k !== void 0 ? _k : 52);
         return _this;
     }
+    Deck.prototype.createCounter = function (counterPosition, extraClasses) {
+        var left = counterPosition.includes('right') ? 100 : (counterPosition.includes('left') ? 0 : 50);
+        var top = counterPosition.includes('bottom') ? 100 : (counterPosition.includes('top') ? 0 : 50);
+        this.element.style.setProperty('--bga-cards-deck-left', "".concat(left, "%"));
+        this.element.style.setProperty('--bga-cards-deck-top', "".concat(top, "%"));
+        this.element.insertAdjacentHTML('beforeend', "\n            <div class=\"bga-cards-deck-counter ".concat(extraClasses, "\"></div>\n        "));
+    };
     Deck.prototype.setCardNumber = function (cardNumber) {
         var _this = this;
         this.cardNumber = cardNumber;
@@ -776,7 +825,11 @@ var Deck = /** @class */ (function (_super) {
                 thickness = index;
             }
         });
-        this.element.style.setProperty('--thickness', thickness + 'px');
+        this.element.style.setProperty('--thickness', "".concat(thickness, "px"));
+        var counterDiv = this.element.querySelector('.bga-cards-deck-counter');
+        if (counterDiv) {
+            counterDiv.innerHTML = "".concat(cardNumber);
+        }
     };
     Deck.prototype.addCard = function (card, animation, settings) {
         var _a;
@@ -899,12 +952,9 @@ var SlotStock = /** @class */ (function (_super) {
             _this.createSlot(slotId);
         });
     };
-    SlotStock.prototype.cardElementInStock = function (element) {
-        return (element === null || element === void 0 ? void 0 : element.parentElement.parentElement) == this.element;
-    };
     SlotStock.prototype.canAddCard = function (card, settings) {
         var _a, _b;
-        if (!this.cardInStock(card)) {
+        if (!this.contains(card)) {
             return true;
         }
         else {
@@ -912,6 +962,39 @@ var SlotStock = /** @class */ (function (_super) {
             var slotId = (_a = settings === null || settings === void 0 ? void 0 : settings.slot) !== null && _a !== void 0 ? _a : (_b = this.mapCardToSlot) === null || _b === void 0 ? void 0 : _b.call(this, card);
             return currentCardSlot != slotId;
         }
+    };
+    /**
+     * Swap cards inside the slot stock.
+     *
+     * @param cards the cards to swap
+     */
+    SlotStock.prototype.swapCards = function (cards) {
+        var _this = this;
+        if (!this.mapCardToSlot) {
+            throw new Error('You need to define SlotStock.mapCardToSlot to use SlotStock.swapCards');
+        }
+        var promises = [];
+        var elements = cards.map(function (card) { return _this.manager.getCardElement(card); });
+        var elementsRects = elements.map(function (element) { return element.getBoundingClientRect(); });
+        var cssPositions = elements.map(function (element) { return element.style.position; });
+        // we set to absolute so it doesn't mess with slide coordinates when 2 div arer at the same place
+        elements.forEach(function (element) { return element.style.position = 'absolute'; });
+        cards.forEach(function (card, index) {
+            var _a;
+            var cardElement = elements[index];
+            var promise;
+            var slotId = (_a = _this.mapCardToSlot) === null || _a === void 0 ? void 0 : _a.call(_this, card);
+            _this.slots[slotId].appendChild(cardElement);
+            cardElement.style.position = cssPositions[index];
+            cardElement.classList.remove('selectable', 'selected', 'disabled');
+            promise = _this.animationFromElement(cardElement, elementsRects[index], {});
+            if (!promise) {
+                console.warn("CardStock.moveFromOtherStock didn't return a Promise");
+                promise = Promise.resolve(false);
+            }
+            promises.push(promise);
+        });
+        return Promise.all(promises);
     };
     return SlotStock;
 }(LineStock));
@@ -1078,49 +1161,6 @@ var VoidStock = /** @class */ (function (_super) {
     };
     return VoidStock;
 }(CardStock));
-var HiddenDeck = /** @class */ (function (_super) {
-    __extends(HiddenDeck, _super);
-    function HiddenDeck(manager, element, settings) {
-        var _this = _super.call(this, manager, element, settings) || this;
-        _this.manager = manager;
-        _this.element = element;
-        element.classList.add('hidden-deck');
-        _this.element.appendChild(_this.manager.createCardElement({ id: "".concat(element.id, "-hidden-deck-back") }, false));
-        return _this;
-    }
-    HiddenDeck.prototype.addCard = function (card, animation, settings) {
-        var _a;
-        var newSettings = __assign(__assign({}, settings), { visible: (_a = settings === null || settings === void 0 ? void 0 : settings.visible) !== null && _a !== void 0 ? _a : false });
-        return _super.prototype.addCard.call(this, card, animation, newSettings);
-    };
-    return HiddenDeck;
-}(Deck));
-var VisibleDeck = /** @class */ (function (_super) {
-    __extends(VisibleDeck, _super);
-    function VisibleDeck(manager, element, settings) {
-        var _this = _super.call(this, manager, element, settings) || this;
-        _this.manager = manager;
-        _this.element = element;
-        element.classList.add('visible-deck');
-        return _this;
-    }
-    VisibleDeck.prototype.addCard = function (card, animation, settings) {
-        var _this = this;
-        var currentCard = this.cards[this.cards.length - 1];
-        if (currentCard) {
-            // we remove the card under, only when the animation is done. TODO use promise result
-            setTimeout(function () {
-                _this.removeCard(currentCard);
-                // counter the autoUpdateCardNumber as the card isn't really removed, we just remove it from the dom so player cannot see it's content.
-                if (_this.autoUpdateCardNumber) {
-                    _this.setCardNumber(_this.cardNumber + 1);
-                }
-            }, 600);
-        }
-        return _super.prototype.addCard.call(this, card, animation, settings);
-    };
-    return VisibleDeck;
-}(Deck));
 var AllVisibleDeck = /** @class */ (function (_super) {
     __extends(AllVisibleDeck, _super);
     function AllVisibleDeck(manager, element, settings) {
@@ -1130,8 +1170,15 @@ var AllVisibleDeck = /** @class */ (function (_super) {
         _this.manager = manager;
         _this.element = element;
         element.classList.add('all-visible-deck');
-        element.style.setProperty('--width', settings.width);
-        element.style.setProperty('--height', settings.height);
+        var cardWidth = _this.manager.getCardWidth();
+        var cardHeight = _this.manager.getCardHeight();
+        if (cardWidth && cardHeight) {
+            _this.element.style.setProperty('--width', "".concat(cardWidth, "px"));
+            _this.element.style.setProperty('--height', "".concat(cardHeight, "px"));
+        }
+        else {
+            throw new Error("You need to set cardWidth and cardHeight in the card manager to use Deck.");
+        }
         element.style.setProperty('--shift', (_a = settings.shift) !== null && _a !== void 0 ? _a : '3px');
         return _this;
     }
@@ -1193,7 +1240,9 @@ var CardManager = /** @class */ (function () {
         if (visible === void 0) { visible = true; }
         var id = this.getId(card);
         var side = visible ? 'front' : 'back';
-        // TODO check if exists
+        if (this.getCardElement(card)) {
+            throw new Error('This card already exists ' + JSON.stringify(card));
+        }
         var element = document.createElement("div");
         element.id = id;
         element.dataset.side = '' + side;
@@ -1223,10 +1272,11 @@ var CardManager = /** @class */ (function () {
         // if the card is in a stock, notify the stock about removal
         (_a = this.getCardStock(card)) === null || _a === void 0 ? void 0 : _a.cardRemoved(card);
         div.id = "deleted".concat(id);
-        // TODO this.removeVisibleInformations(div);
         div.remove();
     };
     /**
+     * Returns the stock containing the card.
+     *
      * @param card the card informations
      * @return the stock containing the card
      */
@@ -1234,10 +1284,21 @@ var CardManager = /** @class */ (function () {
         return this.stocks.find(function (stock) { return stock.contains(card); });
     };
     /**
+     * Return if the card passed as parameter is suppose to be visible or not.
+     * Use `isCardVisible` from settings if set, else will check if `card.type` is defined
+     *
+     * @param card the card informations
+     * @return the visiblility of the card (true means front side should be displayed)
+     */
+    CardManager.prototype.isCardVisible = function (card) {
+        var _a, _b, _c, _d;
+        return (_c = (_b = (_a = this.settings).isCardVisible) === null || _b === void 0 ? void 0 : _b.call(_a, card)) !== null && _c !== void 0 ? _c : ((_d = card.type) !== null && _d !== void 0 ? _d : false);
+    };
+    /**
      * Set the card to its front (visible) or back (not visible) side.
      *
      * @param card the card informations
-     * @param visible if the card is set to visible face
+     * @param visible if the card is set to visible face. If unset, will use isCardVisible(card)
      * @param settings the flip params (to update the card in current stock)
      */
     CardManager.prototype.setCardVisible = function (card, visible, settings) {
@@ -1247,7 +1308,8 @@ var CardManager = /** @class */ (function () {
         if (!element) {
             return;
         }
-        element.dataset.side = visible ? 'front' : 'back';
+        var isVisible = visible !== null && visible !== void 0 ? visible : this.isCardVisible(card);
+        element.dataset.side = isVisible ? 'front' : 'back';
         if ((_a = settings === null || settings === void 0 ? void 0 : settings.updateFront) !== null && _a !== void 0 ? _a : true) {
             (_c = (_b = this.settings).setupFrontDiv) === null || _c === void 0 ? void 0 : _c.call(_b, card, element.getElementsByClassName('front')[0]);
         }
@@ -1275,6 +1337,29 @@ var CardManager = /** @class */ (function () {
         var currentlyVisible = element.dataset.side === 'front';
         this.setCardVisible(card, !currentlyVisible, settings);
     };
+    /**
+     * Update the card informations. Used when a card with just an id (back shown) should be revealed, with all data needed to populate the front.
+     *
+     * @param card the card informations
+     */
+    CardManager.prototype.updateCardInformations = function (card, settings) {
+        var newSettings = settings ? __assign(__assign({}, settings), { updateData: true }) : { updateData: true, };
+        this.setCardVisible(card, undefined, newSettings);
+    };
+    /**
+     * @returns the card with set in the settings (undefined if unset)
+     */
+    CardManager.prototype.getCardWidth = function () {
+        var _a;
+        return (_a = this.settings) === null || _a === void 0 ? void 0 : _a.cardWidth;
+    };
+    /**
+     * @returns the card height set in the settings (undefined if unset)
+     */
+    CardManager.prototype.getCardHeight = function () {
+        var _a;
+        return (_a = this.settings) === null || _a === void 0 ? void 0 : _a.cardHeight;
+    };
     return CardManager;
 }());
 define({
@@ -1287,8 +1372,6 @@ define({
     HandStock: HandStock,
     ManualPositionStock: ManualPositionStock,
     VoidStock: VoidStock,
-    HiddenDeck: HiddenDeck,
-    VisibleDeck: VisibleDeck,
     AllVisibleDeck: AllVisibleDeck,
     sortFunction: sortFunction,
 });

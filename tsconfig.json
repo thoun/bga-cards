@@ -27,8 +27,6 @@
       "src/stocks/hand-stock.ts",
       "src/stocks/manual-position-stock.ts",
       "src/stocks/void-stock.ts",
-      "src/stocks/hidden-deck.ts",
-      "src/stocks/visible-deck.ts",
       "src/stocks/all-visible-deck.ts",
       "src/card-manager.ts",
       "src/define.ts"

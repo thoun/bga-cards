@@ -84,22 +84,13 @@ class CardStock<T> {
     public contains(card: T): boolean {
         return this.cards.some(c => this.manager.getId(c) == this.manager.getId(card));
     }
-    // TODO keep only one ?
-    protected cardInStock(card: T): boolean {
-        const element = document.getElementById(this.manager.getId(card));
-        return element ? this.cardElementInStock(element) : false;
-    }
-
-    protected cardElementInStock(element: HTMLElement): boolean {
-        return element?.parentElement == this.element;
-    }
 
     /**
      * @param card a card in the stock
      * @returns the HTML element generated for the card
      */
     public getCardElement(card: T): HTMLElement {
-        return document.getElementById(this.manager.getId(card));
+        return this.manager.getCardElement(card);
     }
 
     /**
@@ -110,7 +101,7 @@ class CardStock<T> {
      * @returns if the card can be added
      */
     protected canAddCard(card: T, settings?: AddCardSettings) {
-        return !this.cardInStock(card);
+        return !this.contains(card);
     }
 
     /**
@@ -128,8 +119,8 @@ class CardStock<T> {
 
         let promise: Promise<boolean>;
 
-        // we check if card is in stock then we ignore animation
-        const currentStock = this.manager.getCardStock(card);
+        // we check if card is in a stock
+        const originStock = this.manager.getCardStock(card);
 
         const index = this.getNewCardIndex(card);
         const settingsWithIndex: AddCardSettings = {
@@ -137,15 +128,15 @@ class CardStock<T> {
             ...(settings ?? {})
         };
 
-        if (currentStock?.cardInStock(card)) {
-            let element = document.getElementById(this.manager.getId(card));
-            promise = this.moveFromOtherStock(card, element, { ...animation, fromStock: currentStock,  }, settingsWithIndex);
-            element.dataset.side = (settingsWithIndex?.visible ?? true) ? 'front' : 'back';
-        } else if (animation?.fromStock && animation.fromStock.cardInStock(card)) {
-            let element = document.getElementById(this.manager.getId(card));
+        if (originStock?.contains(card)) {
+            let element = this.getCardElement(card);
+            promise = this.moveFromOtherStock(card, element, { ...animation, fromStock: originStock,  }, settingsWithIndex);
+            element.dataset.side = (settingsWithIndex?.visible ?? this.manager.isCardVisible(card)) ? 'front' : 'back';
+        } else if (animation?.fromStock && animation.fromStock.contains(card)) {
+            let element = this.getCardElement(card);
             promise = this.moveFromOtherStock(card, element, animation, settingsWithIndex);
         } else {
-            const element = this.manager.createCardElement(card, (settingsWithIndex?.visible ?? true));
+            const element = this.manager.createCardElement(card, (settingsWithIndex?.visible ?? this.manager.isCardVisible(card)));
             promise = this.moveFromElement(card, element, animation, settingsWithIndex);
         }
 
@@ -193,16 +184,19 @@ class CardStock<T> {
     protected moveFromOtherStock(card: T, cardElement: HTMLElement, animation: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean> {
         let promise: Promise<boolean>;
 
+        const element = animation.fromStock.contains(card) ? this.manager.getCardElement(card) : animation.fromStock.element;
+        const fromRect = element.getBoundingClientRect();
+
         this.addCardElementToParent(cardElement, settings);
 
         cardElement.classList.remove('selectable', 'selected', 'disabled');
-        promise = this.animationFromElement(cardElement, animation.fromStock.element, {
+        promise = this.animationFromElement(cardElement, fromRect, {
             originalSide: animation.originalSide, 
             rotationDelta: animation.rotationDelta,
             animation: animation.animation,
         });
         // in the case the card was move inside the same stock we don't remove it
-        if (animation.fromStock != this) {
+        if (animation.fromStock && animation.fromStock != this) {
             animation.fromStock.removeCard(card);
         }
         
@@ -221,14 +215,14 @@ class CardStock<T> {
     
         if (animation) {
             if (animation.fromStock) {
-                promise = this.animationFromElement(cardElement, animation.fromStock.element, {
+                promise = this.animationFromElement(cardElement, animation.fromStock.element.getBoundingClientRect(), {
                     originalSide: animation.originalSide, 
                     rotationDelta: animation.rotationDelta,
                     animation: animation.animation,
                 });
                 animation.fromStock.removeCard(card);
             } else if (animation.fromElement) {
-                promise = this.animationFromElement(cardElement,  animation.fromElement, {
+                promise = this.animationFromElement(cardElement,  animation.fromElement.getBoundingClientRect(), {
                     originalSide: animation.originalSide, 
                     rotationDelta: animation.rotationDelta,
                     animation: animation.animation,
@@ -279,7 +273,7 @@ class CardStock<T> {
      * @param card the card to remove
      */
     public removeCard(card: T) {
-        if (this.cardInStock(card)) {
+        if (this.contains(card) && this.element.contains(this.getCardElement(card))) {
             this.manager.removeCard(card);
         }
         this.cardRemoved(card);
@@ -331,6 +325,29 @@ class CardStock<T> {
         this.cards.forEach(card => this.setSelectableCard(card, selectionMode != 'none'));
         this.element.classList.toggle('selectable', selectionMode != 'none');
         this.selectionMode = selectionMode;
+    }
+
+    /**
+     * Set the selectable class for each card.
+     * 
+     * @param selectableCards the selectable cards. If unset, all cards are marked selectable. Default unset.
+     * @param unselectableCardsClass the class to add to unselectable cards (for example to mark them as disabled). Default 'disabled'.
+     */
+    public setSelectableCards(selectableCards?: T[], unselectableCardsClass: string = 'disabled') {
+        if (this.selectionMode === 'none') {
+            return
+        }
+
+        const selectableCardsIds = (selectableCards ?? this.getCards()).map(card => this.manager.getId(card));
+
+        this.cards.forEach(card => {
+            const element = this.getCardElement(card);
+            const selectable = selectableCardsIds.includes(this.manager.getId(card));
+            element.classList.toggle('selectable', selectable);
+            if (unselectableCardsClass) {
+                element.classList.toggle(unselectableCardsClass, !selectable);
+            }
+        });
     }
 
     /**
@@ -434,7 +451,7 @@ class CardStock<T> {
      * @param element The element to animate. The element is added to the destination stock before the animation starts. 
      * @param fromElement The HTMLElement to animate from.
      */
-    protected animationFromElement(element: HTMLElement, fromElement: HTMLElement, settings: CardAnimationSettings): Promise<boolean> {
+    protected animationFromElement(element: HTMLElement, fromRect: DOMRect, settings: CardAnimationSettings): Promise<boolean> {
         const side = element.dataset.side;
         if (settings.originalSide && settings.originalSide != side) {
             const cardSides = element.getElementsByClassName('card-sides')[0] as HTMLDivElement;
@@ -454,7 +471,7 @@ class CardStock<T> {
             ...settings ?? {},
 
             game: this.manager.game,
-            fromElement
+            fromRect
         }) ?? Promise.resolve(false);
     }
 

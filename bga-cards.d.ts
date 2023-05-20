@@ -271,8 +271,6 @@ declare class CardStock<T> {
      * @returns if the card is present in the stock
      */
     contains(card: T): boolean;
-    protected cardInStock(card: T): boolean;
-    protected cardElementInStock(element: HTMLElement): boolean;
     /**
      * @param card a card in the stock
      * @returns the HTML element generated for the card
@@ -334,6 +332,13 @@ declare class CardStock<T> {
      */
     setSelectionMode(selectionMode: CardSelectionMode): void;
     /**
+     * Set the selectable class for each card.
+     *
+     * @param selectableCards the selectable cards. If unset, all cards are marked selectable. Default unset.
+     * @param unselectableCardsClass the class to add to unselectable cards (for example to mark them as disabled). Default 'disabled'.
+     */
+    setSelectableCards(selectableCards?: T[], unselectableCardsClass?: string): void;
+    /**
      * Set selected state to a card.
      *
      * @param card the card to select
@@ -359,7 +364,7 @@ declare class CardStock<T> {
      * @param element The element to animate. The element is added to the destination stock before the animation starts.
      * @param fromElement The HTMLElement to animate from.
      */
-    protected animationFromElement(element: HTMLElement, fromElement: HTMLElement, settings: CardAnimationSettings): Promise<boolean>;
+    protected animationFromElement(element: HTMLElement, fromRect: DOMRect, settings: CardAnimationSettings): Promise<boolean>;
     /**
      * Set the card to its front (visible) or back (not visible) side.
      *
@@ -373,17 +378,33 @@ declare class CardStock<T> {
      */
     flipCard(card: T, settings?: FlipCardSettings): void;
 }
-interface DeckSettings {
+declare type SideOrAngle = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top' | 'bottom' | 'left' | 'right';
+declare type SideOrAngleOrCenter = SideOrAngle | 'center';
+interface DeckCounter {
     /**
-     * Indicate the width of the deck (should be the width of a card, in px)
+     * Show a card counter on the deck. Default true.
      */
-    width: number;
+    show?: boolean;
     /**
-     * Indicate the height of the deck (should be the height of a card, in px)
+     * Counter position. Default 'bottom'.
      */
-    height: number;
+    position?: SideOrAngleOrCenter;
     /**
-     * Indicate the current number of cards in the deck (default 52)
+     * Classes to add to counter (separated with spaces). Pre-built are `round` and `text-shadow`. Default `round`.
+     */
+    extraClasses?: string;
+    /**
+     * Show the counter when empty. Default true.
+     */
+    hideWhenEmpty?: boolean;
+}
+interface DeckSettings<T> {
+    /**
+     * Indicate the current top card.
+     */
+    topCard?: T;
+    /**
+     * Indicate the current number of cards in the deck (default 52).
      */
     cardNumber?: number;
     /**
@@ -397,7 +418,11 @@ interface DeckSettings {
     /**
      * Shadow direction. Default 'bottom-right'.
      */
-    shadowDirection?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top' | 'bottom' | 'left' | 'right';
+    shadowDirection?: SideOrAngle;
+    /**
+     * Show a card counter on the deck. Not visible if unset.
+     */
+    counter?: DeckCounter;
 }
 interface AddCardToDeckSettings extends AddCardSettings {
     /**
@@ -406,7 +431,8 @@ interface AddCardToDeckSettings extends AddCardSettings {
     autoUpdateCardNumber?: boolean;
 }
 /**
- * Abstract stock to represent a deck. (pile of cards, with a fake 3d effect of thickness).
+ * Abstract stock to represent a deck. (pile of cards, with a fake 3d effect of thickness). *
+ * Needs cardWidth and cardHeight to be set in the card manager.
  */
 declare class Deck<T> extends CardStock<T> {
     protected manager: CardManager<T>;
@@ -414,7 +440,8 @@ declare class Deck<T> extends CardStock<T> {
     protected cardNumber: number;
     protected autoUpdateCardNumber: boolean;
     private thicknesses;
-    constructor(manager: CardManager<T>, element: HTMLElement, settings: DeckSettings);
+    constructor(manager: CardManager<T>, element: HTMLElement, settings: DeckSettings<T>);
+    protected createCounter(counterPosition: SideOrAngleOrCenter, extraClasses: string): void;
     setCardNumber(cardNumber: number): void;
     addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardToDeckSettings): Promise<boolean>;
     cardRemoved(card: T): void;
@@ -503,8 +530,13 @@ declare class SlotStock<T> extends LineStock<T> {
      * @param slotsIds the new slotsIds. Will replace the old ones.
      */
     setSlotsIds(slotsIds: SlotId[]): void;
-    protected cardElementInStock(element: HTMLElement): boolean;
     protected canAddCard(card: T, settings?: AddCardToSlotSettings): boolean;
+    /**
+     * Swap cards inside the slot stock.
+     *
+     * @param cards the cards to swap
+     */
+    swapCards(cards: T[]): Promise<boolean[]>;
 }
 interface ScrollableStockButtonSettings {
     /**
@@ -629,27 +661,7 @@ declare class VoidStock<T> extends CardStock<T> {
      */
     addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean>;
 }
-declare class HiddenDeck<T> extends Deck<T> {
-    protected manager: CardManager<T>;
-    protected element: HTMLElement;
-    constructor(manager: CardManager<T>, element: HTMLElement, settings: DeckSettings);
-    addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardToDeckSettings): Promise<boolean>;
-}
-declare class VisibleDeck<T> extends Deck<T> {
-    protected manager: CardManager<T>;
-    protected element: HTMLElement;
-    constructor(manager: CardManager<T>, element: HTMLElement, settings: DeckSettings);
-    addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardToDeckSettings): Promise<boolean>;
-}
 interface AllVisibleDeckSettings extends CardStockSettings {
-    /**
-     * Indicate the width of a card, in CSS with unit
-     */
-    width: string;
-    /**
-     * Indicate the height of a card, in CSS with unit
-     */
-    height: string;
     /**
      * The shift between each card (default 3)
      */
@@ -710,10 +722,19 @@ interface CardManagerSettings<T> {
      * @param element  the card back Div element. You can add a class, change dataset, set background for the back side
      * @return the id for a card
      */
+    isCardVisible?: (card: T) => boolean;
     /**
      * The animation manager used in the game. If not provided, a new one will be instanciated for this card manager. Useful if you use AnimationManager outside of card manager, to avoid double instanciation.
      */
     animationManager?: AnimationManager;
+    /**
+     * Indicate the width of a card (in px). Used for Deck stocks.
+     */
+    cardWidth: number;
+    /**
+     * Indicate the height of a card (in px). Used for Deck stocks.
+     */
+    cardHeight: number;
 }
 interface FlipCardSettings {
     /**
@@ -759,18 +780,28 @@ declare class CardManager<T> {
     getCardElement(card: T): HTMLElement;
     removeCard(card: T): void;
     /**
+     * Returns the stock containing the card.
+     *
      * @param card the card informations
      * @return the stock containing the card
      */
     getCardStock(card: T): CardStock<T>;
     /**
+     * Return if the card passed as parameter is suppose to be visible or not.
+     * Use `isCardVisible` from settings if set, else will check if `card.type` is defined
+     *
+     * @param card the card informations
+     * @return the visiblility of the card (true means front side should be displayed)
+     */
+    isCardVisible(card: T): boolean;
+    /**
      * Set the card to its front (visible) or back (not visible) side.
      *
      * @param card the card informations
-     * @param visible if the card is set to visible face
+     * @param visible if the card is set to visible face. If unset, will use isCardVisible(card)
      * @param settings the flip params (to update the card in current stock)
      */
-    setCardVisible(card: T, visible: boolean, settings?: FlipCardSettings): void;
+    setCardVisible(card: T, visible?: boolean, settings?: FlipCardSettings): void;
     /**
      * Flips the card.
      *
@@ -778,5 +809,19 @@ declare class CardManager<T> {
      * @param settings the flip params (to update the card in current stock)
      */
     flipCard(card: T, settings?: FlipCardSettings): void;
+    /**
+     * Update the card informations. Used when a card with just an id (back shown) should be revealed, with all data needed to populate the front.
+     *
+     * @param card the card informations
+     */
+    updateCardInformations(card: T, settings?: Omit<FlipCardSettings, 'updateData'>): void;
+    /**
+     * @returns the card with set in the settings (undefined if unset)
+     */
+    getCardWidth(): number | undefined;
+    /**
+     * @returns the card height set in the settings (undefined if unset)
+     */
+    getCardHeight(): number | undefined;
 }
 declare const define: any;
