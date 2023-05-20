@@ -54,12 +54,12 @@ interface CardManagerSettings<T> {
     /**
      * Indicate the width of a card (in px). Used for Deck stocks.
      */
-    cardWidth: number;
+    cardWidth?: number;
 
     /**
      * Indicate the height of a card (in px). Used for Deck stocks.
      */
-    cardHeight: number;
+    cardHeight?: number;
 }
 
 interface FlipCardSettings {

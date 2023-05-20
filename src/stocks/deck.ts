@@ -101,14 +101,14 @@ class Deck<T> extends CardStock<T> {
         }
 
         if (settings.counter && (settings.counter.show ?? true)) {
-            if (settings.cardNumber ?? false) {
+            if (settings.cardNumber === null || settings.cardNumber === undefined) {
+                throw new Error(`You need to set cardNumber if you want to show the counter`);
+            } else {
                 this.createCounter(settings.counter.position ?? 'bottom', settings.counter.extraClasses ?? 'round');
 
                 if (settings.counter?.hideWhenEmpty) {
                     this.element.querySelector('.bga-cards-deck-counter').classList.add('hide-when-empty');
                 }
-            } else {
-                throw new Error(`You need to set cardNumber if you want to show the counter`);
             }
         }
         
@@ -126,6 +126,20 @@ class Deck<T> extends CardStock<T> {
         `);
     }
 
+    /**
+     * Get the the cards number.
+     * 
+     * @returns the cards number
+     */
+    public getCardNumber() {
+        return this.cardNumber;
+    }
+
+    /**
+     * Set the the cards number.
+     * 
+     * @param cardNumber the cards number
+     */
     public setCardNumber(cardNumber: number) {
         this.cardNumber = cardNumber;
 

@@ -765,7 +765,7 @@ var Deck = /** @class */ (function (_super) {
     __extends(Deck, _super);
     function Deck(manager, element, settings) {
         var _this = this;
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
         _this = _super.call(this, manager, element) || this;
         _this.manager = manager;
         _this.element = element;
@@ -795,17 +795,17 @@ var Deck = /** @class */ (function (_super) {
             console.warn("Deck is defined with ".concat(settings.cardNumber, " cards but no top card !"));
         }
         if (settings.counter && ((_e = settings.counter.show) !== null && _e !== void 0 ? _e : true)) {
-            if ((_f = settings.cardNumber) !== null && _f !== void 0 ? _f : false) {
-                _this.createCounter((_g = settings.counter.position) !== null && _g !== void 0 ? _g : 'bottom', (_h = settings.counter.extraClasses) !== null && _h !== void 0 ? _h : 'round');
-                if ((_j = settings.counter) === null || _j === void 0 ? void 0 : _j.hideWhenEmpty) {
+            if (settings.cardNumber === null || settings.cardNumber === undefined) {
+                throw new Error("You need to set cardNumber if you want to show the counter");
+            }
+            else {
+                _this.createCounter((_f = settings.counter.position) !== null && _f !== void 0 ? _f : 'bottom', (_g = settings.counter.extraClasses) !== null && _g !== void 0 ? _g : 'round');
+                if ((_h = settings.counter) === null || _h === void 0 ? void 0 : _h.hideWhenEmpty) {
                     _this.element.querySelector('.bga-cards-deck-counter').classList.add('hide-when-empty');
                 }
             }
-            else {
-                throw new Error("You need to set cardNumber if you want to show the counter");
-            }
         }
-        _this.setCardNumber((_k = settings.cardNumber) !== null && _k !== void 0 ? _k : 52);
+        _this.setCardNumber((_j = settings.cardNumber) !== null && _j !== void 0 ? _j : 52);
         return _this;
     }
     Deck.prototype.createCounter = function (counterPosition, extraClasses) {
@@ -815,6 +815,19 @@ var Deck = /** @class */ (function (_super) {
         this.element.style.setProperty('--bga-cards-deck-top', "".concat(top, "%"));
         this.element.insertAdjacentHTML('beforeend', "\n            <div class=\"bga-cards-deck-counter ".concat(extraClasses, "\"></div>\n        "));
     };
+    /**
+     * Get the the cards number.
+     *
+     * @returns the cards number
+     */
+    Deck.prototype.getCardNumber = function () {
+        return this.cardNumber;
+    };
+    /**
+     * Set the the cards number.
+     *
+     * @param cardNumber the cards number
+     */
     Deck.prototype.setCardNumber = function (cardNumber) {
         var _this = this;
         this.cardNumber = cardNumber;

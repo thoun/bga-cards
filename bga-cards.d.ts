@@ -442,6 +442,17 @@ declare class Deck<T> extends CardStock<T> {
     private thicknesses;
     constructor(manager: CardManager<T>, element: HTMLElement, settings: DeckSettings<T>);
     protected createCounter(counterPosition: SideOrAngleOrCenter, extraClasses: string): void;
+    /**
+     * Get the the cards number.
+     *
+     * @returns the cards number
+     */
+    getCardNumber(): number;
+    /**
+     * Set the the cards number.
+     *
+     * @param cardNumber the cards number
+     */
     setCardNumber(cardNumber: number): void;
     addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardToDeckSettings): Promise<boolean>;
     cardRemoved(card: T): void;
@@ -730,11 +741,11 @@ interface CardManagerSettings<T> {
     /**
      * Indicate the width of a card (in px). Used for Deck stocks.
      */
-    cardWidth: number;
+    cardWidth?: number;
     /**
      * Indicate the height of a card (in px). Used for Deck stocks.
      */
-    cardHeight: number;
+    cardHeight?: number;
 }
 interface FlipCardSettings {
     /**
