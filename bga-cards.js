@@ -1237,6 +1237,8 @@ var CardManager = /** @class */ (function () {
      * Set the card to its front (visible) or back (not visible) side.
      *
      * @param card the card informations
+     * @param visible if the card is set to visible face
+     * @param settings the flip params (to update the card in current stock)
      */
     CardManager.prototype.setCardVisible = function (card, visible, settings) {
         var _this = this;
@@ -1266,6 +1268,7 @@ var CardManager = /** @class */ (function () {
      * Flips the card.
      *
      * @param card the card informations
+     * @param settings the flip params (to update the card in current stock)
      */
     CardManager.prototype.flipCard = function (card, settings) {
         var element = this.getCardElement(card);

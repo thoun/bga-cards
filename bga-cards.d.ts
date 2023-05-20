@@ -698,9 +698,24 @@ interface CardManagerSettings<T> {
     animationManager?: AnimationManager;
 }
 interface FlipCardSettings {
-    updateFront: boolean;
-    updateBack: boolean;
-    updateData: boolean;
+    /**
+     * Updates the data of the flipped card, so the stock containing it will return the new data when using getCards().
+     * The new data is the card passed as the first argument of the `setCardVisible` / `flipCard` method.
+     * Default true
+     */
+    updateData?: boolean;
+    /**
+     * Updates the front display, by calling `setupFrontDiv`.
+     * The new data is the card passed as the first argument of the `setCardVisible` / `flipCard` method.
+     * Default true
+     */
+    updateFront?: boolean;
+    /**
+     * Updates the back display, by calling `setupBackDiv`.
+     * The new data is the card passed as the first argument of the `setCardVisible` / `flipCard` method.
+     * Default false
+     */
+    updateBack?: boolean;
 }
 declare class CardManager<T> {
     game: Game;
@@ -734,12 +749,15 @@ declare class CardManager<T> {
      * Set the card to its front (visible) or back (not visible) side.
      *
      * @param card the card informations
+     * @param visible if the card is set to visible face
+     * @param settings the flip params (to update the card in current stock)
      */
     setCardVisible(card: T, visible: boolean, settings?: FlipCardSettings): void;
     /**
      * Flips the card.
      *
      * @param card the card informations
+     * @param settings the flip params (to update the card in current stock)
      */
     flipCard(card: T, settings?: FlipCardSettings): void;
 }
