@@ -22,7 +22,6 @@ function initManager() {
                 <div class="type" data-type="${card.type}">Type ${card.type}</div>
                 <div>SubType ${card.type_arg}</div>
             `;*/
-            div.id = `card-${card.id}-front`;
             if (card.type) {
                 game.addTooltipHtml(div.id, `tooltip de ${card.type} > ${card.type_arg}`);
             }
@@ -30,6 +29,7 @@ function initManager() {
         setupBackDiv: (card, div) => {
             div.classList.add('mygame-card-back');
         },
+        isCardVisible: card => Boolean(card.type),
         cardWidth: 100,
         cardHeight: 150,
     });

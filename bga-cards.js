@@ -1163,24 +1163,34 @@ var VoidStock = /** @class */ (function (_super) {
      *
      * @param card the card to add
      * @param animation a `CardAnimation` object
-     * @param settings a `AddCardSettings` object
+     * @param settings a `AddCardToVoidStockSettings` object
      * @returns the promise when the animation is done (true if it was animated, false if it wasn't)
      */
     VoidStock.prototype.addCard = function (card, animation, settings) {
         var _this = this;
+        var _a;
         var promise = _super.prototype.addCard.call(this, card, animation, settings);
         // center the element
         var cardElement = this.getCardElement(card);
+        var originalLeft = cardElement.style.left;
+        var originalTop = cardElement.style.top;
         cardElement.style.left = "".concat((this.element.clientWidth - cardElement.clientWidth) / 2, "px");
         cardElement.style.top = "".concat((this.element.clientHeight - cardElement.clientHeight) / 2, "px");
         if (!promise) {
             console.warn("VoidStock.addCard didn't return a Promise");
             promise = Promise.resolve(false);
         }
-        return promise.then(function (result) {
-            _this.removeCard(card);
-            return result;
-        });
+        if ((_a = settings === null || settings === void 0 ? void 0 : settings.remove) !== null && _a !== void 0 ? _a : true) {
+            return promise.then(function (result) {
+                _this.removeCard(card);
+                return result;
+            });
+        }
+        else {
+            cardElement.style.left = originalLeft;
+            cardElement.style.top = originalTop;
+            return promise;
+        }
     };
     return VoidStock;
 }(CardStock));

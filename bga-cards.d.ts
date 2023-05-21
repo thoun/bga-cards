@@ -652,6 +652,14 @@ declare class ManualPositionStock<T> extends CardStock<T> {
     addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean>;
     cardRemoved(card: T): void;
 }
+interface AddCardToVoidStockSettings extends AddCardSettings {
+    /**
+     * Removes the card after adding.
+     * Set to false if you want to add the card to the void to stock to animate it to another stock just after.
+     * Default true
+     */
+    remove?: boolean;
+}
 /**
  * A stock to make cards disappear (to automatically remove discarded cards, or to represent a bag)
  */
@@ -668,10 +676,10 @@ declare class VoidStock<T> extends CardStock<T> {
      *
      * @param card the card to add
      * @param animation a `CardAnimation` object
-     * @param settings a `AddCardSettings` object
+     * @param settings a `AddCardToVoidStockSettings` object
      * @returns the promise when the animation is done (true if it was animated, false if it wasn't)
      */
-    addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean>;
+    addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardToVoidStockSettings): Promise<boolean>;
 }
 interface AllVisibleDeckSettings extends CardStockSettings {
     /**

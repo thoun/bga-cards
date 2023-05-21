@@ -32,6 +32,12 @@ function addCardToLineStockWithAnimation(fromElement, customAnimation) {
     );
 }
 
+function addCardToLineStockFromVoidStock() {
+    const card = { id: getCardId(), type: 1 + Math.floor(Math.random() * 4), type_arg: 1 + Math.floor(Math.random() * 10), location: 'table', location_arg: 0 }
+    voidStock.addCard({ id: card.id }, undefined, { remove: false, });
+    lineStock.addCard(card);
+}
+
 function initLineStockOverlap() {
     lineStockOverlap = new LineStock(cardsManager, document.getElementById('line-stock-overlap'));
 
