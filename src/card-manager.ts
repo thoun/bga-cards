@@ -213,7 +213,7 @@ class CardManager<T> {
         element.dataset.side = isVisible ? 'front' : 'back';
 
         if (settings?.updateFront ?? true) {
-            const updateFrontDelay = settings.updateFrontDelay ?? 500;
+            const updateFrontDelay = settings?.updateFrontDelay ?? 500;
 
             if (!isVisible && updateFrontDelay > 0) {
                 setTimeout(() => this.settings.setupFrontDiv?.(card, element.getElementsByClassName('front')[0] as HTMLDivElement), updateFrontDelay);
@@ -222,7 +222,7 @@ class CardManager<T> {
             }
         }
         if (settings?.updateBack ?? false) {
-            const updateBackDelay = settings.updateBackDelay ?? 0;
+            const updateBackDelay = settings?.updateBackDelay ?? 0;
             if (isVisible && updateBackDelay > 0) {
                 setTimeout(() => this.settings.setupBackDiv?.(card, element.getElementsByClassName('back')[0] as HTMLDivElement), updateBackDelay);
             } else {

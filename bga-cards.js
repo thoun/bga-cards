@@ -1344,7 +1344,7 @@ var CardManager = /** @class */ (function () {
         var isVisible = visible !== null && visible !== void 0 ? visible : this.isCardVisible(card);
         element.dataset.side = isVisible ? 'front' : 'back';
         if ((_a = settings === null || settings === void 0 ? void 0 : settings.updateFront) !== null && _a !== void 0 ? _a : true) {
-            var updateFrontDelay = (_b = settings.updateFrontDelay) !== null && _b !== void 0 ? _b : 500;
+            var updateFrontDelay = (_b = settings === null || settings === void 0 ? void 0 : settings.updateFrontDelay) !== null && _b !== void 0 ? _b : 500;
             if (!isVisible && updateFrontDelay > 0) {
                 setTimeout(function () { var _a, _b; return (_b = (_a = _this.settings).setupFrontDiv) === null || _b === void 0 ? void 0 : _b.call(_a, card, element.getElementsByClassName('front')[0]); }, updateFrontDelay);
             }
@@ -1353,7 +1353,7 @@ var CardManager = /** @class */ (function () {
             }
         }
         if ((_e = settings === null || settings === void 0 ? void 0 : settings.updateBack) !== null && _e !== void 0 ? _e : false) {
-            var updateBackDelay = (_f = settings.updateBackDelay) !== null && _f !== void 0 ? _f : 0;
+            var updateBackDelay = (_f = settings === null || settings === void 0 ? void 0 : settings.updateBackDelay) !== null && _f !== void 0 ? _f : 0;
             if (isVisible && updateBackDelay > 0) {
                 setTimeout(function () { var _a, _b; return (_b = (_a = _this.settings).setupBackDiv) === null || _b === void 0 ? void 0 : _b.call(_a, card, element.getElementsByClassName('back')[0]); }, updateBackDelay);
             }

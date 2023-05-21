@@ -20,9 +20,9 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
 
-bga-animations@thoun/bga-animations#0.1.0:
+bga-animations@thoun/bga-animations#0.1.1:
   version "1.0.0"
-  resolved "https://codeload.github.com/thoun/bga-animations/tar.gz/7e358f7089a6954e7a641b7a5c25f97573d46fde"
+  resolved "https://codeload.github.com/thoun/bga-animations/tar.gz/a196ecc67f33e591b9dd4df04afdb987b24f427f"
 
 binary-extensions@^2.0.0:
   version "2.2.0"
