@@ -454,7 +454,7 @@ declare class Deck<T> extends CardStock<T> {
      *
      * @param cardNumber the cards number
      */
-    setCardNumber(cardNumber: number): void;
+    setCardNumber(cardNumber: number, topCard?: T | null): void;
     addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardToDeckSettings): Promise<boolean>;
     cardRemoved(card: T): void;
 }

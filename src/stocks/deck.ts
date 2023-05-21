@@ -140,7 +140,11 @@ class Deck<T> extends CardStock<T> {
      * 
      * @param cardNumber the cards number
      */
-    public setCardNumber(cardNumber: number) {
+    public setCardNumber(cardNumber: number, topCard: T | null = null) {
+        if (topCard) {
+            this.addCard(topCard);
+        }
+
         this.cardNumber = cardNumber;
 
         this.element.dataset.empty = (this.cardNumber == 0).toString();

@@ -137,9 +137,9 @@ class CardManager<T> {
         element.dataset.side = ''+side;
         element.innerHTML = `
             <div class="card-sides">
-                <div class="card-side front">
+                <div id="${id}-front" class="card-side front">
                 </div>
-                <div class="card-side back">
+                <div id="${id}-back" class="card-side back">
                 </div>
             </div>
         `;

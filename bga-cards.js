@@ -834,8 +834,12 @@ var Deck = /** @class */ (function (_super) {
      *
      * @param cardNumber the cards number
      */
-    Deck.prototype.setCardNumber = function (cardNumber) {
+    Deck.prototype.setCardNumber = function (cardNumber, topCard) {
         var _this = this;
+        if (topCard === void 0) { topCard = null; }
+        if (topCard) {
+            this.addCard(topCard);
+        }
         this.cardNumber = cardNumber;
         this.element.dataset.empty = (this.cardNumber == 0).toString();
         var thickness = 0;
@@ -1265,7 +1269,7 @@ var CardManager = /** @class */ (function () {
         var element = document.createElement("div");
         element.id = id;
         element.dataset.side = '' + side;
-        element.innerHTML = "\n            <div class=\"card-sides\">\n                <div class=\"card-side front\">\n                </div>\n                <div class=\"card-side back\">\n                </div>\n            </div>\n        ";
+        element.innerHTML = "\n            <div class=\"card-sides\">\n                <div id=\"".concat(id, "-front\" class=\"card-side front\">\n                </div>\n                <div id=\"").concat(id, "-back\" class=\"card-side back\">\n                </div>\n            </div>\n        ");
         element.classList.add('card');
         document.body.appendChild(element);
         (_b = (_a = this.settings).setupDiv) === null || _b === void 0 ? void 0 : _b.call(_a, card, element);
