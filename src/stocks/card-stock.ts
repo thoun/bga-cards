@@ -366,7 +366,13 @@ class CardStock<T> {
      * @param card the card to select
      */
     public selectCard(card: T, silent: boolean = false) {
+        const element = this.getCardElement(card);
+
         if (this.selectionMode == 'none') {
+            return;
+        }
+
+        if (!element.classList.contains('selectable')) {
             return;
         }
         
@@ -374,7 +380,6 @@ class CardStock<T> {
             this.cards.filter(c => this.manager.getId(c) != this.manager.getId(card)).forEach(c => this.unselectCard(c, true));
         }
 
-        const element = this.getCardElement(card);
         element.classList.add('selected');
         this.selectedCards.push(card);
         
