@@ -5,6 +5,21 @@ interface CardStockSettings {
      * Be sure you typed the values correctly! Else '11' will be before '2'.
      */
     sort?: SortFunction;
+
+    /**
+     * The class to apply to selectable cards. Use class from manager is unset.
+     */
+    selectableCardClass?: string | null;
+
+    /**
+     * The class to apply to selectable cards. Use class from manager is unset.
+     */
+    unselectableCardClass?: string | null;
+
+    /**
+     * The class to apply to selected cards. Use class from manager is unset.
+     */
+    selectedCardClass?: string | null;
 }
 
 interface AddCardSettings {
@@ -50,7 +65,7 @@ class CardStock<T> {
      * @param manager the card manager  
      * @param element the stock element (should be an empty HTML Element)
      */
-    constructor(protected manager: CardManager<T>, protected element: HTMLElement, settings?: CardStockSettings) {
+    constructor(protected manager: CardManager<T>, protected element: HTMLElement, private settings?: CardStockSettings) {
         manager.addStock(this);
         element?.classList.add('card-stock'/*, this.constructor.name.split(/(?=[A-Z])/).join('-').toLowerCase()* doesn't work in production because of minification */);
         this.bindClick();
@@ -77,6 +92,13 @@ class CardStock<T> {
      */
     public getSelection(): T[] {
         return this.selectedCards.slice();
+    }
+
+    /**
+     * @returns the selected cards
+     */
+    public isSelected(card: T): boolean {
+        return this.selectedCards.some(c => this.manager.getId(c) == this.manager.getId(card));
     }
 
     /**
@@ -199,7 +221,8 @@ class CardStock<T> {
 
         this.addCardElementToParent(cardElement, settings);
 
-        cardElement.classList.remove('selectable', 'selected', 'disabled');
+        this.removeSelectionClassesFromElement(cardElement);
+
         promise = this.animationFromElement(cardElement, fromRect, {
             originalSide: animation.originalSide, 
             rotationDelta: animation.rotationDelta,
@@ -316,48 +339,61 @@ class CardStock<T> {
         cards.forEach(card => this.removeCard(card));
     }
 
-    protected setSelectableCard(card: T, selectable: boolean) {
-        const element = this.getCardElement(card);
-        element.classList.toggle('selectable', selectable);
-    }
-
     /**
      * Set if the stock is selectable, and if yes if it can be multiple.
      * If set to 'none', it will unselect all selected cards.
      * 
      * @param selectionMode the selection mode
+     * @param selectableCards the selectable cards (all if unset). Calls `setSelectableCards` method
      */
-    public setSelectionMode(selectionMode: CardSelectionMode) {
-        if (selectionMode === 'none') {
+    public setSelectionMode(selectionMode: CardSelectionMode, selectableCards?: T[]) {
+        if (selectionMode !== this.selectionMode) {
             this.unselectAll(true);
         }
 
         this.cards.forEach(card => this.setSelectableCard(card, selectionMode != 'none'));
-        this.element.classList.toggle('selectable', selectionMode != 'none');
+        this.element.classList.toggle('bga-cards_selectable-stock', selectionMode != 'none');
         this.selectionMode = selectionMode;
+        
+        if (selectionMode === 'none') {
+            this.getCards().forEach(card => this.removeSelectionClasses(card));
+        } else {
+            this.setSelectableCards(selectableCards ?? this.getCards());
+        }
+    }
+
+    protected setSelectableCard(card: T, selectable: boolean) {
+        const element = this.getCardElement(card);              
+        const selectableCardsClass = this.getSelectableCardClass();
+        const unselectableCardsClass = this.getUnselectableCardClass();
+
+        if (selectableCardsClass) {
+            element.classList.toggle(selectableCardsClass, selectable);
+        }
+        if (unselectableCardsClass) {
+            element.classList.toggle(unselectableCardsClass, !selectable);
+        }
+
+        if (!selectable && this.isSelected(card)) {
+            this.unselectCard(card, true);
+        }
     }
 
     /**
      * Set the selectable class for each card.
      * 
      * @param selectableCards the selectable cards. If unset, all cards are marked selectable. Default unset.
-     * @param unselectableCardsClass the class to add to unselectable cards (for example to mark them as disabled). Default 'disabled'.
      */
-    public setSelectableCards(selectableCards?: T[], unselectableCardsClass: string = 'disabled') {
+    public setSelectableCards(selectableCards?: T[]) {
         if (this.selectionMode === 'none') {
-            return
+            return;
         }
 
         const selectableCardsIds = (selectableCards ?? this.getCards()).map(card => this.manager.getId(card));
 
-        this.cards.forEach(card => {
-            const element = this.getCardElement(card);
-            const selectable = selectableCardsIds.includes(this.manager.getId(card));
-            element.classList.toggle('selectable', selectable);
-            if (unselectableCardsClass) {
-                element.classList.toggle(unselectableCardsClass, !selectable);
-            }
-        });
+        this.cards.forEach(card =>
+            this.setSelectableCard(card, selectableCardsIds.includes(this.manager.getId(card)))
+        );
     }
 
     /**
@@ -369,13 +405,20 @@ class CardStock<T> {
         if (this.selectionMode == 'none') {
             return;
         }
+
+        const element = this.getCardElement(card);
+
+        const selectableCardsClass = this.getSelectableCardClass();
+        if (!element.classList.contains(selectableCardsClass)) {
+            return;
+        }
         
         if (this.selectionMode === 'single') {
             this.cards.filter(c => this.manager.getId(c) != this.manager.getId(card)).forEach(c => this.unselectCard(c, true));
         }
 
-        const element = this.getCardElement(card);
-        element.classList.add('selected');
+        const selectedCardsClass = this.getSelectedCardClass();
+        element.classList.add(selectedCardsClass);
         this.selectedCards.push(card);
         
         if (!silent) {
@@ -389,8 +432,9 @@ class CardStock<T> {
      * @param card the card to unselect
      */
     public unselectCard(card: T, silent: boolean = false) {
-        const element = this.getCardElement(card);
-        element.classList.remove('selected');
+        const element = this.getCardElement(card);      
+        const selectedCardsClass = this.getSelectedCardClass();
+        element.classList.remove(selectedCardsClass);
 
         const index = this.selectedCards.findIndex(c => this.manager.getId(c) == this.manager.getId(card));
         if (index !== -1) {
@@ -501,5 +545,38 @@ class CardStock<T> {
      */
     public flipCard(card: T, settings?: FlipCardSettings): void {
         this.manager.flipCard(card, settings);
+    }
+
+    /**
+     * @returns the class to apply to selectable cards. Use class from manager is unset.
+     */
+    public getSelectableCardClass(): string | null {
+        return this.settings?.selectableCardClass === undefined ? this.manager.getSelectableCardClass() : this.settings?.selectableCardClass;
+    }
+
+    /**
+     * @returns the class to apply to selectable cards. Use class from manager is unset.
+     */
+    public getUnselectableCardClass(): string | null {
+        return this.settings?.unselectableCardClass === undefined ?this.manager.getUnselectableCardClass() : this.settings?.unselectableCardClass;
+    }
+
+    /**
+     * @returns the class to apply to selected cards. Use class from manager is unset.
+     */
+    public getSelectedCardClass(): string | null {
+        return this.settings?.selectableCardClass === undefined ? this.manager.getSelectedCardClass() : this.settings?.selectableCardClass;
+    }
+
+    public removeSelectionClasses(card: T) {        
+        this.removeSelectionClassesFromElement(this.getCardElement(card));
+    }
+
+    public removeSelectionClassesFromElement(cardElement: HTMLElement) {        
+        const selectableCardsClass = this.getSelectableCardClass();
+        const unselectableCardsClass = this.getUnselectableCardClass();
+        const selectedCardsClass = this.getSelectedCardClass();
+
+        cardElement.classList.remove(selectableCardsClass, unselectableCardsClass, selectedCardsClass);
     }
 }

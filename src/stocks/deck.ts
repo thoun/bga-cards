@@ -107,7 +107,7 @@ class Deck<T> extends CardStock<T> {
                 this.createCounter(settings.counter.position ?? 'bottom', settings.counter.extraClasses ?? 'round');
 
                 if (settings.counter?.hideWhenEmpty) {
-                    this.element.querySelector('.bga-cards-deck-counter').classList.add('hide-when-empty');
+                    this.element.querySelector('.bga-cards_deck-counter').classList.add('hide-when-empty');
                 }
             }
         }
@@ -122,7 +122,7 @@ class Deck<T> extends CardStock<T> {
         this.element.style.setProperty('--bga-cards-deck-top', `${top}%`);
 
         this.element.insertAdjacentHTML('beforeend', `
-            <div class="bga-cards-deck-counter ${extraClasses}"></div>
+            <div class="bga-cards_deck-counter ${extraClasses}"></div>
         `);
     }
 
@@ -157,7 +157,7 @@ class Deck<T> extends CardStock<T> {
         });
         this.element.style.setProperty('--thickness', `${thickness}px`);
 
-        const counterDiv = this.element.querySelector('.bga-cards-deck-counter');
+        const counterDiv = this.element.querySelector('.bga-cards_deck-counter');
         if (counterDiv) {
             counterDiv.innerHTML = `${cardNumber}`;
         }
@@ -176,5 +176,10 @@ class Deck<T> extends CardStock<T> {
             this.setCardNumber(this.cardNumber - 1);
         }
         super.cardRemoved(card);
+    }
+
+    public getTopCard(): T | null {
+        const cards = this.getCards();
+        return cards.length ? cards[cards.length - 1] : null;
     }
 }

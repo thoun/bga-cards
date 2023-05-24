@@ -60,6 +60,21 @@ interface CardManagerSettings<T> {
      * Indicate the height of a card (in px). Used for Deck stocks.
      */
     cardHeight?: number;
+
+    /**
+     * The class to apply to selectable cards. Default 'bga-cards_selectable-card'.
+     */
+    selectableCardClass?: string | null;
+
+    /**
+     * The class to apply to selectable cards. Default 'bga-cards_disabled-card'.
+     */
+    unselectableCardClass?: string | null;
+
+    /**
+     * The class to apply to selected cards. Default 'bga-cards_selected-card'.
+     */
+    selectedCardClass?: string | null;
 }
 
 interface FlipCardSettings {
@@ -275,5 +290,26 @@ class CardManager<T> {
      */
     public getCardHeight(): number | undefined {
         return this.settings?.cardHeight;
+    }
+
+    /**
+     * @returns the class to apply to selectable cards. Default 'bga-cards_selectable-card'.
+     */
+    public getSelectableCardClass(): string | null {
+        return this.settings?.selectableCardClass === undefined ? 'bga-cards_selectable-card' : this.settings?.selectableCardClass;
+    }
+
+    /**
+     * @returns the class to apply to selectable cards. Default 'bga-cards_disabled-card'.
+     */
+    public getUnselectableCardClass(): string | null {
+        return this.settings?.unselectableCardClass === undefined ? 'bga-cards_disabled-card' : this.settings?.unselectableCardClass;
+    }
+
+    /**
+     * @returns the class to apply to selected cards. Default 'bga-cards_selected-card'.
+     */
+    public getSelectedCardClass(): string | null {
+        return this.settings?.selectableCardClass === undefined ? 'bga-cards_selected-card' : this.settings?.selectableCardClass;
     }
 }

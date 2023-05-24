@@ -2,6 +2,11 @@ html {
     background: url(https://x.boardgamearena.net/data/themereleases/221026-1000/img/layout/back-main.jpg), #f2f2f2;
 }
 
+.nav {
+    font-size: 120%;
+    font-weight: bold;
+}
+
 h1, h2 {
     margin: 0.3rem;
 }
@@ -17,10 +22,13 @@ h1, h2 {
     flex: 1;
 }
 
-.flex .block {
+.block {
     background: #FFFFFF99;
     border-radius: 8px;
     padding: 10px;
+}
+
+.flex .block {
     min-width: 500px;
 }
 
@@ -30,8 +38,18 @@ h1, h2 {
     position: relative;
     border-radius: 5px;
 }
-.mygame-card.selected {
+.selection-stock .mygame-card.bga-cards_selectable-card {
+    box-shadow: 0 0 5px 3px lightcyan;
+}
+.selection-stock .mygame-card.bga-cards_selectable-card .card-side {
+    box-shadow: unset;
+}
+
+.selection-stock .mygame-card.bga-cards_selected-card {
     box-shadow: 0 0 5px 3px blueviolet;
+}
+.selection-stock .mygame-card.bga-cards_selected-card .card-side {
+    box-shadow: unset;
 }
 
 .mygame-card-front {
@@ -121,4 +139,30 @@ h1, h2 {
 
 .manual-position-stock .card {
     transition: left 0.5s, top 0.5s;
+}
+
+
+.mygame-token {
+    width: 90px;
+    height: 90px;
+    position: relative;
+    border-radius: 50%;
+}
+
+.mygame-token .card-side {
+    background: url('tokens.png');
+    background-size: auto 100%;
+    border-radius: 50%;
+}
+
+.mygame-token-front[data-number="1"] { background-position-x: 25%; }
+.mygame-token-front[data-number="2"] { background-position-x: 50%; }
+.mygame-token-front[data-number="3"] { background-position-x: 75%; }
+.mygame-token-front[data-number="4"] { background-position-x: 100%; }
+
+.token-slot {
+    width: 90px;
+    height: 90px;
+    background: #FFFFFF99;
+    border-radius: 50%;
 }

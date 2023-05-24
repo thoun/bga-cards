@@ -1,12 +1,10 @@
 .card-stock {
-
-    &.selectable {
-        .card:not(.disabled) {
-            cursor: pointer;
-        }
+    .card.bga-cards_selectable-card:not(.bga-cards_disabled-card) {
+        cursor: pointer;
     }
 
-    .card.selectable:not(.disabled) {
-        cursor: pointer;
+    .card.bga-cards_disabled-card {
+        cursor: not-allowed;
+        filter: contrast(0.6);
     }
 }

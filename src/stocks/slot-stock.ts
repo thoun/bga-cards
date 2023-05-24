@@ -137,7 +137,7 @@ class SlotStock<T> extends LineStock<T> {
             this.slots[slotId].appendChild(cardElement);
             cardElement.style.position = cssPositions[index];
 
-            cardElement.classList.remove('selectable', 'selected', 'disabled');
+            this.removeSelectionClassesFromElement(cardElement);
             promise = this.animationFromElement(cardElement, elementsRects[index], {});
             
             if (!promise) {

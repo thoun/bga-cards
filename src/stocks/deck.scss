@@ -19,14 +19,14 @@
                 visibility: hidden;
             }
 
-            .bga-cards-deck-counter.hide-when-empty {
+            .bga-cards_deck-counter.hide-when-empty {
                 display: none;
             }
         }
     }
 }
 
-.bga-cards-deck-counter {
+.bga-cards_deck-counter {
     --bga-cards-deck-counter-size: 20px;
 
     position: absolute;
@@ -41,6 +41,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
+    user-select: none;
+    pointer-events: none;
 
     &.round {
         color: black;

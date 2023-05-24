@@ -216,6 +216,18 @@ interface CardStockSettings {
      * Be sure you typed the values correctly! Else '11' will be before '2'.
      */
     sort?: SortFunction;
+    /**
+     * The class to apply to selectable cards. Use class from manager is unset.
+     */
+    selectableCardClass?: string | null;
+    /**
+     * The class to apply to selectable cards. Use class from manager is unset.
+     */
+    unselectableCardClass?: string | null;
+    /**
+     * The class to apply to selected cards. Use class from manager is unset.
+     */
+    selectedCardClass?: string | null;
 }
 interface AddCardSettings {
     /**
@@ -233,6 +245,7 @@ declare type CardSelectionMode = 'none' | 'single' | 'multiple';
 declare class CardStock<T> {
     protected manager: CardManager<T>;
     protected element: HTMLElement;
+    private settings?;
     protected cards: T[];
     protected selectedCards: T[];
     protected selectionMode: CardSelectionMode;
@@ -267,6 +280,10 @@ declare class CardStock<T> {
      * @returns the selected cards
      */
     getSelection(): T[];
+    /**
+     * @returns the selected cards
+     */
+    isSelected(card: T): boolean;
     /**
      * @param card a card
      * @returns if the card is present in the stock
@@ -324,21 +341,21 @@ declare class CardStock<T> {
      * Remove all cards from the stock.
      */
     removeAll(): void;
-    protected setSelectableCard(card: T, selectable: boolean): void;
     /**
      * Set if the stock is selectable, and if yes if it can be multiple.
      * If set to 'none', it will unselect all selected cards.
      *
      * @param selectionMode the selection mode
+     * @param selectableCards the selectable cards (all if unset). Calls `setSelectableCards` method
      */
-    setSelectionMode(selectionMode: CardSelectionMode): void;
+    setSelectionMode(selectionMode: CardSelectionMode, selectableCards?: T[]): void;
+    protected setSelectableCard(card: T, selectable: boolean): void;
     /**
      * Set the selectable class for each card.
      *
      * @param selectableCards the selectable cards. If unset, all cards are marked selectable. Default unset.
-     * @param unselectableCardsClass the class to add to unselectable cards (for example to mark them as disabled). Default 'disabled'.
      */
-    setSelectableCards(selectableCards?: T[], unselectableCardsClass?: string): void;
+    setSelectableCards(selectableCards?: T[]): void;
     /**
      * Set selected state to a card.
      *
@@ -378,6 +395,20 @@ declare class CardStock<T> {
      * @param card the card informations
      */
     flipCard(card: T, settings?: FlipCardSettings): void;
+    /**
+     * @returns the class to apply to selectable cards. Use class from manager is unset.
+     */
+    getSelectableCardClass(): string | null;
+    /**
+     * @returns the class to apply to selectable cards. Use class from manager is unset.
+     */
+    getUnselectableCardClass(): string | null;
+    /**
+     * @returns the class to apply to selected cards. Use class from manager is unset.
+     */
+    getSelectedCardClass(): string | null;
+    removeSelectionClasses(card: T): void;
+    removeSelectionClassesFromElement(cardElement: HTMLElement): void;
 }
 declare type SideOrAngle = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top' | 'bottom' | 'left' | 'right';
 declare type SideOrAngleOrCenter = SideOrAngle | 'center';
@@ -457,6 +488,7 @@ declare class Deck<T> extends CardStock<T> {
     setCardNumber(cardNumber: number, topCard?: T | null): void;
     addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardToDeckSettings): Promise<boolean>;
     cardRemoved(card: T): void;
+    getTopCard(): T | null;
 }
 interface LineStockSettings extends CardStockSettings {
     /**
@@ -755,6 +787,18 @@ interface CardManagerSettings<T> {
      * Indicate the height of a card (in px). Used for Deck stocks.
      */
     cardHeight?: number;
+    /**
+     * The class to apply to selectable cards. Default 'bga-cards_selectable-card'.
+     */
+    selectableCardClass?: string | null;
+    /**
+     * The class to apply to selectable cards. Default 'bga-cards_disabled-card'.
+     */
+    unselectableCardClass?: string | null;
+    /**
+     * The class to apply to selected cards. Default 'bga-cards_selected-card'.
+     */
+    selectedCardClass?: string | null;
 }
 interface FlipCardSettings {
     /**
@@ -855,5 +899,17 @@ declare class CardManager<T> {
      * @returns the card height set in the settings (undefined if unset)
      */
     getCardHeight(): number | undefined;
+    /**
+     * @returns the class to apply to selectable cards. Default 'bga-cards_selectable-card'.
+     */
+    getSelectableCardClass(): string | null;
+    /**
+     * @returns the class to apply to selectable cards. Default 'bga-cards_disabled-card'.
+     */
+    getUnselectableCardClass(): string | null;
+    /**
+     * @returns the class to apply to selected cards. Default 'bga-cards_selected-card'.
+     */
+    getSelectedCardClass(): string | null;
 }
 declare const define: any;

@@ -1,0 +1,93 @@
+<html>
+    <head>
+        <title>bga-cards demo</title>
+        <script>
+            function define() {}
+        </script>
+        <link href="../bga-cards.css" rel="stylesheet"></script>
+        <script src="../bga-cards.js" type="text/javascript"></script>
+        <link href="./demo.css" rel="stylesheet"></script>
+        <script src="./manager.js" type="text/javascript"></script>
+        <script src="./line-stock.js" type="text/javascript"></script>
+        <script src="./slot-stock.js" type="text/javascript"></script>
+        <script src="./hand-stock.js" type="text/javascript"></script>
+        <script src="./scrollable-stock.js" type="text/javascript"></script>
+        <script src="./manual-position-stock.js" type="text/javascript"></script>
+        <script src="./void-stock.js" type="text/javascript"></script>
+        <script src="./custom-animation-function.js" type="text/javascript"></script>
+    </head>
+    <body>
+        <div class="nav">
+            <a href="index.html">Index</a> | 
+            <a href="stocks.html">Stocks</a> | 
+            <a href="decks.html">Decks</a> |
+            <a href="selection.html">Card selection</a>
+        </div>
+        
+        <h1>Stocks</h1>
+
+        <div class="flex">
+            <div class="block">
+                <h2>LineStock</h2>
+                <div id="line-stocks">
+                    <div id="line-stock"></div>
+                    <button onclick="addCardToLineStockWithAnimation(this, false)">Add card with default animation (slide)</button>
+                    <button onclick="addCardToLineStockWithAnimation(this, true)">Add card with custom function (slide with double loop)</button>
+                    <button onclick="addCardToLineStockFromVoidStock()">Add card from VoidStock</button>
+                    <div id="line-stock-overlap"></div>
+                    <div id="line-stock-vertical-overlap"></div>
+                </div>
+            </div>
+
+            <div class="block">
+                <h2>SlotStock</h2>
+                <div id="slot-stock"></div>
+                <button onclick="swapSlotStockCards()">Swap cards</button>
+            </div>
+
+            <div class="block">
+                <h2>ScrollableStock</h2>
+                <div id="scrollable-stock"></div>
+            </div>
+
+            <div class="block">
+                <h2>HandStock</h2>
+                <div id="hand-stock"></div>
+            </div>
+
+            <div class="block" style="min-width: 750px;">
+                <h2>ManualPositionStock</h2>
+                <div id="manual-position-stocks">
+                    <div id="manual-position-diagonal-stock"></div>
+                    <div id="manual-position-curve-stock" style="width: 400px;">
+                        <canvas id="curveCanvas" width="400" height="200"></canvas>
+                    </div>
+                    <div id="manual-position-fit-stock" style="width: 400px; height: 150px;">
+                    </div>
+                    <button onclick="addCardToManualFitStock(this)">Add card to fit stock</button>
+                    <button onclick="removeCardToManualFitStock()">Remove card from fit stock</button>
+                </div>
+            </div>
+
+            <div class="block">
+                <h2>VoidStock</h2>
+                <div id="void-stock"></div>
+                <button onclick="addCardToVoidStock(this)">Add card from LineStock</button>
+            </div>
+        </div>
+
+        <script>
+            initManager();
+            initLineStock();
+            initLineStockOverlap();
+            initLineStockVerticalOverlap();
+            initSlotStock();
+            initScrollableStock();
+            initHandStock();
+            initManualPositionDiagonalStock();
+            initManualPositionCurveStock();
+            initManualPositionFitStock();
+            initVoidStock();
+        </script>
+    </body>
+</html>
