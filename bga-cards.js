@@ -422,7 +422,9 @@ var CardStock = /** @class */ (function () {
             var element = this.manager.createCardElement(card, ((_c = settingsWithIndex === null || settingsWithIndex === void 0 ? void 0 : settingsWithIndex.visible) !== null && _c !== void 0 ? _c : this.manager.isCardVisible(card)));
             promise = this.moveFromElement(card, element, animation, settingsWithIndex);
         }
-        this.setSelectableCard(card, this.selectionMode != 'none');
+        if (this.selectionMode !== 'none') {
+            this.setSelectableCard(card, true);
+        }
         if (settingsWithIndex.index !== null && settingsWithIndex.index !== undefined) {
             this.cards.splice(index, 0, card);
         }
@@ -546,14 +548,21 @@ var CardStock = /** @class */ (function () {
      * Remove a card from the stock.
      *
      * @param card the card to remove
+     * @param settings a `RemoveCardSettings` object
      */
-    CardStock.prototype.removeCard = function (card) {
+    CardStock.prototype.removeCard = function (card, settings) {
         if (this.contains(card) && this.element.contains(this.getCardElement(card))) {
-            this.manager.removeCard(card);
+            this.manager.removeCard(card, settings);
         }
-        this.cardRemoved(card);
+        this.cardRemoved(card, settings);
     };
-    CardStock.prototype.cardRemoved = function (card) {
+    /**
+     * Notify the stock that a card is removed.
+     *
+     * @param card the card to remove
+     * @param settings a `RemoveCardSettings` object
+     */
+    CardStock.prototype.cardRemoved = function (card, settings) {
         var _this = this;
         var index = this.cards.findIndex(function (c) { return _this.manager.getId(c) == _this.manager.getId(card); });
         if (index !== -1) {
@@ -567,18 +576,20 @@ var CardStock = /** @class */ (function () {
      * Remove a set of card from the stock.
      *
      * @param cards the cards to remove
+     * @param settings a `RemoveCardSettings` object
      */
-    CardStock.prototype.removeCards = function (cards) {
+    CardStock.prototype.removeCards = function (cards, settings) {
         var _this = this;
-        cards.forEach(function (card) { return _this.removeCard(card); });
+        cards.forEach(function (card) { return _this.removeCard(card, settings); });
     };
     /**
      * Remove all cards from the stock.
+     * @param settings a `RemoveCardSettings` object
      */
-    CardStock.prototype.removeAll = function () {
+    CardStock.prototype.removeAll = function (settings) {
         var _this = this;
         var cards = this.getCards(); // use a copy of the array as we iterate and modify it at the same time
-        cards.forEach(function (card) { return _this.removeCard(card); });
+        cards.forEach(function (card) { return _this.removeCard(card, settings); });
     };
     /**
      * Set if the stock is selectable, and if yes if it can be multiple.
@@ -825,7 +836,7 @@ var Deck = /** @class */ (function (_super) {
     __extends(Deck, _super);
     function Deck(manager, element, settings) {
         var _this = this;
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
         _this = _super.call(this, manager, element) || this;
         _this.manager = manager;
         _this.element = element;
@@ -842,7 +853,8 @@ var Deck = /** @class */ (function (_super) {
         _this.thicknesses = (_a = settings.thicknesses) !== null && _a !== void 0 ? _a : [0, 2, 5, 10, 20, 30];
         _this.setCardNumber((_b = settings.cardNumber) !== null && _b !== void 0 ? _b : 52);
         _this.autoUpdateCardNumber = (_c = settings.autoUpdateCardNumber) !== null && _c !== void 0 ? _c : true;
-        var shadowDirection = (_d = settings.shadowDirection) !== null && _d !== void 0 ? _d : 'bottom-right';
+        _this.autoRemovePreviousCards = (_d = settings.autoRemovePreviousCards) !== null && _d !== void 0 ? _d : true;
+        var shadowDirection = (_e = settings.shadowDirection) !== null && _e !== void 0 ? _e : 'bottom-right';
         var shadowDirectionSplit = shadowDirection.split('-');
         var xShadowShift = shadowDirectionSplit.includes('right') ? 1 : (shadowDirectionSplit.includes('left') ? -1 : 0);
         var yShadowShift = shadowDirectionSplit.includes('bottom') ? 1 : (shadowDirectionSplit.includes('top') ? -1 : 0);
@@ -854,26 +866,26 @@ var Deck = /** @class */ (function (_super) {
         else if (settings.cardNumber > 0) {
             console.warn("Deck is defined with ".concat(settings.cardNumber, " cards but no top card !"));
         }
-        if (settings.counter && ((_e = settings.counter.show) !== null && _e !== void 0 ? _e : true)) {
+        if (settings.counter && ((_f = settings.counter.show) !== null && _f !== void 0 ? _f : true)) {
             if (settings.cardNumber === null || settings.cardNumber === undefined) {
                 throw new Error("You need to set cardNumber if you want to show the counter");
             }
             else {
-                _this.createCounter((_f = settings.counter.position) !== null && _f !== void 0 ? _f : 'bottom', (_g = settings.counter.extraClasses) !== null && _g !== void 0 ? _g : 'round');
-                if ((_h = settings.counter) === null || _h === void 0 ? void 0 : _h.hideWhenEmpty) {
+                _this.createCounter((_g = settings.counter.position) !== null && _g !== void 0 ? _g : 'bottom', (_h = settings.counter.extraClasses) !== null && _h !== void 0 ? _h : 'round', settings.counter.counterId);
+                if ((_j = settings.counter) === null || _j === void 0 ? void 0 : _j.hideWhenEmpty) {
                     _this.element.querySelector('.bga-cards_deck-counter').classList.add('hide-when-empty');
                 }
             }
         }
-        _this.setCardNumber((_j = settings.cardNumber) !== null && _j !== void 0 ? _j : 52);
+        _this.setCardNumber((_k = settings.cardNumber) !== null && _k !== void 0 ? _k : 52);
         return _this;
     }
-    Deck.prototype.createCounter = function (counterPosition, extraClasses) {
+    Deck.prototype.createCounter = function (counterPosition, extraClasses, counterId) {
         var left = counterPosition.includes('right') ? 100 : (counterPosition.includes('left') ? 0 : 50);
         var top = counterPosition.includes('bottom') ? 100 : (counterPosition.includes('top') ? 0 : 50);
         this.element.style.setProperty('--bga-cards-deck-left', "".concat(left, "%"));
         this.element.style.setProperty('--bga-cards-deck-top', "".concat(top, "%"));
-        this.element.insertAdjacentHTML('beforeend', "\n            <div class=\"bga-cards_deck-counter ".concat(extraClasses, "\"></div>\n        "));
+        this.element.insertAdjacentHTML('beforeend', "\n            <div ".concat(counterId ? "id=\"".concat(counterId, "\"") : '', " class=\"bga-cards_deck-counter ").concat(extraClasses, "\"></div>\n        "));
     };
     /**
      * Get the the cards number.
@@ -909,17 +921,26 @@ var Deck = /** @class */ (function (_super) {
         }
     };
     Deck.prototype.addCard = function (card, animation, settings) {
-        var _a;
-        if (this.autoUpdateCardNumber && ((_a = settings === null || settings === void 0 ? void 0 : settings.autoUpdateCardNumber) !== null && _a !== void 0 ? _a : true)) {
+        var _this = this;
+        var _a, _b;
+        if ((_a = settings === null || settings === void 0 ? void 0 : settings.autoUpdateCardNumber) !== null && _a !== void 0 ? _a : this.autoUpdateCardNumber) {
             this.setCardNumber(this.cardNumber + 1);
         }
-        return _super.prototype.addCard.call(this, card, animation, settings);
+        var promise = _super.prototype.addCard.call(this, card, animation, settings);
+        if ((_b = settings === null || settings === void 0 ? void 0 : settings.autoRemovePreviousCards) !== null && _b !== void 0 ? _b : this.autoRemovePreviousCards) {
+            promise.then(function () {
+                var previousCards = _this.getCards().slice(0, -1); // remove last cards
+                _this.removeCards(previousCards, { autoUpdateCardNumber: false });
+            });
+        }
+        return promise;
     };
-    Deck.prototype.cardRemoved = function (card) {
-        if (this.autoUpdateCardNumber) {
+    Deck.prototype.cardRemoved = function (card, settings) {
+        var _a;
+        if ((_a = settings === null || settings === void 0 ? void 0 : settings.autoUpdateCardNumber) !== null && _a !== void 0 ? _a : this.autoUpdateCardNumber) {
             this.setCardNumber(this.cardNumber - 1);
         }
-        _super.prototype.cardRemoved.call(this, card);
+        _super.prototype.cardRemoved.call(this, card, settings);
     };
     Deck.prototype.getTopCard = function () {
         var cards = this.getCards();
@@ -1353,17 +1374,24 @@ var CardManager = /** @class */ (function () {
     CardManager.prototype.getCardElement = function (card) {
         return document.getElementById(this.getId(card));
     };
-    CardManager.prototype.removeCard = function (card) {
+    /**
+     * Remove a card.
+     *
+     * @param card the card to remove
+     * @param settings a `RemoveCardSettings` object
+     */
+    CardManager.prototype.removeCard = function (card, settings) {
         var _a;
         var id = this.getId(card);
         var div = document.getElementById(id);
         if (!div) {
-            return;
+            return false;
         }
-        // if the card is in a stock, notify the stock about removal
-        (_a = this.getCardStock(card)) === null || _a === void 0 ? void 0 : _a.cardRemoved(card);
         div.id = "deleted".concat(id);
         div.remove();
+        // if the card is in a stock, notify the stock about removal
+        (_a = this.getCardStock(card)) === null || _a === void 0 ? void 0 : _a.cardRemoved(card, settings);
+        return true;
     };
     /**
      * Returns the stock containing the card.

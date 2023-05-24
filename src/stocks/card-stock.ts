@@ -35,6 +35,9 @@ interface AddCardSettings {
     updateInformations?: boolean;
 }
 
+interface RemoveCardSettings {
+}
+
 type CardSelectionMode = 'none' | 'single' | 'multiple';
 
 /**
@@ -168,7 +171,9 @@ class CardStock<T> {
             promise = this.moveFromElement(card, element, animation, settingsWithIndex);
         }
 
-        this.setSelectableCard(card, this.selectionMode != 'none');
+        if (this.selectionMode !== 'none') {
+            this.setSelectableCard(card, true);
+        }
 
         if (settingsWithIndex.index !== null && settingsWithIndex.index !== undefined) {
             this.cards.splice(index, 0, card);
@@ -304,15 +309,22 @@ class CardStock<T> {
      * Remove a card from the stock.
      * 
      * @param card the card to remove
+     * @param settings a `RemoveCardSettings` object
      */
-    public removeCard(card: T) {
+    public removeCard(card: T, settings?: RemoveCardSettings) {
         if (this.contains(card) && this.element.contains(this.getCardElement(card))) {
-            this.manager.removeCard(card);
+            this.manager.removeCard(card, settings);
         }
-        this.cardRemoved(card);
+        this.cardRemoved(card, settings);
     }
 
-    public cardRemoved(card: T) {
+    /**
+     * Notify the stock that a card is removed.
+     * 
+     * @param card the card to remove
+     * @param settings a `RemoveCardSettings` object
+     */
+    public cardRemoved(card: T, settings?: RemoveCardSettings) {
         const index = this.cards.findIndex(c => this.manager.getId(c) == this.manager.getId(card));
         if (index !== -1) {
             this.cards.splice(index, 1);
@@ -326,17 +338,19 @@ class CardStock<T> {
      * Remove a set of card from the stock.
      * 
      * @param cards the cards to remove
+     * @param settings a `RemoveCardSettings` object
      */
-    public removeCards(cards: T[]) {
-        cards.forEach(card => this.removeCard(card));
+    public removeCards(cards: T[], settings?: RemoveCardSettings) {
+        cards.forEach(card => this.removeCard(card, settings));
     }
 
     /**
      * Remove all cards from the stock.
+     * @param settings a `RemoveCardSettings` object
      */
-    public removeAll() {
+    public removeAll(settings?: RemoveCardSettings) {
         const cards = this.getCards(); // use a copy of the array as we iterate and modify it at the same time
-        cards.forEach(card => this.removeCard(card));
+        cards.forEach(card => this.removeCard(card, settings));
     }
 
     /**

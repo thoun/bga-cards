@@ -21,6 +21,11 @@ interface DeckCounter {
      * Show the counter when empty. Default true.
      */
     hideWhenEmpty?: boolean;
+
+    /**
+     * Set a counter id if you want to set a tooltip on it, for example. Default unset.
+     */
+    counterId?: string;
 }
 
 interface DeckSettings<T> {
@@ -40,6 +45,11 @@ interface DeckSettings<T> {
     autoUpdateCardNumber?: boolean;
 
     /**
+     * Indicate if the cards under the new top card must be removed (to forbid players to check the content of the deck with Inspect). Default true.
+     */
+    autoRemovePreviousCards?: boolean;
+
+    /**
      * Indicate the thresholds to add 1px to the thickness of the pile. Default [0, 2, 5, 10, 20, 30].
      */
     thicknesses?: number[];
@@ -57,6 +67,18 @@ interface DeckSettings<T> {
 
 interface AddCardToDeckSettings extends AddCardSettings {
     /**
+     * Indicate if the card count is automatically updated when a card is added or removed. Default true.
+     */
+    autoUpdateCardNumber?: boolean;
+
+    /**
+     * Indicate if the cards under the new top card must be removed (to forbid players to check the content of the deck with Inspect). Default true.
+     */
+    autoRemovePreviousCards?: boolean;
+}
+
+interface RemoveCardFromDeckSettings extends RemoveCardSettings {
+    /**
      * Indicate if the card count is automatically updated when a card is added or removed.
      */
     autoUpdateCardNumber?: boolean;
@@ -69,6 +91,7 @@ interface AddCardToDeckSettings extends AddCardSettings {
 class Deck<T> extends CardStock<T> {
     protected cardNumber: number;
     protected autoUpdateCardNumber: boolean;
+    protected autoRemovePreviousCards: boolean;
     private thicknesses: number[];
 
     constructor(protected manager: CardManager<T>, protected element: HTMLElement, settings: DeckSettings<T>) {
@@ -86,6 +109,7 @@ class Deck<T> extends CardStock<T> {
         this.thicknesses = settings.thicknesses ?? [0, 2, 5, 10, 20, 30];
         this.setCardNumber(settings.cardNumber ?? 52);
         this.autoUpdateCardNumber = settings.autoUpdateCardNumber ?? true;
+        this.autoRemovePreviousCards = settings.autoRemovePreviousCards ?? true;
 
         const shadowDirection = settings.shadowDirection ?? 'bottom-right';
         const shadowDirectionSplit = shadowDirection.split('-');
@@ -104,7 +128,7 @@ class Deck<T> extends CardStock<T> {
             if (settings.cardNumber === null || settings.cardNumber === undefined) {
                 throw new Error(`You need to set cardNumber if you want to show the counter`);
             } else {
-                this.createCounter(settings.counter.position ?? 'bottom', settings.counter.extraClasses ?? 'round');
+                this.createCounter(settings.counter.position ?? 'bottom', settings.counter.extraClasses ?? 'round', settings.counter.counterId);
 
                 if (settings.counter?.hideWhenEmpty) {
                     this.element.querySelector('.bga-cards_deck-counter').classList.add('hide-when-empty');
@@ -115,14 +139,14 @@ class Deck<T> extends CardStock<T> {
         this.setCardNumber(settings.cardNumber ?? 52);
     }
 
-    protected createCounter(counterPosition: SideOrAngleOrCenter, extraClasses: string) {
+    protected createCounter(counterPosition: SideOrAngleOrCenter, extraClasses: string, counterId?: string) {
         const left = counterPosition.includes('right') ? 100 : (counterPosition.includes('left') ? 0 : 50);
         const top = counterPosition.includes('bottom') ? 100 : (counterPosition.includes('top') ? 0 : 50);
         this.element.style.setProperty('--bga-cards-deck-left', `${left}%`);
         this.element.style.setProperty('--bga-cards-deck-top', `${top}%`);
 
         this.element.insertAdjacentHTML('beforeend', `
-            <div class="bga-cards_deck-counter ${extraClasses}"></div>
+            <div ${counterId ? `id="${counterId}"` : ''} class="bga-cards_deck-counter ${extraClasses}"></div>
         `);
     }
 
@@ -164,18 +188,27 @@ class Deck<T> extends CardStock<T> {
     }
 
     public addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardToDeckSettings): Promise<boolean> {
-        if (this.autoUpdateCardNumber && (settings?.autoUpdateCardNumber ?? true)) {
+        if (settings?.autoUpdateCardNumber ?? this.autoUpdateCardNumber) {
             this.setCardNumber(this.cardNumber + 1);
         }
 
-        return super.addCard(card, animation, settings);
+        const promise = super.addCard(card, animation, settings);
+
+        if (settings?.autoRemovePreviousCards ?? this.autoRemovePreviousCards) {
+            promise.then(() => {
+                const previousCards = this.getCards().slice(0, -1); // remove last cards
+                this.removeCards(previousCards, { autoUpdateCardNumber: false });
+            });
+        }
+
+        return promise;
     }
 
-    public cardRemoved(card: T) {
-        if (this.autoUpdateCardNumber) {
+    public cardRemoved(card: T, settings?: RemoveCardFromDeckSettings) {
+        if (settings?.autoUpdateCardNumber ?? this.autoUpdateCardNumber) {
             this.setCardNumber(this.cardNumber - 1);
         }
-        super.cardRemoved(card);
+        super.cardRemoved(card, settings);
     }
 
     public getTopCard(): T | null {

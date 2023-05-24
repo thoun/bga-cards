@@ -175,18 +175,26 @@ class CardManager<T> {
         return document.getElementById(this.getId(card));
     }
 
-    public removeCard(card: T) {
+    /**
+     * Remove a card.
+     * 
+     * @param card the card to remove
+     * @param settings a `RemoveCardSettings` object
+     */
+    public removeCard(card: T, settings?: RemoveCardSettings) {
         const id = this.getId(card);
         const div = document.getElementById(id);
         if (!div) {
-            return;
+            return false;
         }
-
-        // if the card is in a stock, notify the stock about removal
-        this.getCardStock(card)?.cardRemoved(card);
 
         div.id = `deleted${id}`;
         div.remove();
+
+        // if the card is in a stock, notify the stock about removal
+        this.getCardStock(card)?.cardRemoved(card, settings);
+
+        return true;
     }
 
     /**

@@ -238,6 +238,8 @@ interface AddCardSettings {
     index?: number;
     updateInformations?: boolean;
 }
+interface RemoveCardSettings {
+}
 declare type CardSelectionMode = 'none' | 'single' | 'multiple';
 /**
  * The abstract stock. It shouldn't be used directly, use stocks that extends it.
@@ -328,19 +330,28 @@ declare class CardStock<T> {
      * Remove a card from the stock.
      *
      * @param card the card to remove
+     * @param settings a `RemoveCardSettings` object
      */
-    removeCard(card: T): void;
-    cardRemoved(card: T): void;
+    removeCard(card: T, settings?: RemoveCardSettings): void;
+    /**
+     * Notify the stock that a card is removed.
+     *
+     * @param card the card to remove
+     * @param settings a `RemoveCardSettings` object
+     */
+    cardRemoved(card: T, settings?: RemoveCardSettings): void;
     /**
      * Remove a set of card from the stock.
      *
      * @param cards the cards to remove
+     * @param settings a `RemoveCardSettings` object
      */
-    removeCards(cards: T[]): void;
+    removeCards(cards: T[], settings?: RemoveCardSettings): void;
     /**
      * Remove all cards from the stock.
+     * @param settings a `RemoveCardSettings` object
      */
-    removeAll(): void;
+    removeAll(settings?: RemoveCardSettings): void;
     /**
      * Set if the stock is selectable, and if yes if it can be multiple.
      * If set to 'none', it will unselect all selected cards.
@@ -429,6 +440,10 @@ interface DeckCounter {
      * Show the counter when empty. Default true.
      */
     hideWhenEmpty?: boolean;
+    /**
+     * Set a counter id if you want to set a tooltip on it, for example. Default unset.
+     */
+    counterId?: string;
 }
 interface DeckSettings<T> {
     /**
@@ -444,6 +459,10 @@ interface DeckSettings<T> {
      */
     autoUpdateCardNumber?: boolean;
     /**
+     * Indicate if the cards under the new top card must be removed (to forbid players to check the content of the deck with Inspect). Default true.
+     */
+    autoRemovePreviousCards?: boolean;
+    /**
      * Indicate the thresholds to add 1px to the thickness of the pile. Default [0, 2, 5, 10, 20, 30].
      */
     thicknesses?: number[];
@@ -458,6 +477,16 @@ interface DeckSettings<T> {
 }
 interface AddCardToDeckSettings extends AddCardSettings {
     /**
+     * Indicate if the card count is automatically updated when a card is added or removed. Default true.
+     */
+    autoUpdateCardNumber?: boolean;
+    /**
+     * Indicate if the cards under the new top card must be removed (to forbid players to check the content of the deck with Inspect). Default true.
+     */
+    autoRemovePreviousCards?: boolean;
+}
+interface RemoveCardFromDeckSettings extends RemoveCardSettings {
+    /**
      * Indicate if the card count is automatically updated when a card is added or removed.
      */
     autoUpdateCardNumber?: boolean;
@@ -471,9 +500,10 @@ declare class Deck<T> extends CardStock<T> {
     protected element: HTMLElement;
     protected cardNumber: number;
     protected autoUpdateCardNumber: boolean;
+    protected autoRemovePreviousCards: boolean;
     private thicknesses;
     constructor(manager: CardManager<T>, element: HTMLElement, settings: DeckSettings<T>);
-    protected createCounter(counterPosition: SideOrAngleOrCenter, extraClasses: string): void;
+    protected createCounter(counterPosition: SideOrAngleOrCenter, extraClasses: string, counterId?: string): void;
     /**
      * Get the the cards number.
      *
@@ -487,7 +517,7 @@ declare class Deck<T> extends CardStock<T> {
      */
     setCardNumber(cardNumber: number, topCard?: T | null): void;
     addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardToDeckSettings): Promise<boolean>;
-    cardRemoved(card: T): void;
+    cardRemoved(card: T, settings?: RemoveCardFromDeckSettings): void;
     getTopCard(): T | null;
 }
 interface LineStockSettings extends CardStockSettings {
@@ -854,7 +884,13 @@ declare class CardManager<T> {
      * @return the HTML element of an existing card
      */
     getCardElement(card: T): HTMLElement;
-    removeCard(card: T): void;
+    /**
+     * Remove a card.
+     *
+     * @param card the card to remove
+     * @param settings a `RemoveCardSettings` object
+     */
+    removeCard(card: T, settings?: RemoveCardSettings): boolean;
     /**
      * Returns the stock containing the card.
      *
