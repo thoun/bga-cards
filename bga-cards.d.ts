@@ -66,30 +66,6 @@ declare type AnimationFunction = (element: HTMLElement, settings: AnimationSetti
  * @param settings an `AnimationSettings` object
  * @returns a promise when animation ends
  */
-declare function cumulatedAnimations(element: HTMLElement, animations: AnimationFunction[], settingsOrSettingsArray?: AnimationSettings | AnimationSettings[]): Promise<boolean>;
-/**
- * Show the element at the center of the screen
- *
- * @param element the element to animate
- * @param settings an `AnimationSettings` object
- * @returns a promise when animation ends
- */
-declare function showScreenCenterAnimation(element: HTMLElement, settings: AnimationSettings): Promise<boolean>;
-/**
- * Show the element at the center of the screen
- *
- * @param element the element to animate
- * @param settings an `AnimationSettings` object
- * @returns a promise when animation ends
- */
-declare function pauseAnimation(element: HTMLElement, settings: AnimationSettings): Promise<boolean>;
-/**
- * Linear slide of the card from origin to destination.
- *
- * @param element the element to animate. The element should be attached to the destination element before the animation starts.
- * @param settings an `AnimationSettings` object
- * @returns a promise when animation ends
- */
 declare function slideAnimation(element: HTMLElement, settings: AnimationWithOriginSettings): Promise<boolean>;
 declare function shouldAnimate(settings?: AnimationSettings): boolean;
 /**
@@ -141,6 +117,7 @@ declare class AnimationManager {
      * @returns a promise when animation ends
      */
     attachWithAnimation(element: HTMLElement, toElement: HTMLElement, fn: AnimationFunction, settings?: AnimationWithAttachAndOriginSettings): Promise<boolean>;
+    private getAnimation;
     /**
      * Attach an element to a parent with a slide animation.
      *
@@ -170,6 +147,12 @@ declare class AnimationManager {
      */
     setZoomManager(zoomManager: IZoomManager): void;
     getSettings(): AnimationManagerSettings | null | undefined;
+    /**
+     * Returns if the animations are active. Animation aren't active when the window is not visible (`document.visibilityState === 'hidden'`), or `game.instantaneousMode` is true.
+     *
+     * @returns if the animations are active.
+     */
+    animationsActive(): boolean;
 }
 interface CardAnimation<T> {
     /**
@@ -235,8 +218,18 @@ interface AddCardSettings {
      */
     visible?: boolean;
     forceToElement?: HTMLElement;
+    /**
+     * Force card position. Default to end of list. Do not use if sort is defined, as it will override it.
+     */
     index?: number;
+    /**
+     * If the card need to be updated. Default true, will flip the card if needed.
+     */
     updateInformations?: boolean;
+    /**
+     * Set if the card is selectable. Default is true, but will be ignored if the stock is not selectable.
+     */
+    selectable?: boolean;
 }
 interface RemoveCardSettings {
 }
@@ -325,7 +318,7 @@ declare class CardStock<T> {
      * @param settings a `AddCardSettings` object
      * @param shift if number, the number of milliseconds between each card. if true, chain animations
      */
-    addCards(cards: T[], animation?: CardAnimation<T>, settings?: AddCardSettings, shift?: number | boolean): void;
+    addCards(cards: T[], animation?: CardAnimation<T>, settings?: AddCardSettings, shift?: number | boolean): Promise<boolean>;
     /**
      * Remove a card from the stock.
      *
@@ -872,6 +865,12 @@ declare class CardManager<T> {
      * @param settings: a `CardManagerSettings` object
      */
     constructor(game: Game, settings: CardManagerSettings<T>);
+    /**
+     * Returns if the animations are active. Animation aren't active when the window is not visible (`document.visibilityState === 'hidden'`), or `game.instantaneousMode` is true.
+     *
+     * @returns if the animations are active.
+     */
+    animationsActive(): boolean;
     addStock(stock: CardStock<T>): void;
     /**
      * @param card the card informations

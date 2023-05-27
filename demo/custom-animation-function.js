@@ -2,6 +2,12 @@
 // example of a custom function.
  function stockSlideWithDoubleLoopAnimation(element, settings) {
     const promise = new Promise((success) => {
+        // should be checked at the beginning of every animation
+        if (!shouldAnimate(settings)) {
+            success(false);
+            return promise;
+        }
+
         const originBR = settings.fromRect;
         const destinationBR = element.getBoundingClientRect();
 

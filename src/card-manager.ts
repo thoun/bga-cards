@@ -126,6 +126,15 @@ class CardManager<T> {
     constructor(public game: Game, private settings: CardManagerSettings<T>) {
         this.animationManager = settings.animationManager ?? new AnimationManager(game);
     }
+    
+    /**
+     * Returns if the animations are active. Animation aren't active when the window is not visible (`document.visibilityState === 'hidden'`), or `game.instantaneousMode` is true.
+     * 
+     * @returns if the animations are active.
+     */
+    public animationsActive(): boolean {
+        return this.animationManager.animationsActive();
+    }
 
     public addStock(stock: CardStock<T>) {
         this.stocks.push(stock);
@@ -238,7 +247,7 @@ class CardManager<T> {
         if (settings?.updateFront ?? true) {
             const updateFrontDelay = settings?.updateFrontDelay ?? 500;
 
-            if (!isVisible && updateFrontDelay > 0) {
+            if (!isVisible && updateFrontDelay > 0 && this.animationsActive()) {
                 setTimeout(() => this.settings.setupFrontDiv?.(card, element.getElementsByClassName('front')[0] as HTMLDivElement), updateFrontDelay);
             } else {
                 this.settings.setupFrontDiv?.(card, element.getElementsByClassName('front')[0] as HTMLDivElement);
@@ -246,7 +255,7 @@ class CardManager<T> {
         }
         if (settings?.updateBack ?? false) {
             const updateBackDelay = settings?.updateBackDelay ?? 0;
-            if (isVisible && updateBackDelay > 0) {
+            if (isVisible && updateBackDelay > 0 && this.animationsActive()) {
                 setTimeout(() => this.settings.setupBackDiv?.(card, element.getElementsByClassName('back')[0] as HTMLDivElement), updateBackDelay);
             } else {
                 this.settings.setupBackDiv?.(card, element.getElementsByClassName('back')[0] as HTMLDivElement);
@@ -318,6 +327,6 @@ class CardManager<T> {
      * @returns the class to apply to selected cards. Default 'bga-cards_selected-card'.
      */
     public getSelectedCardClass(): string | null {
-        return this.settings?.selectableCardClass === undefined ? 'bga-cards_selected-card' : this.settings?.selectableCardClass;
+        return this.settings?.selectedCardClass === undefined ? 'bga-cards_selected-card' : this.settings?.selectedCardClass;
     }
 }

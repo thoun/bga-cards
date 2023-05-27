@@ -58,6 +58,21 @@ function reformDeck() {
     hiddenDeck.addCards(lineStock.getCards().map(card => ({ id: card.id, })));
 }
 
+function dealCards(oneByOne) {
+    let cardNumber = hiddenDeck.getCardNumber();
+
+    if (cardNumber >= 4) {
+        const cards = [];
+        for (let i=0; i<4; i++) {
+            cards.push({ id: getCardId(), type: 1 + Math.floor(Math.random() * 4), type_arg: 1 + Math.floor(Math.random() * 12), location: 'table', location_arg: 0 });
+        }
+
+        lineStock.addCards(cards, { fromElement: document.getElementById('hidden-deck') }, undefined, oneByOne ? true : 100).then(
+            () => hiddenDeck.setCardNumber(cardNumber - 4, cardNumber - 4 > 0 ? { id: getCardId() } : undefined)
+        );
+    }
+}
+
 // tokens
 
 function initTokens() {

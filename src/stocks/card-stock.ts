@@ -30,9 +30,20 @@ interface AddCardSettings {
 
     forceToElement?: HTMLElement;
 
+    /**
+     * Force card position. Default to end of list. Do not use if sort is defined, as it will override it.
+     */
     index?: number;
-
+    
+    /**
+     * If the card need to be updated. Default true, will flip the card if needed.
+     */
     updateInformations?: boolean;
+    
+    /**
+     * Set if the card is selectable. Default is true, but will be ignored if the stock is not selectable.
+     */
+    selectable?: boolean;
 }
 
 interface RemoveCardSettings {
@@ -171,10 +182,6 @@ class CardStock<T> {
             promise = this.moveFromElement(card, element, animation, settingsWithIndex);
         }
 
-        if (this.selectionMode !== 'none') {
-            this.setSelectableCard(card, true);
-        }
-
         if (settingsWithIndex.index !== null && settingsWithIndex.index !== undefined) {
             this.cards.splice(index, 0, card);
         } else {
@@ -187,8 +194,14 @@ class CardStock<T> {
 
         if (!promise) {
             console.warn(`CardStock.addCard didn't return a Promise`);
-            return Promise.resolve(false);
+            promise = Promise.resolve(false);
         }
+
+        if (this.selectionMode !== 'none') {
+            // make selectable only at the end of the animation
+            promise.then(() => this.setSelectableCard(card, settingsWithIndex.selectable ?? true));
+        }
+
         return promise;
     }
 
@@ -286,23 +299,28 @@ class CardStock<T> {
      * @param settings a `AddCardSettings` object
      * @param shift if number, the number of milliseconds between each card. if true, chain animations
      */
-    public addCards(cards: T[], animation?: CardAnimation<T>, settings?: AddCardSettings, shift: number | boolean = false) {
+    public async addCards(cards: T[], animation?: CardAnimation<T>, settings?: AddCardSettings, shift: number | boolean = false): Promise<boolean> {
+        if (!this.manager.animationsActive()) {
+            shift = false;
+        }
+        let promises: Promise<boolean>[] = [];
+
         if (shift === true) {
             if (cards.length) {
-                this.addCard(cards[0], animation, settings).then(
-                    () => this.addCards(cards.slice(1), animation, settings, shift)
-                );
+                const result = await this.addCard(cards[0], animation, settings);
+                const others = await this.addCards(cards.slice(1), animation, settings, shift);
+                return result || others;
             }
-            return;
-        }
-
-        if (shift) {
+        } else if (typeof shift === 'number') {
             for (let i=0; i<cards.length; i++) {
-                setTimeout(() => this.addCard(cards[i], animation, settings), i * shift);
+                setTimeout(() => promises.push(this.addCard(cards[i], animation, settings)), i * shift);
             }
         } else {
-            cards.forEach(card => this.addCard(card, animation, settings));
+            promises = cards.map(card => this.addCard(card, animation, settings));
         }
+
+        const results = await Promise.all(promises);
+        return results.some(result => result);
     }
 
     /**
@@ -377,6 +395,10 @@ class CardStock<T> {
     }
 
     protected setSelectableCard(card: T, selectable: boolean) {
+        if (this.selectionMode === 'none') {
+            return;
+        }
+
         const element = this.getCardElement(card);              
         const selectableCardsClass = this.getSelectableCardClass();
         const unselectableCardsClass = this.getUnselectableCardClass();
@@ -579,7 +601,7 @@ class CardStock<T> {
      * @returns the class to apply to selected cards. Use class from manager is unset.
      */
     public getSelectedCardClass(): string | null {
-        return this.settings?.selectableCardClass === undefined ? this.manager.getSelectedCardClass() : this.settings?.selectableCardClass;
+        return this.settings?.selectedCardClass === undefined ? this.manager.getSelectedCardClass() : this.settings?.selectedCardClass;
     }
 
     public removeSelectionClasses(card: T) {        

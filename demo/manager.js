@@ -3,10 +3,6 @@ let cardsManager;
 const cardWidth = 100;
 const cardHeight = 150;
 
-let game = {
-    addTooltipHtml: (divId, tooltip) => { document.getElementById(divId).title = tooltip },
-};
-
 function initManager() {
     cardsManager = new CardManager(game, {
         getId: (card) => `card-${card.id}`,

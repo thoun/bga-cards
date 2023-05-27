@@ -7,18 +7,12 @@
         <link href="../bga-cards.css" rel="stylesheet"></script>
         <script src="../bga-cards.js" type="text/javascript"></script>
         <link href="./demo.css" rel="stylesheet"></script>
+        <script src="./common.js" type="text/javascript"></script>
         <script src="./manager.js" type="text/javascript"></script>
         <script src="./decks.js" type="text/javascript"></script>
         <script src="./line-stock.js" type="text/javascript"></script>
     </head>
     <body>
-        <div class="nav">
-            <a href="index.html">Index</a> | 
-            <a href="stocks.html">Stocks</a> | 
-            <a href="decks.html">Decks</a> |
-            <a href="selection.html">Card selection</a>
-        </div>
-        
         <h1>Decks</h1>
 
         <div class="flex">
@@ -52,6 +46,7 @@
         </div>
 
         <script>
+            initCommon();
             initManager();
             initHiddenDeck();
             initVisibleDeck();

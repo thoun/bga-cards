@@ -39,7 +39,8 @@ h1, h2 {
     border-radius: 5px;
 }
 .selection-stock .mygame-card.bga-cards_selectable-card {
-    box-shadow: 0 0 5px 3px lightcyan;
+    /*box-shadow: 0 0 5px 3px lightgoldenrodyellow;*/
+    box-shadow: 0 0 8px 8px orange;
 }
 .selection-stock .mygame-card.bga-cards_selectable-card .card-side {
     box-shadow: unset;
