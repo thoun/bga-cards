@@ -11,7 +11,10 @@
     "files": [
       "src/framework.d.ts",
       "node_modules/bga-animations/src/animations.ts",
+      "node_modules/bga-animations/src/animations/attach-with-animation.ts",
+      "node_modules/bga-animations/src/animations/cumulated-animations.ts",
       "node_modules/bga-animations/src/animations/slide-animation.ts",
+      "node_modules/bga-animations/src/animations/slide-to-animation.ts",
       "node_modules/bga-animations/src/animations-utils.ts",
       "node_modules/bga-animations/src/animation-manager.ts",
       "src/animations.ts",

@@ -1,4 +1,8 @@
-interface AnimationSettings {
+interface BgaAnimationSettings {
+    /**
+     * The element to animate.
+     */
+    element?: HTMLElement;
     /**
      * The game class. Used to know if the game is in instantaneous mode (replay) becausewe don't want animations in this case.
      */
@@ -12,6 +16,24 @@ interface AnimationSettings {
      */
     scale?: number;
     /**
+     * The class to add to the animated element.
+     */
+    animationClass?: string;
+    /**
+     * A function called when animation starts (for example to add a zoom effect on a card during a reveal animation).
+     */
+    animationStart?: (animation: IBgaAnimation<BgaAnimationSettings>) => any;
+    /**
+     * A function called when animation ends.
+     */
+    animationEnd?: (animation: IBgaAnimation<BgaAnimationSettings>) => any;
+}
+interface BgaElementAnimationSettings extends BgaAnimationSettings {
+    /**
+     * The element to animate.
+     */
+    element: HTMLElement;
+    /**
      * The zIndex to apply during animation (default: 10).
      */
     zIndex?: number;
@@ -20,19 +42,11 @@ interface AnimationSettings {
      */
     finalTransform?: string;
     /**
-     * A function called when animation starts (for example to add a 'animated' class).
-     */
-    animationStart?: (element: HTMLElement) => any;
-    /**
-     * A function called when animation ends (for example to add a 'animated' class).
-     */
-    animationEnd?: (element: HTMLElement) => any;
-    /**
      * If the card is rotated at the start of animation.
      */
     rotationDelta?: number;
 }
-interface AnimationWithOriginSettings extends AnimationSettings {
+interface BgaAnimationWithOriginSettings extends BgaElementAnimationSettings {
     /**
      * A delta coordinates (object with x and y properties).
      */
@@ -49,36 +63,92 @@ interface AnimationWithOriginSettings extends AnimationSettings {
      */
     fromElement?: HTMLElement;
 }
-interface AnimationWithAttachAndOriginSettings extends AnimationWithOriginSettings {
+interface IBgaAnimation<T extends BgaAnimationSettings> {
+    settings: T;
+    played: boolean | null;
+    result: any | null;
+}
+/**
+ * Animation function signature. Will return a promise after animation is ended. The promise returns the result of the animation, if any
+ */
+type BgaAnimationFunction = (animationManager: AnimationManager, animation: IBgaAnimation<BgaAnimationSettings>) => Promise<any>;
+declare class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnimation<BgaAnimationSettings> {
+    animationFunction: BgaAnimationFunction;
+    settings: T;
+    played: boolean | null;
+    result: any | null;
+    constructor(animationFunction: BgaAnimationFunction, settings: T);
+}
+interface BgaAttachWithAnimationSettings extends BgaElementAnimationSettings {
+    animation: BgaAnimation<BgaAnimationWithOriginSettings>;
+    /**
+     * The target to attach the element to.
+     */
+    attachElement: HTMLElement;
     /**
      * A function called after attaching the element.
      */
-    afterAttach?: (element: any, toElement: any) => void;
+    afterAttach?: (element: HTMLElement, attachElement: HTMLElement) => void;
 }
 /**
- * Animation function signature. Will return a promise after animation is ended. True, if animation played, false, if it didn't.
- */
-declare type AnimationFunction = (element: HTMLElement, settings: AnimationSettings) => Promise<boolean>;
-/**
- * Linear slide of the card from origin to destination.
+ * Just use playSequence from animationManager
  *
- * @param element the element to animate. The element should be attached to the destination element before the animation starts.
- * @param settings an `AnimationSettings` object
+ * @param animationManager the animation manager
+ * @param animation a `BgaAnimation` object
  * @returns a promise when animation ends
  */
-declare function slideAnimation(element: HTMLElement, settings: AnimationWithOriginSettings): Promise<boolean>;
-declare function shouldAnimate(settings?: AnimationSettings): boolean;
+declare function attachWithAnimation(animationManager: AnimationManager, animation: IBgaAnimation<BgaAttachWithAnimationSettings>): Promise<any>;
+declare class BgaAttachWithAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaAnimation<any> {
+    constructor(settings: BgaAnimationWithAttachAndOriginSettings);
+}
+interface BgaCumulatedAnimationsSettings extends BgaAnimationSettings {
+    animations: IBgaAnimation<BgaAnimationSettings>[];
+}
+/**
+ * Just use playSequence from animationManager
+ *
+ * @param animationManager the animation manager
+ * @param animation a `BgaAnimation` object
+ * @returns a promise when animation ends
+ */
+declare function cumulatedAnimations(animationManager: AnimationManager, animation: IBgaAnimation<BgaCumulatedAnimationsSettings>): Promise<any>;
+declare class BgaCumulatedAnimation<BgaCumulatedAnimationsSettings> extends BgaAnimation<any> {
+    constructor(settings: BgaCumulatedAnimationsSettings);
+}
+/**
+ * Linear slide of the element from origin to destination.
+ *
+ * @param animationManager the animation manager
+ * @param animation a `BgaAnimation` object
+ * @returns a promise when animation ends
+ */
+declare function slideAnimation(animationManager: AnimationManager, animation: IBgaAnimation<BgaElementAnimationSettings>): Promise<void>;
+declare class BgaSlideAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaAnimation<any> {
+    constructor(settings: BgaAnimationWithAttachAndOriginSettings);
+}
+/**
+ * Linear slide of the element from origin to destination.
+ *
+ * @param animationManager the animation manager
+ * @param animation a `BgaAnimation` object
+ * @returns a promise when animation ends
+ */
+declare function slideToAnimation(animationManager: AnimationManager, animation: IBgaAnimation<BgaElementAnimationSettings>): Promise<void>;
+declare class BgaSlideToAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaAnimation<any> {
+    constructor(settings: BgaAnimationWithAttachAndOriginSettings);
+}
+declare function shouldAnimate(settings?: BgaAnimationSettings): boolean;
 /**
  * Return the x and y delta, based on the animation settings;
  *
  * @param settings an `AnimationSettings` object
  * @returns a promise when animation ends
  */
-declare function getDeltaCoordinates(element: HTMLElement, settings: AnimationWithOriginSettings): {
+declare function getDeltaCoordinates(element: HTMLElement, settings: BgaAnimationWithOriginSettings): {
     x: number;
     y: number;
 };
-declare function logAnimation(element: HTMLElement, settings: AnimationSettings): Promise<boolean>;
+declare function logAnimation(element: HTMLElement, settings: BgaAnimationSettings): Promise<boolean>;
 interface IZoomManager {
     /**
      * Returns the zoom level
@@ -107,38 +177,6 @@ declare class AnimationManager {
      * @param settings: a `AnimationManagerSettings` object
      */
     constructor(game: Game, settings?: AnimationManagerSettings);
-    /**
-     * Attach an element to a parent, then play animation from element's origin to its new position.
-     *
-     * @param element the element to animate
-     * @param toElement the destination parent
-     * @param fn the animation function
-     * @param settings the animation settings
-     * @returns a promise when animation ends
-     */
-    attachWithAnimation(element: HTMLElement, toElement: HTMLElement, fn: AnimationFunction, settings?: AnimationWithAttachAndOriginSettings): Promise<boolean>;
-    private getAnimation;
-    /**
-     * Attach an element to a parent with a slide animation.
-     *
-     * @param card the card informations
-     */
-    attachWithSlideAnimation(element: HTMLElement, toElement: HTMLElement, settings?: AnimationWithAttachAndOriginSettings): Promise<boolean>;
-    /**
-     * Attach an element to a parent with a slide animation.
-     *
-     * @param card the card informations
-     */
-    attachWithShowToScreenAnimation(element: HTMLElement, toElement: HTMLElement, settingsOrSettingsArray?: AnimationSettings | AnimationSettings[]): Promise<boolean>;
-    /**
-     * Slide from an element.
-     *
-     * @param element the element to animate
-     * @param fromElement the origin element
-     * @param settings the animation settings
-     * @returns a promise when animation ends
-     */
-    slideFromElement(element: HTMLElement, fromElement: HTMLElement, settings?: AnimationSettings): Promise<boolean>;
     getZoomManager(): IZoomManager;
     /**
      * Set the zoom manager, to get the scale of the current game.
@@ -153,6 +191,43 @@ declare class AnimationManager {
      * @returns if the animations are active.
      */
     animationsActive(): boolean;
+    /**
+     * Plays an animation if the animations are active. Animation aren't active when the window is not visible (`document.visibilityState === 'hidden'`), or `game.instantaneousMode` is true.
+     *
+     * @param animation the animation to play
+     * @returns the animation promise.
+     */
+    play(animation: BgaAnimation<BgaAnimationSettings>): Promise<BgaAnimation<BgaAnimationSettings>>;
+    /**
+     * Plays multiple animations in parallel.
+     *
+     * @param animations the animations to play
+     * @returns a promise for all animations.
+     */
+    playParallel(animations: BgaAnimation<BgaAnimationSettings>[]): Promise<BgaAnimation<BgaAnimationSettings>[]>;
+    /**
+     * Plays multiple animations in sequence (the second when the first ends, ...).
+     *
+     * @param animations the animations to play
+     * @returns a promise for all animations.
+     */
+    playSequence(animations: BgaAnimation<BgaAnimationSettings>[]): Promise<BgaAnimation<BgaAnimationSettings>[]>;
+    /**
+     * Plays multiple animations with a delay between each animation start.
+     *
+     * @param animations the animations to play
+     * @param delay the delay (in ms)
+     * @returns a promise for all animations.
+     */
+    playWithDelay(animations: BgaAnimation<BgaAnimationSettings>[], delay: number): Promise<BgaAnimation<BgaAnimationSettings>[]>;
+    /**
+     * Attach an element to a parent, then play animation from element's origin to its new position.
+     *
+     * @param animation the animation function
+     * @param attachElement the destination parent
+     * @returns a promise when animation ends
+     */
+    attachWithAnimation(animation: BgaAnimation<BgaAnimationSettings>, attachElement: HTMLElement): Promise<BgaAnimation<any>>;
 }
 interface CardAnimation<T> {
     /**
@@ -174,7 +249,7 @@ interface CardAnimation<T> {
     /**
      * An animation function, that return a Promise at the end of animation (the promise returns true if animation ended, false otherwise)
      */
-    animation?: AnimationFunction;
+    animation?: BgaAnimation<BgaElementAnimationSettings>;
 }
 interface CardAnimationSettings {
     /**
@@ -188,9 +263,9 @@ interface CardAnimationSettings {
     /**
      * An animation function, that return a Promise at the end of animation (the promise returns true if animation ended, false otherwise)
      */
-    animation?: AnimationFunction;
+    animation?: BgaAnimation<BgaElementAnimationSettings>;
 }
-declare type SortFunction = (a: any, b: any) => number;
+type SortFunction = (a: any, b: any) => number;
 declare function sortFunction(...sortedFields: string[]): SortFunction;
 interface CardStockSettings {
     /**
@@ -233,7 +308,7 @@ interface AddCardSettings {
 }
 interface RemoveCardSettings {
 }
-declare type CardSelectionMode = 'none' | 'single' | 'multiple';
+type CardSelectionMode = 'none' | 'single' | 'multiple';
 /**
  * The abstract stock. It shouldn't be used directly, use stocks that extends it.
  */
@@ -414,8 +489,8 @@ declare class CardStock<T> {
     removeSelectionClasses(card: T): void;
     removeSelectionClassesFromElement(cardElement: HTMLElement): void;
 }
-declare type SideOrAngle = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top' | 'bottom' | 'left' | 'right';
-declare type SideOrAngleOrCenter = SideOrAngle | 'center';
+type SideOrAngle = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top' | 'bottom' | 'left' | 'right';
+type SideOrAngleOrCenter = SideOrAngle | 'center';
 interface DeckCounter {
     /**
      * Show a card counter on the deck. Default true.
@@ -484,6 +559,9 @@ interface RemoveCardFromDeckSettings extends RemoveCardSettings {
      */
     autoUpdateCardNumber?: boolean;
 }
+declare class SlideAndBackAnimation<T> extends BgaCumulatedAnimation<BgaCumulatedAnimationsSettings> {
+    constructor(manager: CardManager<T>, element: HTMLElement, tempElement: boolean);
+}
 /**
  * Abstract stock to represent a deck. (pile of cards, with a fake 3d effect of thickness). *
  * Needs cardWidth and cardHeight to be set in the card manager.
@@ -512,6 +590,14 @@ declare class Deck<T> extends CardStock<T> {
     addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardToDeckSettings): Promise<boolean>;
     cardRemoved(card: T, settings?: RemoveCardFromDeckSettings): void;
     getTopCard(): T | null;
+    /**
+     * Shows a shuffle animation on the deck
+     *
+     * @param animatedCardsMax number of animated cards for shuffle animation.
+     * @param fakeCardSetter a function to generate a fake card for animation. Required if the card id is not based on a numerci `id` field, or if you want to set custom card back
+     * @returns promise when animation ends
+     */
+    shuffle(animatedCardsMax?: number, fakeCardSetter?: (card: T, index: number) => void): Promise<boolean>;
 }
 interface LineStockSettings extends CardStockSettings {
     /**
@@ -558,7 +644,7 @@ interface SlotStockSettings<T> extends LineStockSettings {
      */
     mapCardToSlot?: (card: T) => SlotId;
 }
-declare type SlotId = number | string;
+type SlotId = number | string;
 interface AddCardToSlotSettings extends AddCardSettings {
     /**
      * The slot to place the card on.

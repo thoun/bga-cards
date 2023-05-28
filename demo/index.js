@@ -73,6 +73,10 @@ function dealCards(oneByOne) {
     }
 }
 
+function shuffle() {
+    hiddenDeck.shuffle().then(() => console.log('shuffle ended'));
+}
+
 // tokens
 
 function initTokens() {

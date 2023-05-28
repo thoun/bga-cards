@@ -541,7 +541,7 @@ class CardStock<T> {
      * @param element The element to animate. The element is added to the destination stock before the animation starts. 
      * @param fromElement The HTMLElement to animate from.
      */
-    protected animationFromElement(element: HTMLElement, fromRect: DOMRect, settings: CardAnimationSettings): Promise<boolean> {
+    protected async animationFromElement(element: HTMLElement, fromRect: DOMRect, settings: CardAnimationSettings): Promise<boolean> {
         const side = element.dataset.side;
         if (settings.originalSide && settings.originalSide != side) {
             const cardSides = element.getElementsByClassName('card-sides')[0] as HTMLDivElement;
@@ -553,16 +553,16 @@ class CardStock<T> {
             });
         }
 
-        const animation: AnimationFunction = settings.animation ?? slideAnimation;
-        return animation(element, <AnimationWithOriginSettings>{
-            duration: this.manager.animationManager.getSettings()?.duration ?? 500,
-            scale: this.manager.animationManager.getZoomManager()?.zoom ?? undefined,
+        let animation = settings.animation;
+        if (animation) {
+            animation.settings.element = element;
+            (animation.settings as BgaAnimationWithOriginSettings).fromRect = fromRect;
+        } else {
+            animation = new BgaSlideAnimation({ element, fromRect });
+        }
 
-            ...settings ?? {},
-
-            game: this.manager.game,
-            fromRect
-        }) ?? Promise.resolve(false);
+        const result = await this.manager.animationManager.play(animation);
+        return result?.played ?? false;
     }
 
     /**

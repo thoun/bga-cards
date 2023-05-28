@@ -84,6 +84,24 @@ interface RemoveCardFromDeckSettings extends RemoveCardSettings {
     autoUpdateCardNumber?: boolean;
 }
 
+class SlideAndBackAnimation<T> extends BgaCumulatedAnimation<BgaCumulatedAnimationsSettings> {
+    constructor(manager: CardManager<T>, element: HTMLElement, tempElement: boolean) {
+        const distance = (manager.getCardWidth() + manager.getCardHeight()) / 2;
+        const angle = Math.random() * Math.PI * 2;
+        const fromDelta = {
+            x: distance * Math.cos(angle),
+            y: distance * Math.sin(angle),
+        }
+
+        super({
+            animations: [
+                new BgaSlideToAnimation({ element, fromDelta, duration: 250 } as BgaAnimationWithOriginSettings),
+                new BgaSlideAnimation({ element, fromDelta, duration: 250, animationEnd: tempElement ? (() => element.remove()) : undefined } as BgaAnimationWithOriginSettings),
+            ]
+        });
+    }
+}
+
 /**
  * Abstract stock to represent a deck. (pile of cards, with a fake 3d effect of thickness). * 
  * Needs cardWidth and cardHeight to be set in the card manager.
@@ -214,5 +232,41 @@ class Deck<T> extends CardStock<T> {
     public getTopCard(): T | null {
         const cards = this.getCards();
         return cards.length ? cards[cards.length - 1] : null;
+    }
+
+    /**
+     * Shows a shuffle animation on the deck
+     * 
+     * @param animatedCardsMax number of animated cards for shuffle animation.
+     * @param fakeCardSetter a function to generate a fake card for animation. Required if the card id is not based on a numerci `id` field, or if you want to set custom card back
+     * @returns promise when animation ends
+     */
+    public async shuffle(animatedCardsMax: number = 10, fakeCardSetter?: (card: T, index: number) => void): Promise<boolean> {
+        if (!this.manager.animationsActive()) { 
+            return Promise.resolve(false); // we don't execute as it's just visual temporary stuff
+        }
+
+        const animatedCards = Math.min(10, animatedCardsMax, this.getCardNumber());
+
+        if (animatedCards > 1) {
+            const elements = [this.getCardElement(this.getTopCard())];
+            for (let i = elements.length; i <= animatedCards; i++) {
+                const newCard: T = {} as T;
+                if (fakeCardSetter) {
+                    fakeCardSetter(newCard, i);
+                } else {
+                    (newCard as any).id = -100000 + i;
+                }
+                const newElement = this.manager.createCardElement(newCard, false);
+                newElement.dataset.tempCardForShuffleAnimation = 'true';
+                this.element.prepend(newElement);
+                elements.push(newElement);
+            }
+            await this.manager.animationManager.playWithDelay(elements.map(element => new SlideAndBackAnimation(this.manager, element, element.dataset.tempCardForShuffleAnimation == 'true')), 50);
+
+            return true;
+        } else {
+            return Promise.resolve(false);
+        }
     }
 }

@@ -1,12 +1,9 @@
 
 // example of a custom function.
- function stockSlideWithDoubleLoopAnimation(element, settings) {
+ function stockSlideWithDoubleLoopAnimation(animationManager, animation) {
     const promise = new Promise((success) => {
-        // should be checked at the beginning of every animation
-        if (!shouldAnimate(settings)) {
-            success(false);
-            return promise;
-        }
+        const settings = animation.settings;
+        const element = settings.element;
 
         const originBR = settings.fromRect;
         const destinationBR = element.getBoundingClientRect();
@@ -26,7 +23,7 @@
         setTimeout(() => {
             element.style.zIndex = null;
             element.style.transition = null;
-            success(true);
+            success();
         }, 600);
     });
     return promise;

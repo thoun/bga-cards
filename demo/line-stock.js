@@ -44,7 +44,7 @@ function addCardToLineStockWithAnimation(fromElement, customAnimation) {
     };
 
     if (customAnimation) {
-        animationSettings.animation = stockSlideWithDoubleLoopAnimation;
+        animationSettings.animation = new BgaAnimation(stockSlideWithDoubleLoopAnimation, {});
     }
 
     lineStock.addCard(
