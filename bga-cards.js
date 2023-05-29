@@ -4,6 +4,7 @@ var BgaAnimation = /** @class */ (function () {
         this.settings = settings;
         this.played = null;
         this.result = null;
+        this.playWhenNoAnimation = false;
     }
     return BgaAnimation;
 }());
@@ -42,7 +43,9 @@ function attachWithAnimation(animationManager, animation) {
 var BgaAttachWithAnimation = /** @class */ (function (_super) {
     __extends(BgaAttachWithAnimation, _super);
     function BgaAttachWithAnimation(settings) {
-        return _super.call(this, attachWithAnimation, settings) || this;
+        var _this = _super.call(this, attachWithAnimation, settings) || this;
+        _this.playWhenNoAnimation = true;
+        return _this;
     }
     return BgaAttachWithAnimation;
 }(BgaAnimation));
@@ -59,7 +62,9 @@ function cumulatedAnimations(animationManager, animation) {
 var BgaCumulatedAnimation = /** @class */ (function (_super) {
     __extends(BgaCumulatedAnimation, _super);
     function BgaCumulatedAnimation(settings) {
-        return _super.call(this, cumulatedAnimations, settings) || this;
+        var _this = _super.call(this, cumulatedAnimations, settings) || this;
+        _this.playWhenNoAnimation = true;
+        return _this;
     }
     return BgaCumulatedAnimation;
 }(BgaAnimation));
@@ -215,8 +220,15 @@ function getDeltaCoordinates(element, settings) {
     }
     return { x: x, y: y };
 }
-function logAnimation(element, settings) {
-    console.log(element, element.getBoundingClientRect(), element.style.transform, settings);
+function logAnimation(animationManager, animation) {
+    var settings = animation.settings;
+    var element = settings.element;
+    if (element) {
+        console.log(animation, settings, element, element.getBoundingClientRect(), element.style.transform);
+    }
+    else {
+        console.log(animation, settings);
+    }
     return Promise.resolve(false);
 }
 var __assign = (this && this.__assign) || function () {
@@ -323,7 +335,7 @@ var AnimationManager = /** @class */ (function () {
             return __generator(this, function (_o) {
                 switch (_o.label) {
                     case 0:
-                        animation.played = this.animationsActive();
+                        animation.played = animation.playWhenNoAnimation || this.animationsActive();
                         if (!animation.played) return [3 /*break*/, 2];
                         settings = animation.settings;
                         (_a = settings.animationStart) === null || _a === void 0 ? void 0 : _a.call(settings, animation);
@@ -335,8 +347,9 @@ var AnimationManager = /** @class */ (function () {
                         _m.result = _o.sent();
                         (_j = (_h = animation.settings).animationEnd) === null || _j === void 0 ? void 0 : _j.call(_h, animation);
                         (_k = settings.element) === null || _k === void 0 ? void 0 : _k.classList.remove((_l = settings.animationClass) !== null && _l !== void 0 ? _l : 'bga-animations_animated');
-                        return [2 /*return*/, Promise.resolve(animation)];
+                        return [3 /*break*/, 3];
                     case 2: return [2 /*return*/, Promise.resolve(animation)];
+                    case 3: return [2 /*return*/];
                 }
             });
         });
@@ -1294,8 +1307,9 @@ var SlotStock = /** @class */ (function (_super) {
      * Swap cards inside the slot stock.
      *
      * @param cards the cards to swap
+     * @param settings for `updateInformations` and `selectable`
      */
-    SlotStock.prototype.swapCards = function (cards) {
+    SlotStock.prototype.swapCards = function (cards, settings) {
         var _this = this;
         if (!this.mapCardToSlot) {
             throw new Error('You need to define SlotStock.mapCardToSlot to use SlotStock.swapCards');
@@ -1304,21 +1318,29 @@ var SlotStock = /** @class */ (function (_super) {
         var elements = cards.map(function (card) { return _this.manager.getCardElement(card); });
         var elementsRects = elements.map(function (element) { return element.getBoundingClientRect(); });
         var cssPositions = elements.map(function (element) { return element.style.position; });
-        // we set to absolute so it doesn't mess with slide coordinates when 2 div arer at the same place
+        // we set to absolute so it doesn't mess with slide coordinates when 2 div are at the same place
         elements.forEach(function (element) { return element.style.position = 'absolute'; });
         cards.forEach(function (card, index) {
-            var _a;
+            var _a, _b;
             var cardElement = elements[index];
             var promise;
             var slotId = (_a = _this.mapCardToSlot) === null || _a === void 0 ? void 0 : _a.call(_this, card);
             _this.slots[slotId].appendChild(cardElement);
             cardElement.style.position = cssPositions[index];
+            var cardIndex = _this.cards.findIndex(function (c) { return _this.manager.getId(c) == _this.manager.getId(card); });
+            if (cardIndex !== -1) {
+                _this.cards.splice(cardIndex, 1, card);
+            }
+            if ((_b = settings === null || settings === void 0 ? void 0 : settings.updateInformations) !== null && _b !== void 0 ? _b : true) { // after splice/push
+                _this.manager.updateCardInformations(card);
+            }
             _this.removeSelectionClassesFromElement(cardElement);
             promise = _this.animationFromElement(cardElement, elementsRects[index], {});
             if (!promise) {
-                console.warn("CardStock.moveFromOtherStock didn't return a Promise");
+                console.warn("CardStock.animationFromElement didn't return a Promise");
                 promise = Promise.resolve(false);
             }
+            promise.then(function () { var _a; return _this.setSelectableCard(card, (_a = settings === null || settings === void 0 ? void 0 : settings.selectable) !== null && _a !== void 0 ? _a : true); });
             promises.push(promise);
         });
         return Promise.all(promises);

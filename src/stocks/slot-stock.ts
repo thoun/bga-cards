@@ -114,8 +114,9 @@ class SlotStock<T> extends LineStock<T> {
      * Swap cards inside the slot stock.
      * 
      * @param cards the cards to swap
+     * @param settings for `updateInformations` and `selectable`
      */
-    public swapCards(cards: T[]) {
+    public swapCards(cards: T[], settings?: AddCardSettings) {
         if (!this.mapCardToSlot) {
             throw new Error('You need to define SlotStock.mapCardToSlot to use SlotStock.swapCards');
         }
@@ -126,7 +127,7 @@ class SlotStock<T> extends LineStock<T> {
         const elementsRects = elements.map(element => element.getBoundingClientRect());
         const cssPositions = elements.map(element => element.style.position);
 
-        // we set to absolute so it doesn't mess with slide coordinates when 2 div arer at the same place
+        // we set to absolute so it doesn't mess with slide coordinates when 2 div are at the same place
         elements.forEach(element => element.style.position = 'absolute');
 
         cards.forEach((card, index) => {
@@ -137,13 +138,24 @@ class SlotStock<T> extends LineStock<T> {
             this.slots[slotId].appendChild(cardElement);
             cardElement.style.position = cssPositions[index];
 
+            const cardIndex = this.cards.findIndex(c => this.manager.getId(c) == this.manager.getId(card));
+            if (cardIndex !== -1) {
+                this.cards.splice(cardIndex, 1, card);
+            }
+    
+            if (settings?.updateInformations ?? true) { // after splice/push
+                this.manager.updateCardInformations(card);
+            }
+
             this.removeSelectionClassesFromElement(cardElement);
             promise = this.animationFromElement(cardElement, elementsRects[index], {});
             
             if (!promise) {
-                console.warn(`CardStock.moveFromOtherStock didn't return a Promise`);
+                console.warn(`CardStock.animationFromElement didn't return a Promise`);
                 promise = Promise.resolve(false);
             }
+
+            promise.then(() => this.setSelectableCard(card, settings?.selectable ?? true));
 
             promises.push(promise);
         });

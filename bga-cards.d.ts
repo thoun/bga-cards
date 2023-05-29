@@ -67,6 +67,7 @@ interface IBgaAnimation<T extends BgaAnimationSettings> {
     settings: T;
     played: boolean | null;
     result: any | null;
+    playWhenNoAnimation: boolean;
 }
 /**
  * Animation function signature. Will return a promise after animation is ended. The promise returns the result of the animation, if any
@@ -77,6 +78,7 @@ declare class BgaAnimation<T extends BgaAnimationSettings> implements IBgaAnimat
     settings: T;
     played: boolean | null;
     result: any | null;
+    playWhenNoAnimation: boolean;
     constructor(animationFunction: BgaAnimationFunction, settings: T);
 }
 interface BgaAttachWithAnimationSettings extends BgaElementAnimationSettings {
@@ -148,7 +150,7 @@ declare function getDeltaCoordinates(element: HTMLElement, settings: BgaAnimatio
     x: number;
     y: number;
 };
-declare function logAnimation(element: HTMLElement, settings: BgaAnimationSettings): Promise<boolean>;
+declare function logAnimation(animationManager: AnimationManager, animation: IBgaAnimation<BgaCumulatedAnimationsSettings>): Promise<any>;
 interface IZoomManager {
     /**
      * Returns the zoom level
@@ -688,8 +690,9 @@ declare class SlotStock<T> extends LineStock<T> {
      * Swap cards inside the slot stock.
      *
      * @param cards the cards to swap
+     * @param settings for `updateInformations` and `selectable`
      */
-    swapCards(cards: T[]): Promise<boolean[]>;
+    swapCards(cards: T[], settings?: AddCardSettings): Promise<boolean[]>;
 }
 interface ScrollableStockButtonSettings {
     /**
