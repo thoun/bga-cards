@@ -119,6 +119,9 @@ class CardManager<T> {
 
     private stocks: CardStock<T>[] = [];
 
+    private updateFrontTimeoutId = [];
+    private updateBackTimeoutId = [];
+
     /**
      * @param game the BGA game class, usually it will be `this`
      * @param settings: a `CardManagerSettings` object
@@ -244,19 +247,31 @@ class CardManager<T> {
 
         element.dataset.side = isVisible ? 'front' : 'back';
 
+        const stringId = JSON.stringify(this.getId(card));
         if (settings?.updateFront ?? true) {
+            if (this.updateFrontTimeoutId[stringId]) { // make sure there is not a delayed animation that will overwrite the last flip request
+                clearTimeout(this.updateFrontTimeoutId[stringId]);
+                delete this.updateFrontTimeoutId[stringId];
+            }
+
             const updateFrontDelay = settings?.updateFrontDelay ?? 500;
 
             if (!isVisible && updateFrontDelay > 0 && this.animationsActive()) {
-                setTimeout(() => this.settings.setupFrontDiv?.(card, element.getElementsByClassName('front')[0] as HTMLDivElement), updateFrontDelay);
+                this.updateFrontTimeoutId[stringId] = setTimeout(() => this.settings.setupFrontDiv?.(card, element.getElementsByClassName('front')[0] as HTMLDivElement), updateFrontDelay);
             } else {
                 this.settings.setupFrontDiv?.(card, element.getElementsByClassName('front')[0] as HTMLDivElement);
             }
         }
+
         if (settings?.updateBack ?? false) {
+            if (this.updateBackTimeoutId[stringId]) { // make sure there is not a delayed animation that will overwrite the last flip request
+                clearTimeout(this.updateBackTimeoutId[stringId]);
+                delete this.updateBackTimeoutId[stringId];
+            }
+
             const updateBackDelay = settings?.updateBackDelay ?? 0;
             if (isVisible && updateBackDelay > 0 && this.animationsActive()) {
-                setTimeout(() => this.settings.setupBackDiv?.(card, element.getElementsByClassName('back')[0] as HTMLDivElement), updateBackDelay);
+                this.updateBackTimeoutId[stringId] = setTimeout(() => this.settings.setupBackDiv?.(card, element.getElementsByClassName('back')[0] as HTMLDivElement), updateBackDelay);
             } else {
                 this.settings.setupBackDiv?.(card, element.getElementsByClassName('back')[0] as HTMLDivElement);
             }

@@ -949,6 +949,8 @@ declare class CardManager<T> {
     private settings;
     animationManager: AnimationManager;
     private stocks;
+    private updateFrontTimeoutId;
+    private updateBackTimeoutId;
     /**
      * @param game the BGA game class, usually it will be `this`
      * @param settings: a `CardManagerSettings` object
