@@ -404,10 +404,10 @@ class CardStock<T> {
         const unselectableCardsClass = this.getUnselectableCardClass();
 
         if (selectableCardsClass) {
-            element.classList.toggle(selectableCardsClass, selectable);
+            element?.classList.toggle(selectableCardsClass, selectable);
         }
         if (unselectableCardsClass) {
-            element.classList.toggle(unselectableCardsClass, !selectable);
+            element?.classList.toggle(unselectableCardsClass, !selectable);
         }
 
         if (!selectable && this.isSelected(card)) {
@@ -445,7 +445,7 @@ class CardStock<T> {
         const element = this.getCardElement(card);
 
         const selectableCardsClass = this.getSelectableCardClass();
-        if (!element.classList.contains(selectableCardsClass)) {
+        if (!element || !element.classList.contains(selectableCardsClass)) {
             return;
         }
         
@@ -470,7 +470,7 @@ class CardStock<T> {
     public unselectCard(card: T, silent: boolean = false) {
         const element = this.getCardElement(card);      
         const selectedCardsClass = this.getSelectedCardClass();
-        element.classList.remove(selectedCardsClass);
+        element?.classList.remove(selectedCardsClass);
 
         const index = this.selectedCards.findIndex(c => this.manager.getId(c) == this.manager.getId(card));
         if (index !== -1) {
@@ -613,6 +613,6 @@ class CardStock<T> {
         const unselectableCardsClass = this.getUnselectableCardClass();
         const selectedCardsClass = this.getSelectedCardClass();
 
-        cardElement.classList.remove(selectableCardsClass, unselectableCardsClass, selectedCardsClass);
+        cardElement?.classList.remove(selectableCardsClass, unselectableCardsClass, selectedCardsClass);
     }
 }
