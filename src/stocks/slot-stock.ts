@@ -100,6 +100,23 @@ class SlotStock<T> extends LineStock<T> {
         });
     }
 
+    /**
+     * Add new slots ids. Will not change nor empty the existing ones.
+     * 
+     * @param slotsIds the new slotsIds. Will be merged with the old ones.
+     */
+    public addSlotsIds(newSlotsIds: SlotId[]) {
+        if (newSlotsIds.length == 0) {
+            // no change
+            return;
+        }
+
+        this.slotsIds.push(...newSlotsIds);
+        newSlotsIds.forEach(slotId => {
+            this.createSlot(slotId);
+        });
+    }
+
     protected canAddCard(card: T, settings?: AddCardToSlotSettings) {
         if (!this.contains(card)) {
             return true;

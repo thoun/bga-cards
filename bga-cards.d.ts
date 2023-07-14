@@ -685,6 +685,12 @@ declare class SlotStock<T> extends LineStock<T> {
      * @param slotsIds the new slotsIds. Will replace the old ones.
      */
     setSlotsIds(slotsIds: SlotId[]): void;
+    /**
+     * Add new slots ids. Will not change nor empty the existing ones.
+     *
+     * @param slotsIds the new slotsIds. Will be merged with the old ones.
+     */
+    addSlotsIds(newSlotsIds: SlotId[]): void;
     protected canAddCard(card: T, settings?: AddCardToSlotSettings): boolean;
     /**
      * Swap cards inside the slot stock.
