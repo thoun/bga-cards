@@ -1541,7 +1541,7 @@ var AllVisibleDeck = /** @class */ (function (_super) {
     __extends(AllVisibleDeck, _super);
     function AllVisibleDeck(manager, element, settings) {
         var _this = this;
-        var _a, _b;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
         _this = _super.call(this, manager, element, settings) || this;
         _this.manager = manager;
         _this.element = element;
@@ -1555,7 +1555,14 @@ var AllVisibleDeck = /** @class */ (function (_super) {
         else {
             throw new Error("You need to set cardWidth and cardHeight in the card manager to use Deck.");
         }
-        element.style.setProperty('--shift', (_b = settings.shift) !== null && _b !== void 0 ? _b : '3px');
+        element.style.setProperty('--vertical-shift', (_c = (_b = settings.verticalShift) !== null && _b !== void 0 ? _b : settings.shift) !== null && _c !== void 0 ? _c : '3px');
+        element.style.setProperty('--horizontal-shift', (_e = (_d = settings.horizontalShift) !== null && _d !== void 0 ? _d : settings.shift) !== null && _e !== void 0 ? _e : '3px');
+        if (settings.counter && ((_f = settings.counter.show) !== null && _f !== void 0 ? _f : true)) {
+            _this.createCounter((_g = settings.counter.position) !== null && _g !== void 0 ? _g : 'bottom', (_h = settings.counter.extraClasses) !== null && _h !== void 0 ? _h : 'round', settings.counter.counterId);
+            if ((_j = settings.counter) === null || _j === void 0 ? void 0 : _j.hideWhenEmpty) {
+                _this.element.querySelector('.bga-cards_deck-counter').classList.add('hide-when-empty');
+            }
+        }
         return _this;
     }
     AllVisibleDeck.prototype.addCard = function (card, animation, settings) {
@@ -1565,7 +1572,7 @@ var AllVisibleDeck = /** @class */ (function (_super) {
         var cardId = this.manager.getId(card);
         var cardDiv = document.getElementById(cardId);
         cardDiv.style.setProperty('--order', '' + order);
-        this.element.style.setProperty('--tile-count', '' + this.cards.length);
+        this.cardNumberUpdated();
         return promise;
     };
     /**
@@ -1584,7 +1591,26 @@ var AllVisibleDeck = /** @class */ (function (_super) {
             var cardDiv = document.getElementById(cardId);
             cardDiv.style.setProperty('--order', '' + index);
         });
-        this.element.style.setProperty('--tile-count', '' + this.cards.length);
+        this.cardNumberUpdated();
+    };
+    AllVisibleDeck.prototype.createCounter = function (counterPosition, extraClasses, counterId) {
+        var left = counterPosition.includes('right') ? 100 : (counterPosition.includes('left') ? 0 : 50);
+        var top = counterPosition.includes('bottom') ? 100 : (counterPosition.includes('top') ? 0 : 50);
+        this.element.style.setProperty('--bga-cards-deck-left', "".concat(left, "%"));
+        this.element.style.setProperty('--bga-cards-deck-top', "".concat(top, "%"));
+        this.element.insertAdjacentHTML('beforeend', "\n            <div ".concat(counterId ? "id=\"".concat(counterId, "\"") : '', " class=\"bga-cards_deck-counter ").concat(extraClasses, "\"></div>\n        "));
+    };
+    /**
+     * Updates the cards number, if the counter is visible.
+     */
+    AllVisibleDeck.prototype.cardNumberUpdated = function () {
+        var cardNumber = this.cards.length;
+        this.element.style.setProperty('--tile-count', '' + cardNumber);
+        this.element.dataset.empty = (cardNumber == 0).toString();
+        var counterDiv = this.element.querySelector('.bga-cards_deck-counter');
+        if (counterDiv) {
+            counterDiv.innerHTML = "".concat(cardNumber);
+        }
     };
     return AllVisibleDeck;
 }(CardStock));

@@ -833,13 +833,25 @@ declare class VoidStock<T> extends CardStock<T> {
 }
 interface AllVisibleDeckSettings extends CardStockSettings {
     /**
-     * The shift between each card (default 3)
+     * The shift between each card (default 3). Will be ignored if verticalShift and horizontalShift are set.
      */
     shift?: string;
+    /**
+     * The vertical shift between each card (default 3). Overrides shift.
+     */
+    verticalShift?: string;
+    /**
+     * The horizontal shift between each card (default 3). Overrides shift.
+     */
+    horizontalShift?: string;
     /**
      * The direction when it expands (default 'vertical')
      */
     direction?: 'vertical' | 'horizontal';
+    /**
+     * Show a card counter on the deck. Not visible if unset.
+     */
+    counter?: DeckCounter;
 }
 declare class AllVisibleDeck<T> extends CardStock<T> {
     protected manager: CardManager<T>;
@@ -853,6 +865,11 @@ declare class AllVisibleDeck<T> extends CardStock<T> {
      */
     setOpened(opened: boolean): void;
     cardRemoved(card: T): void;
+    protected createCounter(counterPosition: SideOrAngleOrCenter, extraClasses: string, counterId?: string): void;
+    /**
+     * Updates the cards number, if the counter is visible.
+     */
+    protected cardNumberUpdated(): void;
 }
 interface CardManagerSettings<T> {
     /**

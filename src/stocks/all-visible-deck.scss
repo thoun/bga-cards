@@ -2,37 +2,52 @@
     &.all-visible-deck {
         position: absolute;
         --tile-count: 1;
-        width: calc(var(--width) + var(--tile-count) * var(--shift));
-        transition: height 0.5s ease-in-out, background-color 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
+        width: calc(var(--width) + (var(--tile-count) - 1) * var(--horizontal-shift));
+        height: calc(var(--height) + (var(--tile-count) - 1) * var(--vertical-shift));
+        transition: width 0.5s ease-in-out, height 0.5s ease-in-out, background-color 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
         opacity: var(--tile-count);
 
-        & > * {
+        & > .card {
             position: absolute;
             margin: 0;
             transition: left 0.5s ease-in-out, top 0.5s ease-in-out;
-            top: calc(var(--shift) * var(--order));
-            left: calc(var(--shift) * var(--order));
+            top: calc(var(--vertical-shift) * var(--order));
+            left: calc(var(--horizontal-shift) * var(--order));
         }
 
         &.vertical {
             &:hover, &:active, &.opened {
-                height: calc((var(--height) + var(--shift)) * var(--tile-count) - var(--shift));
+                height: calc((var(--height) + var(--vertical-shift)) * var(--tile-count) - var(--vertical-shift));
                 z-index: 1;
 
-                & > * {
-                    top: calc((var(--height) + var(--shift)) * var(--order));
+                & > .card {
+                    top: calc((var(--height) + var(--vertical-shift)) * var(--order));
                 }
             }
         }
 
         &.horizontal {
             &:hover, &:active, &.opened {
-                width: calc((var(--width) + var(--shift)) * var(--tile-count) - var(--shift));
+                width: calc((var(--width) + var(--horizontal-shift)) * var(--tile-count) - var(--horizontal-shift));
                 z-index: 1;
 
-                & > * {
-                    left: calc((var(--width) + var(--shift)) * var(--order));
+                & > .card {
+                    left: calc((var(--width) + var(--horizontal-shift)) * var(--order));
                 }
+            }
+        }
+
+        .bga-cards_deck-counter {
+            transition: left 0.5s ease-in-out, top 0.5s ease-in-out;
+        }
+    
+        &[data-empty="true"] {
+            &>.card { 
+                visibility: hidden;
+            }
+
+            .bga-cards_deck-counter.hide-when-empty {
+                display: none;
             }
         }
     }
