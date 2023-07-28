@@ -14,12 +14,25 @@
             left: calc(var(--shift) * var(--order));
         }
 
-        &:hover, &:active, &.opened {
-            height: calc((var(--height) + var(--shift)) * var(--tile-count) - var(--shift));
-            z-index: 1;
+        &.vertical {
+            &:hover, &:active, &.opened {
+                height: calc((var(--height) + var(--shift)) * var(--tile-count) - var(--shift));
+                z-index: 1;
 
-            & > * {
-                top: calc((var(--height) + var(--shift)) * var(--order));
+                & > * {
+                    top: calc((var(--height) + var(--shift)) * var(--order));
+                }
+            }
+        }
+
+        &.horizontal {
+            &:hover, &:active, &.opened {
+                width: calc((var(--width) + var(--shift)) * var(--tile-count) - var(--shift));
+                z-index: 1;
+
+                & > * {
+                    left: calc((var(--width) + var(--shift)) * var(--order));
+                }
             }
         }
     }

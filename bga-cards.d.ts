@@ -836,6 +836,10 @@ interface AllVisibleDeckSettings extends CardStockSettings {
      * The shift between each card (default 3)
      */
     shift?: string;
+    /**
+     * The direction when it expands (default 'vertical')
+     */
+    direction?: 'vertical' | 'horizontal';
 }
 declare class AllVisibleDeck<T> extends CardStock<T> {
     protected manager: CardManager<T>;

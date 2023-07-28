@@ -45,9 +45,8 @@ function setVisibleDeckCardNumber(cardNumber) {
 
 function initAllVisibleDeck() {
     allVisibleDeck = new AllVisibleDeck(cardsManager, document.getElementById('all-visible-deck'), {
-        width: '100px',
-        height: '150px',
         shift: '8px',
+        // direction: 'horizontal',
     });
     allVisibleDeck.addCards([
         { id: getCardId(), type: 3, type_arg: 2, location: 'table', location_arg: 0 },

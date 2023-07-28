@@ -1541,11 +1541,11 @@ var AllVisibleDeck = /** @class */ (function (_super) {
     __extends(AllVisibleDeck, _super);
     function AllVisibleDeck(manager, element, settings) {
         var _this = this;
-        var _a;
+        var _a, _b;
         _this = _super.call(this, manager, element, settings) || this;
         _this.manager = manager;
         _this.element = element;
-        element.classList.add('all-visible-deck');
+        element.classList.add('all-visible-deck', (_a = settings.direction) !== null && _a !== void 0 ? _a : 'vertical');
         var cardWidth = _this.manager.getCardWidth();
         var cardHeight = _this.manager.getCardHeight();
         if (cardWidth && cardHeight) {
@@ -1555,7 +1555,7 @@ var AllVisibleDeck = /** @class */ (function (_super) {
         else {
             throw new Error("You need to set cardWidth and cardHeight in the card manager to use Deck.");
         }
-        element.style.setProperty('--shift', (_a = settings.shift) !== null && _a !== void 0 ? _a : '3px');
+        element.style.setProperty('--shift', (_b = settings.shift) !== null && _b !== void 0 ? _b : '3px');
         return _this;
     }
     AllVisibleDeck.prototype.addCard = function (card, animation, settings) {

@@ -3,13 +3,18 @@ interface AllVisibleDeckSettings extends CardStockSettings {
      * The shift between each card (default 3)
      */
     shift?: string;
+
+    /**
+     * The direction when it expands (default 'vertical')
+     */
+    direction?: 'vertical' | 'horizontal';
 }
 
 
 class AllVisibleDeck<T> extends CardStock<T> {
     constructor(protected manager: CardManager<T>, protected element: HTMLElement, settings: AllVisibleDeckSettings) {
         super(manager, element, settings);
-        element.classList.add('all-visible-deck');
+        element.classList.add('all-visible-deck', settings.direction ?? 'vertical');
 
         const cardWidth = this.manager.getCardWidth();
         const cardHeight = this.manager.getCardHeight();
