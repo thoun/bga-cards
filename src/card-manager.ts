@@ -193,11 +193,11 @@ class CardManager<T> {
      * @param card the card to remove
      * @param settings a `RemoveCardSettings` object
      */
-    public removeCard(card: T, settings?: RemoveCardSettings) {
+    public removeCard(card: T, settings?: RemoveCardSettings): Promise<boolean> {
         const id = this.getId(card);
         const div = document.getElementById(id);
         if (!div) {
-            return false;
+            return Promise.resolve(false);
         }
 
         div.id = `deleted${id}`;
@@ -206,7 +206,7 @@ class CardManager<T> {
         // if the card is in a stock, notify the stock about removal
         this.getCardStock(card)?.cardRemoved(card, settings);
 
-        return true;
+        return Promise.resolve(true);
     }
 
     /**

@@ -45,9 +45,8 @@ class VoidStock<T> extends CardStock<T> {
         }
 
         if (settings?.remove ?? true) {
-            return promise.then<boolean>(result => {
-                this.removeCard(card);
-                return result;
+            return promise.then<boolean>(() => {
+                return this.removeCard(card);
             });
         } else {
             cardElement.style.left = originalLeft;

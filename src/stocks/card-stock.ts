@@ -329,11 +329,16 @@ class CardStock<T> {
      * @param card the card to remove
      * @param settings a `RemoveCardSettings` object
      */
-    public removeCard(card: T, settings?: RemoveCardSettings) {
+    public removeCard(card: T, settings?: RemoveCardSettings): Promise<boolean> {
+        let promise;
         if (this.contains(card) && this.element.contains(this.getCardElement(card))) {
-            this.manager.removeCard(card, settings);
+            promise = this.manager.removeCard(card, settings);
+        } else {
+            promise = Promise.resolve(false);
         }
         this.cardRemoved(card, settings);
+
+        return promise;
     }
 
     /**
@@ -358,8 +363,10 @@ class CardStock<T> {
      * @param cards the cards to remove
      * @param settings a `RemoveCardSettings` object
      */
-    public removeCards(cards: T[], settings?: RemoveCardSettings) {
-        cards.forEach(card => this.removeCard(card, settings));
+    public async removeCards(cards: T[], settings?: RemoveCardSettings): Promise<boolean> {
+        const promises = cards.map(card => this.removeCard(card, settings))
+        const results = await Promise.all(promises);
+        return results.some(result => result);
     }
 
     /**

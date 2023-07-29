@@ -182,10 +182,8 @@ class Deck<T> extends CardStock<T> {
      * 
      * @param cardNumber the cards number
      */
-    public setCardNumber(cardNumber: number, topCard: T | null = null) {
-        if (topCard) {
-            this.addCard(topCard);
-        }
+    public setCardNumber(cardNumber: number, topCard: T | null = null): Promise<boolean> {
+        const promise = topCard ? this.addCard(topCard) : Promise.resolve(true);
 
         this.cardNumber = cardNumber;
 
@@ -203,6 +201,8 @@ class Deck<T> extends CardStock<T> {
         if (counterDiv) {
             counterDiv.innerHTML = `${cardNumber}`;
         }
+
+        return promise;
     }
 
     public addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardToDeckSettings): Promise<boolean> {

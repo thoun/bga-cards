@@ -402,7 +402,7 @@ declare class CardStock<T> {
      * @param card the card to remove
      * @param settings a `RemoveCardSettings` object
      */
-    removeCard(card: T, settings?: RemoveCardSettings): void;
+    removeCard(card: T, settings?: RemoveCardSettings): Promise<boolean>;
     /**
      * Notify the stock that a card is removed.
      *
@@ -416,7 +416,7 @@ declare class CardStock<T> {
      * @param cards the cards to remove
      * @param settings a `RemoveCardSettings` object
      */
-    removeCards(cards: T[], settings?: RemoveCardSettings): void;
+    removeCards(cards: T[], settings?: RemoveCardSettings): Promise<boolean>;
     /**
      * Remove all cards from the stock.
      * @param settings a `RemoveCardSettings` object
@@ -588,7 +588,7 @@ declare class Deck<T> extends CardStock<T> {
      *
      * @param cardNumber the cards number
      */
-    setCardNumber(cardNumber: number, topCard?: T | null): void;
+    setCardNumber(cardNumber: number, topCard?: T | null): Promise<boolean>;
     addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardToDeckSettings): Promise<boolean>;
     cardRemoved(card: T, settings?: RemoveCardFromDeckSettings): void;
     getTopCard(): T | null;
@@ -1007,7 +1007,7 @@ declare class CardManager<T> {
      * @param card the card to remove
      * @param settings a `RemoveCardSettings` object
      */
-    removeCard(card: T, settings?: RemoveCardSettings): boolean;
+    removeCard(card: T, settings?: RemoveCardSettings): Promise<boolean>;
     /**
      * Returns the stock containing the card.
      *
