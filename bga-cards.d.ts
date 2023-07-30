@@ -947,6 +947,11 @@ interface FlipCardSettings {
      */
     updateData?: boolean;
     /**
+     * Updates the main div display, by calling `setupDiv`.
+     * Default true
+     */
+    updateMain?: boolean;
+    /**
      * Updates the front display, by calling `setupFrontDiv`.
      * The new data is the card passed as the first argument of the `setCardVisible` / `flipCard` method.
      * Default true
@@ -958,6 +963,12 @@ interface FlipCardSettings {
      * Default false
      */
     updateBack?: boolean;
+    /**
+     * Delay before updateMain (in ms).
+     * Allow the card main div setting to be visible during the flip animation.
+     * Default 0.
+     */
+    updateMainDelay?: number;
     /**
      * Delay before updateFront (in ms).
      * Allow the card front to be visible during the flip animation.
@@ -976,6 +987,7 @@ declare class CardManager<T> {
     private settings;
     animationManager: AnimationManager;
     private stocks;
+    private updateMainTimeoutId;
     private updateFrontTimeoutId;
     private updateBackTimeoutId;
     /**

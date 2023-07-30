@@ -1,6 +1,6 @@
 {
   "name": "bga-cards",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "",
   "main": "bga-cards.js",
   "scripts": {

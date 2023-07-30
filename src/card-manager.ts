@@ -86,6 +86,12 @@ interface FlipCardSettings {
     updateData?: boolean;
 
     /**
+     * Updates the main div display, by calling `setupDiv`.
+     * Default true
+     */
+    updateMain?: boolean;
+
+    /**
      * Updates the front display, by calling `setupFrontDiv`.
      * The new data is the card passed as the first argument of the `setCardVisible` / `flipCard` method. 
      * Default true
@@ -98,6 +104,13 @@ interface FlipCardSettings {
      * Default false
      */
     updateBack?: boolean;
+
+    /**
+     * Delay before updateMain (in ms).
+     * Allow the card main div setting to be visible during the flip animation.
+     * Default 0.
+     */
+    updateMainDelay?: number;
 
     /**
      * Delay before updateFront (in ms).
@@ -119,6 +132,7 @@ class CardManager<T> {
 
     private stocks: CardStock<T>[] = [];
 
+    private updateMainTimeoutId = [];
     private updateFrontTimeoutId = [];
     private updateBackTimeoutId = [];
 
@@ -238,7 +252,7 @@ class CardManager<T> {
      * @param settings the flip params (to update the card in current stock)
      */
     public setCardVisible(card: T, visible?: boolean, settings?: FlipCardSettings): void {
-        const element = this.getCardElement(card);
+        const element = this.getCardElement(card) as HTMLDivElement;
         if (!element) {
             return;
         }
@@ -248,6 +262,22 @@ class CardManager<T> {
         element.dataset.side = isVisible ? 'front' : 'back';
 
         const stringId = JSON.stringify(this.getId(card));
+        
+
+        if (settings?.updateMain ?? false) {
+            if (this.updateMainTimeoutId[stringId]) { // make sure there is not a delayed animation that will overwrite the last flip request
+                clearTimeout(this.updateMainTimeoutId[stringId]);
+                delete this.updateMainTimeoutId[stringId];
+            }
+
+            const updateMainDelay = settings?.updateMainDelay ?? 0;
+            if (isVisible && updateMainDelay > 0 && this.animationsActive()) {
+                this.updateMainTimeoutId[stringId] = setTimeout(() => this.settings.setupDiv?.(card, element), updateMainDelay);
+            } else {
+                this.settings.setupDiv?.(card, element);
+            }
+        }
+
         if (settings?.updateFront ?? true) {
             if (this.updateFrontTimeoutId[stringId]) { // make sure there is not a delayed animation that will overwrite the last flip request
                 clearTimeout(this.updateFrontTimeoutId[stringId]);

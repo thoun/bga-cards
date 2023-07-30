@@ -47,6 +47,7 @@ class AllVisibleDeck<T> extends CardStock<T> {
 
             if (settings.counter?.hideWhenEmpty) {
                 this.element.querySelector('.bga-cards_deck-counter').classList.add('hide-when-empty');
+                this.element.dataset.empty = 'true';
             }
         }
     }        
