@@ -40,11 +40,23 @@ interface CardManagerSettings<T> {
     setupBackDiv?: (card: T, element: HTMLDivElement) => void;
 
     /**
+     * A function to determine if the card should show front side or back side, based on the informations of the card object.
+     * If you only manage visible cards, set it to `() => true`.
+     * Default is `card.type` is truthy.
+     * 
      * @param card the card informations
-     * @param element  the card back Div element. You can add a class, change dataset, set background for the back side
-     * @return the id for a card
+     * @return true if front side should be visible
      */
     isCardVisible?: (card: T) => boolean;
+
+    /**
+     * A generator of fake cards, to generate decks top card automatically.
+     * Default is generating an empty card, with only id set.
+     * 
+     * @param deckId the deck id
+     * @return the fake card to be generated (usually, only informations to show back side)
+     */
+    fakeCardGenerator?: (deckId: string) => T;
 
     /**
      * The animation manager used in the game. If not provided, a new one will be instanciated for this card manager. Useful if you use AnimationManager outside of card manager, to avoid double instanciation.
@@ -373,5 +385,9 @@ class CardManager<T> {
      */
     public getSelectedCardClass(): string | null {
         return this.settings?.selectedCardClass === undefined ? 'bga-cards_selected-card' : this.settings?.selectedCardClass;
+    }
+    
+    public getFakeCardGenerator(): (deckId: string) => T {
+        return this.settings?.fakeCardGenerator ?? (deckId => ({ id: this.getId({ id: `${deckId}-fake-top-card` as any} as T)} as T));
     }
 }

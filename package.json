@@ -1,6 +1,6 @@
 {
   "name": "bga-cards",
-  "version": "2.2.2",
+  "version": "2.3.0",
   "description": "",
   "main": "bga-cards.js",
   "scripts": {
@@ -11,13 +11,13 @@
   "author": "",
   "license": "ISC",
   "peerDependencies": {
-    "bga-animations": "thoun/bga-animations#1.0.2"
+    "bga-animations": "*"
   },
   "devDependencies": {
     "@microsoft/tsdoc": "0.14.2",
     "bga-animations": "thoun/bga-animations#1.0.2",
-    "typedoc": "^0.24.7",
     "sass": "^1.62.1",
+    "typedoc": "^0.24.7",
     "typescript": "^5.0.4"
   }
 }

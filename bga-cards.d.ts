@@ -544,6 +544,14 @@ interface DeckSettings<T> {
      * Show a card counter on the deck. Not visible if unset.
      */
     counter?: DeckCounter;
+    /**
+     * A generator of fake cards, to generate decks top card automatically.
+     * Default is manager `fakeCardGenerator` method.
+     *
+     * @param deckId the deck id
+     * @return the fake card to be generated (usually, only informations to show back side)
+     */
+    fakeCardGenerator?: (deckId: string) => T;
 }
 interface AddCardToDeckSettings extends AddCardSettings {
     /**
@@ -574,7 +582,8 @@ declare class Deck<T> extends CardStock<T> {
     protected cardNumber: number;
     protected autoUpdateCardNumber: boolean;
     protected autoRemovePreviousCards: boolean;
-    private thicknesses;
+    protected fakeCardGenerator?: (deckId: string) => T;
+    protected thicknesses: number[];
     constructor(manager: CardManager<T>, element: HTMLElement, settings: DeckSettings<T>);
     protected createCounter(counterPosition: SideOrAngleOrCenter, extraClasses: string, counterId?: string): void;
     /**
@@ -587,8 +596,9 @@ declare class Deck<T> extends CardStock<T> {
      * Set the the cards number.
      *
      * @param cardNumber the cards number
+     * @param topCard the deck top card. If unset, will generated a fake card (default). Set it to null to not generate a new topCard.
      */
-    setCardNumber(cardNumber: number, topCard?: T | null): Promise<boolean>;
+    setCardNumber(cardNumber: number, topCard?: T | null | undefined): Promise<boolean>;
     addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardToDeckSettings): Promise<boolean>;
     cardRemoved(card: T, settings?: RemoveCardFromDeckSettings): void;
     getTopCard(): T | null;
@@ -599,7 +609,8 @@ declare class Deck<T> extends CardStock<T> {
      * @param fakeCardSetter a function to generate a fake card for animation. Required if the card id is not based on a numerci `id` field, or if you want to set custom card back
      * @returns promise when animation ends
      */
-    shuffle(animatedCardsMax?: number, fakeCardSetter?: (card: T, index: number) => void): Promise<boolean>;
+    shuffle(animatedCardsMax?: number, fakeCardSetter?: (card: T, index: number) => void, newTopCard?: T): Promise<boolean>;
+    protected getFakeCard(): T;
 }
 interface LineStockSettings extends CardStockSettings {
     /**
@@ -909,11 +920,22 @@ interface CardManagerSettings<T> {
      */
     setupBackDiv?: (card: T, element: HTMLDivElement) => void;
     /**
+     * A function to determine if the card should show front side or back side, based on the informations of the card object.
+     * If you only manage visible cards, set it to `() => true`.
+     * Default is `card.type` is truthy.
+     *
      * @param card the card informations
-     * @param element  the card back Div element. You can add a class, change dataset, set background for the back side
-     * @return the id for a card
+     * @return true if front side should be visible
      */
     isCardVisible?: (card: T) => boolean;
+    /**
+     * A generator of fake cards, to generate decks top card automatically.
+     * Default is generating an empty card, with only id set.
+     *
+     * @param deckId the deck id
+     * @return the fake card to be generated (usually, only informations to show back side)
+     */
+    fakeCardGenerator?: (deckId: string) => T;
     /**
      * The animation manager used in the game. If not provided, a new one will be instanciated for this card manager. Useful if you use AnimationManager outside of card manager, to avoid double instanciation.
      */
@@ -1076,5 +1098,6 @@ declare class CardManager<T> {
      * @returns the class to apply to selected cards. Default 'bga-cards_selected-card'.
      */
     getSelectedCardClass(): string | null;
+    getFakeCardGenerator(): (deckId: string) => T;
 }
 declare const define: any;

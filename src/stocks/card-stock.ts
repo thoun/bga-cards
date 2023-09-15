@@ -168,16 +168,25 @@ class CardStock<T> {
 
         const updateInformations = settingsWithIndex.updateInformations ?? true;
 
+        let needsCreation = true;
         if (originStock?.contains(card)) {
             let element = this.getCardElement(card);
-            promise = this.moveFromOtherStock(card, element, { ...animation, fromStock: originStock,  }, settingsWithIndex);
-            if (!updateInformations) {
-                element.dataset.side = (settingsWithIndex?.visible ?? this.manager.isCardVisible(card)) ? 'front' : 'back';
+            if (element) {
+                promise = this.moveFromOtherStock(card, element, { ...animation, fromStock: originStock,  }, settingsWithIndex);
+                needsCreation = false;
+                if (!updateInformations) {
+                    element.dataset.side = (settingsWithIndex?.visible ?? this.manager.isCardVisible(card)) ? 'front' : 'back';
+                }
             }
-        } else if (animation?.fromStock && animation.fromStock.contains(card)) {
+        } else if (animation?.fromStock?.contains(card)) {
             let element = this.getCardElement(card);
-            promise = this.moveFromOtherStock(card, element, animation, settingsWithIndex);
-        } else {
+            if (element) {
+                promise = this.moveFromOtherStock(card, element, animation, settingsWithIndex);
+                needsCreation = false;
+            }
+        } 
+        
+        if (needsCreation) {
             const element = this.manager.createCardElement(card, (settingsWithIndex?.visible ?? this.manager.isCardVisible(card)));
             promise = this.moveFromElement(card, element, animation, settingsWithIndex);
         }
@@ -235,17 +244,17 @@ class CardStock<T> {
         let promise: Promise<boolean>;
 
         const element = animation.fromStock.contains(card) ? this.manager.getCardElement(card) : animation.fromStock.element;
-        const fromRect = element.getBoundingClientRect();
+        const fromRect = element?.getBoundingClientRect();
 
         this.addCardElementToParent(cardElement, settings);
 
         this.removeSelectionClassesFromElement(cardElement);
 
-        promise = this.animationFromElement(cardElement, fromRect, {
+        promise = fromRect ? this.animationFromElement(cardElement, fromRect, {
             originalSide: animation.originalSide, 
             rotationDelta: animation.rotationDelta,
             animation: animation.animation,
-        });
+        }) : Promise.resolve(false);
         // in the case the card was move inside the same stock we don't remove it
         if (animation.fromStock && animation.fromStock != this) {
             animation.fromStock.removeCard(card);

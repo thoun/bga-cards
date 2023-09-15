@@ -26,7 +26,7 @@
 <ul class="tsd-hierarchy">
 <li><span class="target">CardManagerSettings</span></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/3f8c6f7/src/card-manager.ts#L1">src/card-manager.ts:1</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/5cfc024/src/card-manager.ts#L1">src/card-manager.ts:1</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -37,6 +37,7 @@
 <div class="tsd-index-list"><a href="card_manager.CardManagerSettings.html#animationManager" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#FF984D" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-1024-path"></rect><path d="M9.354 16V7.24H12.174C12.99 7.24 13.638 7.476 14.118 7.948C14.606 8.412 14.85 9.036 14.85 9.82C14.85 10.604 14.606 11.232 14.118 11.704C13.638 12.168 12.99 12.4 12.174 12.4H10.434V16H9.354ZM10.434 11.428H12.174C12.646 11.428 13.022 11.284 13.302 10.996C13.59 10.7 13.734 10.308 13.734 9.82C13.734 9.324 13.59 8.932 13.302 8.644C13.022 8.356 12.646 8.212 12.174 8.212H10.434V11.428Z" fill="var(--color-text)" id="icon-1024-text"></path></svg><span>animation<wbr/>Manager?</span></a>
 <a href="card_manager.CardManagerSettings.html#cardHeight" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>card<wbr/>Height?</span></a>
 <a href="card_manager.CardManagerSettings.html#cardWidth" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>card<wbr/>Width?</span></a>
+<a href="card_manager.CardManagerSettings.html#fakeCardGenerator" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>fake<wbr/>Card<wbr/>Generator?</span></a>
 <a href="card_manager.CardManagerSettings.html#getId" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>get<wbr/>Id?</span></a>
 <a href="card_manager.CardManagerSettings.html#isCardVisible" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>is<wbr/>Card<wbr/>Visible?</span></a>
 <a href="card_manager.CardManagerSettings.html#selectableCardClass" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>selectable<wbr/>Card<wbr/>Class?</span></a>
@@ -54,21 +55,45 @@
 <div class="tsd-comment tsd-typography"><p>The animation manager used in the game. If not provided, a new one will be instanciated for this card manager. Useful if you use AnimationManager outside of card manager, to avoid double instanciation.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/3f8c6f7/src/card-manager.ts#L52">src/card-manager.ts:52</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/5cfc024/src/card-manager.ts#L64">src/card-manager.ts:64</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="cardHeight" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>card<wbr/>Height</span><a href="#cardHeight" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">card<wbr/>Height</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">number</span></div>
 <div class="tsd-comment tsd-typography"><p>Indicate the height of a card (in px). Used for Deck stocks.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/3f8c6f7/src/card-manager.ts#L62">src/card-manager.ts:62</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/5cfc024/src/card-manager.ts#L74">src/card-manager.ts:74</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="cardWidth" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>card<wbr/>Width</span><a href="#cardWidth" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">card<wbr/>Width</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">number</span></div>
 <div class="tsd-comment tsd-typography"><p>Indicate the width of a card (in px). Used for Deck stocks.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/3f8c6f7/src/card-manager.ts#L57">src/card-manager.ts:57</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/5cfc024/src/card-manager.ts#L69">src/card-manager.ts:69</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member"><a id="fakeCardGenerator" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>fake<wbr/>Card<wbr/>Generator</span><a href="#fakeCardGenerator" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">fake<wbr/>Card<wbr/>Generator</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">deckId</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type tsd-kind-type-parameter">T</span><span class="tsd-signature-symbol">)</span></div>
+<div class="tsd-type-declaration">
+<h4>Type declaration</h4>
+<ul class="tsd-parameters">
+<li class="tsd-parameter-signature">
+<ul class="tsd-signatures">
+<li class="tsd-signature" id="fakeCardGenerator.__type.__type-1"><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">deckId</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type tsd-kind-type-parameter">T</span></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>A generator of fake cards, to generate decks top card automatically.
+Default is generating an empty card, with only id set.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5><span class="tsd-kind-parameter">deckId</span>: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>the deck id</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type tsd-kind-type-parameter">T</span></h4><p>the fake card to be generated (usually, only informations to show back side)</p>
+</li></ul></li></ul></div><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/5cfc024/src/card-manager.ts#L59">src/card-manager.ts:59</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="getId" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>get<wbr/>Id</span><a href="#getId" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">get<wbr/>Id</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">card</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span></div>
@@ -77,7 +102,7 @@
 <ul class="tsd-parameters">
 <li class="tsd-parameter-signature">
 <ul class="tsd-signatures">
-<li class="tsd-signature" id="getId.__type.__type-1"><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">card</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+<li class="tsd-signature" id="getId.__type-2.__type-3"><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">card</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Define the id that will be set to each card div. It must generate a unique id for each different card, so it&#39;s often linked to card id.
 If you use different cards types that couldhave the same ids, you must define this method to make it different for each type (for example : <code>getId: (card) =&gt; &#39;other-card-type-&#39; + card.id</code>).</p>
@@ -93,7 +118,7 @@ If you use different cards types that couldhave the same ids, you must define th
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4><p>the id for a card</p>
 </li></ul></li></ul></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/3f8c6f7/src/card-manager.ts#L11">src/card-manager.ts:11</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/5cfc024/src/card-manager.ts#L11">src/card-manager.ts:11</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="isCardVisible" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>is<wbr/>Card<wbr/>Visible</span><a href="#isCardVisible" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">is<wbr/>Card<wbr/>Visible</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">card</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span></div>
@@ -102,9 +127,12 @@ If you use different cards types that couldhave the same ids, you must define th
 <ul class="tsd-parameters">
 <li class="tsd-parameter-signature">
 <ul class="tsd-signatures">
-<li class="tsd-signature" id="isCardVisible.__type-2.__type-3"><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">card</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+<li class="tsd-signature" id="isCardVisible.__type-4.__type-5"><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">card</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"></div>
+<div class="tsd-comment tsd-typography"><p>A function to determine if the card should show front side or back side, based on the informations of the card object.
+If you only manage visible cards, set it to <code>() =&gt; true</code>.
+Default is <code>card.type</code> is truthy.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
@@ -112,24 +140,24 @@ If you use different cards types that couldhave the same ids, you must define th
 <h5><span class="tsd-kind-parameter">card</span>: <span class="tsd-signature-type tsd-kind-type-parameter">T</span></h5>
 <div class="tsd-comment tsd-typography"><p>the card informations</p>
 </div></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><p>the id for a card</p>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><p>true if front side should be visible</p>
 </li></ul></li></ul></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/3f8c6f7/src/card-manager.ts#L47">src/card-manager.ts:47</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/5cfc024/src/card-manager.ts#L50">src/card-manager.ts:50</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="selectableCardClass" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>selectable<wbr/>Card<wbr/>Class</span><a href="#selectableCardClass" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">selectable<wbr/>Card<wbr/>Class</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span></div>
 <div class="tsd-comment tsd-typography"><p>The class to apply to selectable cards. Default &#39;bga-cards_selectable-card&#39;.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/3f8c6f7/src/card-manager.ts#L67">src/card-manager.ts:67</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/5cfc024/src/card-manager.ts#L79">src/card-manager.ts:79</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="selectedCardClass" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>selected<wbr/>Card<wbr/>Class</span><a href="#selectedCardClass" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">selected<wbr/>Card<wbr/>Class</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span></div>
 <div class="tsd-comment tsd-typography"><p>The class to apply to selected cards. Default &#39;bga-cards_selected-card&#39;.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/3f8c6f7/src/card-manager.ts#L77">src/card-manager.ts:77</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/5cfc024/src/card-manager.ts#L89">src/card-manager.ts:89</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="setupBackDiv" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>setup<wbr/>Back<wbr/>Div</span><a href="#setupBackDiv" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">setup<wbr/>Back<wbr/>Div</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">card</span>, <span class="tsd-kind-parameter">element</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span></div>
@@ -138,7 +166,7 @@ If you use different cards types that couldhave the same ids, you must define th
 <ul class="tsd-parameters">
 <li class="tsd-parameter-signature">
 <ul class="tsd-signatures">
-<li class="tsd-signature" id="setupBackDiv.__type-4.__type-5"><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">card</span>, <span class="tsd-kind-parameter">element</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+<li class="tsd-signature" id="setupBackDiv.__type-6.__type-7"><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">card</span>, <span class="tsd-kind-parameter">element</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Allow to populate the back div of the card. You can set classes or dataset to show the correct card face.
 You can also add some translated text on the card at this moment.</p>
@@ -157,7 +185,7 @@ You can also add some translated text on the card at this moment.</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><p>the id for a card</p>
 </li></ul></li></ul></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/3f8c6f7/src/card-manager.ts#L40">src/card-manager.ts:40</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/5cfc024/src/card-manager.ts#L40">src/card-manager.ts:40</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="setupDiv" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>setup<wbr/>Div</span><a href="#setupDiv" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">setup<wbr/>Div</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">card</span>, <span class="tsd-kind-parameter">element</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span></div>
@@ -166,7 +194,7 @@ You can also add some translated text on the card at this moment.</p>
 <ul class="tsd-parameters">
 <li class="tsd-parameter-signature">
 <ul class="tsd-signatures">
-<li class="tsd-signature" id="setupDiv.__type-6.__type-7"><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">card</span>, <span class="tsd-kind-parameter">element</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+<li class="tsd-signature" id="setupDiv.__type-8.__type-9"><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">card</span>, <span class="tsd-kind-parameter">element</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Allow to populate the main div of the card. You can set classes or dataset, if it&#39;s informations shared by both sides.</p>
 </div>
@@ -184,7 +212,7 @@ You can also add some translated text on the card at this moment.</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><p>the id for a card</p>
 </li></ul></li></ul></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/3f8c6f7/src/card-manager.ts#L20">src/card-manager.ts:20</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/5cfc024/src/card-manager.ts#L20">src/card-manager.ts:20</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="setupFrontDiv" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>setup<wbr/>Front<wbr/>Div</span><a href="#setupFrontDiv" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">setup<wbr/>Front<wbr/>Div</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">card</span>, <span class="tsd-kind-parameter">element</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span></div>
@@ -193,7 +221,7 @@ You can also add some translated text on the card at this moment.</p>
 <ul class="tsd-parameters">
 <li class="tsd-parameter-signature">
 <ul class="tsd-signatures">
-<li class="tsd-signature" id="setupFrontDiv.__type-8.__type-9"><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">card</span>, <span class="tsd-kind-parameter">element</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+<li class="tsd-signature" id="setupFrontDiv.__type-10.__type-11"><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">card</span>, <span class="tsd-kind-parameter">element</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Allow to populate the front div of the card. You can set classes or dataset to show the correct card face.
 You can also add some translated text on the card at this moment.</p>
@@ -212,14 +240,14 @@ You can also add some translated text on the card at this moment.</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><p>the id for a card</p>
 </li></ul></li></ul></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/3f8c6f7/src/card-manager.ts#L30">src/card-manager.ts:30</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/5cfc024/src/card-manager.ts#L30">src/card-manager.ts:30</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member"><a id="unselectableCardClass" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>unselectable<wbr/>Card<wbr/>Class</span><a href="#unselectableCardClass" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">unselectable<wbr/>Card<wbr/>Class</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span></div>
 <div class="tsd-comment tsd-typography"><p>The class to apply to selectable cards. Default &#39;bga-cards_disabled-card&#39;.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/3f8c6f7/src/card-manager.ts#L72">src/card-manager.ts:72</a></li></ul></aside></section></section></div>
+<li>Defined in <a href="https://github.com/thoun/bga-cards/blob/5cfc024/src/card-manager.ts#L84">src/card-manager.ts:84</a></li></ul></aside></section></section></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
@@ -242,6 +270,7 @@ You can also add some translated text on the card at this moment.</p>
 <li><a href="#animationManager" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>animation<wbr/>Manager</span></a></li>
 <li><a href="#cardHeight" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>card<wbr/>Height</span></a></li>
 <li><a href="#cardWidth" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>card<wbr/>Width</span></a></li>
+<li><a href="#fakeCardGenerator" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>fake<wbr/>Card<wbr/>Generator</span></a></li>
 <li><a href="#getId" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>get<wbr/>Id</span></a></li>
 <li><a href="#isCardVisible" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>is<wbr/>Card<wbr/>Visible</span></a></li>
 <li><a href="#selectableCardClass" class=""><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>selectable<wbr/>Card<wbr/>Class</span></a></li>

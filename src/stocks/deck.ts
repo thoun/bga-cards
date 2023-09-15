@@ -63,6 +63,15 @@ interface DeckSettings<T> {
      * Show a card counter on the deck. Not visible if unset.
      */
     counter?: DeckCounter;
+
+    /**
+     * A generator of fake cards, to generate decks top card automatically.
+     * Default is manager `fakeCardGenerator` method.
+     * 
+     * @param deckId the deck id
+     * @return the fake card to be generated (usually, only informations to show back side)
+     */
+    fakeCardGenerator?: (deckId: string) => T;
 }
 
 interface AddCardToDeckSettings extends AddCardSettings {
@@ -110,7 +119,8 @@ class Deck<T> extends CardStock<T> {
     protected cardNumber: number;
     protected autoUpdateCardNumber: boolean;
     protected autoRemovePreviousCards: boolean;
-    private thicknesses: number[];
+    protected fakeCardGenerator?: (deckId: string) => T;
+    protected thicknesses: number[];
 
     constructor(protected manager: CardManager<T>, protected element: HTMLElement, settings: DeckSettings<T>) {
         super(manager, element);
@@ -124,6 +134,7 @@ class Deck<T> extends CardStock<T> {
         } else {
             throw new Error(`You need to set cardWidth and cardHeight in the card manager to use Deck.`);
         }
+        this.fakeCardGenerator = settings?.fakeCardGenerator ?? manager.getFakeCardGenerator();
         this.thicknesses = settings.thicknesses ?? [0, 2, 5, 10, 20, 30];
         this.setCardNumber(settings.cardNumber ?? 52);
         this.autoUpdateCardNumber = settings.autoUpdateCardNumber ?? true;
@@ -137,9 +148,9 @@ class Deck<T> extends CardStock<T> {
         this.element.style.setProperty('--yShadowShift', ''+yShadowShift);
 
         if (settings.topCard) {
-            this.addCard(settings.topCard, undefined);
+            this.addCard(settings.topCard);
         } else if (settings.cardNumber > 0) {
-            console.warn(`Deck is defined with ${settings.cardNumber} cards but no top card !`);
+            this.addCard(this.getFakeCard());
         }
 
         if (settings.counter && (settings.counter.show ?? true)) {
@@ -181,9 +192,12 @@ class Deck<T> extends CardStock<T> {
      * Set the the cards number.
      * 
      * @param cardNumber the cards number
+     * @param topCard the deck top card. If unset, will generated a fake card (default). Set it to null to not generate a new topCard.
      */
-    public setCardNumber(cardNumber: number, topCard: T | null = null): Promise<boolean> {
-        const promise = topCard ? this.addCard(topCard) : Promise.resolve(true);
+    public setCardNumber(cardNumber: number, topCard: T | null | undefined = undefined): Promise<boolean> {
+        const promise = topCard === null || cardNumber == 0 ? 
+            Promise.resolve(false) : 
+            super.addCard(topCard || this.getFakeCard(), undefined, <AddCardToDeckSettings>{ autoUpdateCardNumber: false });
 
         this.cardNumber = cardNumber;
 
@@ -207,7 +221,7 @@ class Deck<T> extends CardStock<T> {
 
     public addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardToDeckSettings): Promise<boolean> {
         if (settings?.autoUpdateCardNumber ?? this.autoUpdateCardNumber) {
-            this.setCardNumber(this.cardNumber + 1);
+            this.setCardNumber(this.cardNumber + 1, null);
         }
 
         const promise = super.addCard(card, animation, settings);
@@ -241,7 +255,9 @@ class Deck<T> extends CardStock<T> {
      * @param fakeCardSetter a function to generate a fake card for animation. Required if the card id is not based on a numerci `id` field, or if you want to set custom card back
      * @returns promise when animation ends
      */
-    public async shuffle(animatedCardsMax: number = 10, fakeCardSetter?: (card: T, index: number) => void): Promise<boolean> {
+    public async shuffle(animatedCardsMax: number = 10, fakeCardSetter?: (card: T, index: number) => void, newTopCard?: T): Promise<boolean> {
+        this.addCard(newTopCard ?? this.getFakeCard(), undefined, { autoUpdateCardNumber: false });
+
         if (!this.manager.animationsActive()) { 
             return Promise.resolve(false); // we don't execute as it's just visual temporary stuff
         }
@@ -251,11 +267,12 @@ class Deck<T> extends CardStock<T> {
         if (animatedCards > 1) {
             const elements = [this.getCardElement(this.getTopCard())];
             for (let i = elements.length; i <= animatedCards; i++) {
-                const newCard: T = {} as T;
+                let newCard: T;
                 if (fakeCardSetter) {
+                    newCard = {} as T;
                     fakeCardSetter(newCard, i);
                 } else {
-                    (newCard as any).id = -100000 + i;
+                    newCard = this.fakeCardGenerator(`${this.element.id}-shuffle-${i}`);
                 }
                 const newElement = this.manager.createCardElement(newCard, false);
                 newElement.dataset.tempCardForShuffleAnimation = 'true';
@@ -268,5 +285,9 @@ class Deck<T> extends CardStock<T> {
         } else {
             return Promise.resolve(false);
         }
+    }
+
+    protected getFakeCard(): T {
+        return this.fakeCardGenerator(this.element.id);
     }
 }
