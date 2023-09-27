@@ -35,7 +35,7 @@ interface DeckSettings<T> {
     topCard?: T;
 
     /**
-     * Indicate the current number of cards in the deck (default 52).
+     * Indicate the current number of cards in the deck (default 0).
      */
     cardNumber?: number;
 
@@ -93,6 +93,32 @@ interface RemoveCardFromDeckSettings extends RemoveCardSettings {
     autoUpdateCardNumber?: boolean;
 }
 
+interface ShuffleAnimationSettings<T> {
+    /**
+     * Number of cards used for the animation (will use cardNumber is inferior to this number).
+     * Default: 10.
+     */
+    animatedCardsMax?: number;
+
+    /**
+     * Card generator for the animated card. Should only show the back of the cards.
+     * Default if fakeCardGenerator from Deck (or Manager if unset in Deck).
+     */
+    fakeCardSetter?: (card: T, index: number) => void;
+    
+    /**
+     * The top card after the shuffle animation. 
+     * Default is a card generated with fakeCardGenerator from Deck (or Manager if unset in Deck).
+     */
+    newTopCard?: T;
+    
+    /**
+     * Time to wait after shuffle, in case it is chained with other animations, to let the time to understand it's 2 different animations.
+     * Default is 500ms.
+     */
+    pauseDelayAfterAnimation?: number;
+}
+
 class SlideAndBackAnimation<T> extends BgaCumulatedAnimation<BgaCumulatedAnimationsSettings> {
     constructor(manager: CardManager<T>, element: HTMLElement, tempElement: boolean) {
         const distance = (manager.getCardWidth() + manager.getCardHeight()) / 2;
@@ -136,7 +162,7 @@ class Deck<T> extends CardStock<T> {
         }
         this.fakeCardGenerator = settings?.fakeCardGenerator ?? manager.getFakeCardGenerator();
         this.thicknesses = settings.thicknesses ?? [0, 2, 5, 10, 20, 30];
-        this.setCardNumber(settings.cardNumber ?? 52);
+        this.setCardNumber(settings.cardNumber ?? 0);
         this.autoUpdateCardNumber = settings.autoUpdateCardNumber ?? true;
         this.autoRemovePreviousCards = settings.autoRemovePreviousCards ?? true;
 
@@ -155,17 +181,17 @@ class Deck<T> extends CardStock<T> {
 
         if (settings.counter && (settings.counter.show ?? true)) {
             if (settings.cardNumber === null || settings.cardNumber === undefined) {
-                throw new Error(`You need to set cardNumber if you want to show the counter`);
-            } else {
-                this.createCounter(settings.counter.position ?? 'bottom', settings.counter.extraClasses ?? 'round', settings.counter.counterId);
+                console.warn(`Deck card counter created without a cardNumber`);
+            }
 
-                if (settings.counter?.hideWhenEmpty) {
-                    this.element.querySelector('.bga-cards_deck-counter').classList.add('hide-when-empty');
-                }
+            this.createCounter(settings.counter.position ?? 'bottom', settings.counter.extraClasses ?? 'round', settings.counter.counterId);
+
+            if (settings.counter?.hideWhenEmpty) {
+                this.element.querySelector('.bga-cards_deck-counter').classList.add('hide-when-empty');
             }
         }
         
-        this.setCardNumber(settings.cardNumber ?? 52);
+        this.setCardNumber(settings.cardNumber ?? 0);
     }
 
     protected createCounter(counterPosition: SideOrAngleOrCenter, extraClasses: string, counterId?: string) {
@@ -255,8 +281,10 @@ class Deck<T> extends CardStock<T> {
      * @param fakeCardSetter a function to generate a fake card for animation. Required if the card id is not based on a numerci `id` field, or if you want to set custom card back
      * @returns promise when animation ends
      */
-    public async shuffle(animatedCardsMax: number = 10, fakeCardSetter?: (card: T, index: number) => void, newTopCard?: T): Promise<boolean> {
-        this.addCard(newTopCard ?? this.getFakeCard(), undefined, { autoUpdateCardNumber: false });
+    public async shuffle(settings?: ShuffleAnimationSettings<T>): Promise<boolean> {
+        const animatedCardsMax = settings?.animatedCardsMax ?? 10;
+
+        this.addCard(settings?.newTopCard ?? this.getFakeCard(), undefined, { autoUpdateCardNumber: false });
 
         if (!this.manager.animationsActive()) { 
             return Promise.resolve(false); // we don't execute as it's just visual temporary stuff
@@ -266,20 +294,36 @@ class Deck<T> extends CardStock<T> {
 
         if (animatedCards > 1) {
             const elements = [this.getCardElement(this.getTopCard())];
+            const getFakeCard = (uid: number): T => {
+                let newCard: T;
+                if (settings?.fakeCardSetter) {
+                    newCard = {} as T;
+                    settings?.fakeCardSetter(newCard, uid);
+                } else {
+                    newCard = this.fakeCardGenerator(`${this.element.id}-shuffle-${uid}`);
+                }
+                return newCard;
+            };
+
+            let uid = 0;
             for (let i = elements.length; i <= animatedCards; i++) {
                 let newCard: T;
-                if (fakeCardSetter) {
-                    newCard = {} as T;
-                    fakeCardSetter(newCard, i);
-                } else {
-                    newCard = this.fakeCardGenerator(`${this.element.id}-shuffle-${i}`);
-                }
+                do {
+                    newCard = getFakeCard(uid++)
+                } while (this.manager.getCardElement(newCard)); // To make sure there isn't a fake card remaining with the same uid
+
                 const newElement = this.manager.createCardElement(newCard, false);
                 newElement.dataset.tempCardForShuffleAnimation = 'true';
                 this.element.prepend(newElement);
                 elements.push(newElement);
             }
             await this.manager.animationManager.playWithDelay(elements.map(element => new SlideAndBackAnimation(this.manager, element, element.dataset.tempCardForShuffleAnimation == 'true')), 50);
+
+            const pauseDelayAfterAnimation = settings?.pauseDelayAfterAnimation ?? 500;
+
+            if (pauseDelayAfterAnimation > 0) {
+                await this.manager.animationManager.play(new BgaPauseAnimation({ duration: pauseDelayAfterAnimation }));
+            }
 
             return true;
         } else {

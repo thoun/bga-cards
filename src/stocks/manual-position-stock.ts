@@ -26,8 +26,8 @@ class ManualPositionStock<T> extends CardStock<T> {
         return promise;
     }
 
-    public cardRemoved(card: T) {
-        super.cardRemoved(card);
+    public cardRemoved(card: T, settings?: RemoveCardSettings) {
+        super.cardRemoved(card, settings);
         this.updateDisplay(this.element, this.getCards(), card, this);
     }
 }

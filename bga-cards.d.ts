@@ -139,6 +139,17 @@ declare function slideToAnimation(animationManager: AnimationManager, animation:
 declare class BgaSlideToAnimation<BgaAnimationWithAttachAndOriginSettings> extends BgaAnimation<any> {
     constructor(settings: BgaAnimationWithAttachAndOriginSettings);
 }
+/**
+ * Just does nothing for the duration
+ *
+ * @param animationManager the animation manager
+ * @param animation a `BgaAnimation` object
+ * @returns a promise when animation ends
+ */
+declare function pauseAnimation(animationManager: AnimationManager, animation: IBgaAnimation<BgaAnimationSettings>): Promise<void>;
+declare class BgaPauseAnimation<BgaAnimation> extends BgaAnimation<any> {
+    constructor(settings: BgaAnimation);
+}
 declare function shouldAnimate(settings?: BgaAnimationSettings): boolean;
 /**
  * Return the x and y delta, based on the animation settings;
@@ -521,7 +532,7 @@ interface DeckSettings<T> {
      */
     topCard?: T;
     /**
-     * Indicate the current number of cards in the deck (default 52).
+     * Indicate the current number of cards in the deck (default 0).
      */
     cardNumber?: number;
     /**
@@ -569,6 +580,28 @@ interface RemoveCardFromDeckSettings extends RemoveCardSettings {
      */
     autoUpdateCardNumber?: boolean;
 }
+interface ShuffleAnimationSettings<T> {
+    /**
+     * Number of cards used for the animation (will use cardNumber is inferior to this number).
+     * Default: 10.
+     */
+    animatedCardsMax?: number;
+    /**
+     * Card generator for the animated card. Should only show the back of the cards.
+     * Default if fakeCardGenerator from Deck (or Manager if unset in Deck).
+     */
+    fakeCardSetter?: (card: T, index: number) => void;
+    /**
+     * The top card after the shuffle animation.
+     * Default is a card generated with fakeCardGenerator from Deck (or Manager if unset in Deck).
+     */
+    newTopCard?: T;
+    /**
+     * Time to wait after shuffle, in case it is chained with other animations, to let the time to understand it's 2 different animations.
+     * Default is 500ms.
+     */
+    pauseDelayAfterAnimation?: number;
+}
 declare class SlideAndBackAnimation<T> extends BgaCumulatedAnimation<BgaCumulatedAnimationsSettings> {
     constructor(manager: CardManager<T>, element: HTMLElement, tempElement: boolean);
 }
@@ -609,7 +642,7 @@ declare class Deck<T> extends CardStock<T> {
      * @param fakeCardSetter a function to generate a fake card for animation. Required if the card id is not based on a numerci `id` field, or if you want to set custom card back
      * @returns promise when animation ends
      */
-    shuffle(animatedCardsMax?: number, fakeCardSetter?: (card: T, index: number) => void, newTopCard?: T): Promise<boolean>;
+    shuffle(settings?: ShuffleAnimationSettings<T>): Promise<boolean>;
     protected getFakeCard(): T;
 }
 interface LineStockSettings extends CardStockSettings {
@@ -787,7 +820,7 @@ declare class HandStock<T> extends CardStock<T> {
     protected inclination: number;
     constructor(manager: CardManager<T>, element: HTMLElement, settings: HandStockSettings);
     addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean>;
-    cardRemoved(card: T): void;
+    cardRemoved(card: T, settings?: RemoveCardSettings): void;
     protected updateAngles(): void;
 }
 /**
@@ -811,7 +844,7 @@ declare class ManualPositionStock<T> extends CardStock<T> {
      * @returns the promise when the animation is done (true if it was animated, false if it wasn't)
      */
     addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean>;
-    cardRemoved(card: T): void;
+    cardRemoved(card: T, settings?: RemoveCardSettings): void;
 }
 interface AddCardToVoidStockSettings extends AddCardSettings {
     /**
