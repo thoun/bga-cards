@@ -347,14 +347,16 @@ declare class CardStock<T> {
      */
     onCardClick?: (card: T) => void;
     /**
+     * Creates the stock and register it on the manager.
+     *
      * @param manager the card manager
      * @param element the stock element (should be an empty HTML Element)
      */
     constructor(manager: CardManager<T>, element: HTMLElement, settings?: CardStockSettings);
     /**
-     * @returns the cards on the stock
+     * Removes the stock and unregister it on the manager.
      */
-    getCards(): T[];
+    remove(): void;
     /**
      * @returns if the stock is empty
      */
@@ -1057,6 +1059,7 @@ declare class CardManager<T> {
      */
     animationsActive(): boolean;
     addStock(stock: CardStock<T>): void;
+    removeStock(stock: CardStock<T>): void;
     /**
      * @param card the card informations
      * @return the id for a card

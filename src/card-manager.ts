@@ -169,6 +169,13 @@ class CardManager<T> {
         this.stocks.push(stock);
     }
 
+    public removeStock(stock: CardStock<T>) {
+        const index = this.stocks.indexOf(stock);
+        if (index !== -1) {
+            this.stocks.splice(index, 1);
+        }
+    }
+
     /**
      * @param card the card informations
      * @return the id for a card

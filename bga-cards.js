@@ -502,6 +502,8 @@ function sortFunction() {
  */
 var CardStock = /** @class */ (function () {
     /**
+     * Creates the stock and register it on the manager.
+     *
      * @param manager the card manager
      * @param element the stock element (should be an empty HTML Element)
      */
@@ -518,10 +520,12 @@ var CardStock = /** @class */ (function () {
         this.sort = settings === null || settings === void 0 ? void 0 : settings.sort;
     }
     /**
-     * @returns the cards on the stock
+     * Removes the stock and unregister it on the manager.
      */
-    CardStock.prototype.getCards = function () {
-        return this.cards.slice();
+    CardStock.prototype.remove = function () {
+        var _a;
+        this.manager.removeStock(this);
+        (_a = this.element) === null || _a === void 0 ? void 0 : _a.remove();
     };
     /**
      * @returns if the stock is empty
@@ -1707,6 +1711,12 @@ var CardManager = /** @class */ (function () {
     };
     CardManager.prototype.addStock = function (stock) {
         this.stocks.push(stock);
+    };
+    CardManager.prototype.removeStock = function (stock) {
+        var index = this.stocks.indexOf(stock);
+        if (index !== -1) {
+            this.stocks.splice(index, 1);
+        }
     };
     /**
      * @param card the card informations

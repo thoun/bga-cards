@@ -76,6 +76,8 @@ class CardStock<T> {
     public onCardClick?: (card: T) => void;
 
     /**
+     * Creates the stock and register it on the manager.
+     * 
      * @param manager the card manager  
      * @param element the stock element (should be an empty HTML Element)
      */
@@ -88,10 +90,11 @@ class CardStock<T> {
     }
 
     /**
-     * @returns the cards on the stock
+     * Removes the stock and unregister it on the manager.
      */
-    public getCards(): T[] {
-        return this.cards.slice();
+    public remove() {
+        this.manager.removeStock(this);
+        this.element?.remove();
     }
 
     /**
