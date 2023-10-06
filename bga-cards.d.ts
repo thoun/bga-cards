@@ -358,6 +358,10 @@ declare class CardStock<T> {
      */
     remove(): void;
     /**
+     * @returns the cards on the stock
+     */
+    getCards(): T[];
+    /**
      * @returns if the stock is empty
      */
     isEmpty(): boolean;

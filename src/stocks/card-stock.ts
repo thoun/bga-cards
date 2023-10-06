@@ -96,6 +96,13 @@ class CardStock<T> {
         this.manager.removeStock(this);
         this.element?.remove();
     }
+    
+    /**
+     * @returns the cards on the stock
+     */
+    public getCards(): T[] {
+        return this.cards.slice();
+    }
 
     /**
      * @returns if the stock is empty

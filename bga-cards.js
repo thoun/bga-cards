@@ -528,6 +528,12 @@ var CardStock = /** @class */ (function () {
         (_a = this.element) === null || _a === void 0 ? void 0 : _a.remove();
     };
     /**
+     * @returns the cards on the stock
+     */
+    CardStock.prototype.getCards = function () {
+        return this.cards.slice();
+    };
+    /**
      * @returns if the stock is empty
      */
     CardStock.prototype.isEmpty = function () {
