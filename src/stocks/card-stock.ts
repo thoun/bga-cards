@@ -197,8 +197,12 @@ class CardStock<T> {
         } 
         
         if (needsCreation) {
-            const element = this.manager.createCardElement(card, (settingsWithIndex?.visible ?? this.manager.isCardVisible(card)));
-            promise = this.moveFromElement(card, element, animation, settingsWithIndex);
+            const element = this.getCardElement(card);
+            if (needsCreation && element) {
+                console.warn(`Card ${this.manager.getId(card)} already exists, not re-created.`);
+            }
+            const newElement = element ?? this.manager.createCardElement(card, (settingsWithIndex?.visible ?? this.manager.isCardVisible(card)));
+            promise = this.moveFromElement(card, newElement, animation, settingsWithIndex);
         }
 
         if (settingsWithIndex.index !== null && settingsWithIndex.index !== undefined) {
@@ -392,9 +396,9 @@ class CardStock<T> {
      * Remove all cards from the stock.
      * @param settings a `RemoveCardSettings` object
      */
-    public removeAll(settings?: RemoveCardSettings) {
+    public async removeAll(settings?: RemoveCardSettings): Promise<boolean> {
         const cards = this.getCards(); // use a copy of the array as we iterate and modify it at the same time
-        cards.forEach(card => this.removeCard(card, settings));
+        return this.removeCards(cards, settings);
     }
 
     /**

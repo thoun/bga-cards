@@ -221,10 +221,16 @@ class Deck<T> extends CardStock<T> {
      * @param topCard the deck top card. If unset, will generated a fake card (default). Set it to null to not generate a new topCard.
      */
     public setCardNumber(cardNumber: number, topCard: T | null | undefined = undefined): Promise<boolean> {
-        const promise = topCard === null || cardNumber == 0 ? 
-            Promise.resolve(false) : 
-            super.addCard(topCard || this.getFakeCard(), undefined, <AddCardToDeckSettings>{ autoUpdateCardNumber: false });
-
+        let promise = Promise.resolve(false);
+        const oldTopCard = this.getTopCard();
+        if (topCard !== null && cardNumber > 0) { 
+            const newTopCard = topCard || this.getFakeCard();
+            if (!oldTopCard || this.manager.getId(newTopCard) != this.manager.getId(oldTopCard)) {
+                promise = this.addCard(newTopCard, undefined, <AddCardToDeckSettings>{ autoUpdateCardNumber: false });
+            }
+        } else if (cardNumber == 0 && oldTopCard) {
+            promise = this.removeCard(oldTopCard, <RemoveCardSettings>{ autoUpdateCardNumber: false });
+        }
         this.cardNumber = cardNumber;
 
         this.element.dataset.empty = (this.cardNumber == 0).toString();
@@ -267,6 +273,18 @@ class Deck<T> extends CardStock<T> {
             this.setCardNumber(this.cardNumber - 1);
         }
         super.cardRemoved(card, settings);
+    }
+
+
+    public async removeAll(settings?: RemoveCardFromDeckSettings): Promise<boolean> {
+        const promise = super.removeAll({
+            ...settings, 
+            autoUpdateCardNumber: settings?.autoUpdateCardNumber ?? false 
+        });
+        if (settings?.autoUpdateCardNumber ?? true) {
+            this.setCardNumber(0, null);
+        }
+        return promise;
     }
 
     public getTopCard(): T | null {

@@ -12,6 +12,10 @@ interface BgaAnimationSettings {
      */
     duration?: number;
     /**
+     * The animation CSS timing function, 'linear', 'ease-in-out' (default: linear).
+     */
+    transitionTimingFunction?: string;
+    /**
      * The cumulated scale of the element to animate (default: 1).
      */
     scale?: number;
@@ -118,7 +122,7 @@ declare class BgaCumulatedAnimation<BgaCumulatedAnimationsSettings> extends BgaA
     constructor(settings: BgaCumulatedAnimationsSettings);
 }
 /**
- * Linear slide of the element from origin to destination.
+ * Slide of the element from origin to destination.
  *
  * @param animationManager the animation manager
  * @param animation a `BgaAnimation` object
@@ -129,7 +133,7 @@ declare class BgaSlideAnimation<BgaAnimationWithAttachAndOriginSettings> extends
     constructor(settings: BgaAnimationWithAttachAndOriginSettings);
 }
 /**
- * Linear slide of the element from origin to destination.
+ * Slide of the element from destination to origin.
  *
  * @param animationManager the animation manager
  * @param animation a `BgaAnimation` object
@@ -438,7 +442,7 @@ declare class CardStock<T> {
      * Remove all cards from the stock.
      * @param settings a `RemoveCardSettings` object
      */
-    removeAll(settings?: RemoveCardSettings): void;
+    removeAll(settings?: RemoveCardSettings): Promise<boolean>;
     /**
      * Set if the stock is selectable, and if yes if it can be multiple.
      * If set to 'none', it will unselect all selected cards.
@@ -640,6 +644,7 @@ declare class Deck<T> extends CardStock<T> {
     setCardNumber(cardNumber: number, topCard?: T | null | undefined): Promise<boolean>;
     addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardToDeckSettings): Promise<boolean>;
     cardRemoved(card: T, settings?: RemoveCardFromDeckSettings): void;
+    removeAll(settings?: RemoveCardFromDeckSettings): Promise<boolean>;
     getTopCard(): T | null;
     /**
      * Shows a shuffle animation on the deck

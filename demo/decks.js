@@ -4,13 +4,17 @@ let allVisibleDeck;
 
 function initHiddenDeck() {
     hiddenDeck = new Deck(cardsManager, document.getElementById('hidden-deck'), {
-        /*cardNumber: 5,
+        cardNumber: 5,
         counter: {
             position: 'center',
             extraClasses: 'text-shadow',
-        },*/
-        //fakeCardGenerator: deckId => ({ id: `${deckId}-visible-fake-card`, type: 2, type_arg: 3, location: 'table', location_arg: 0 }),
+        },
+        // fakeCardGenerator: deckId => ({ id: `${deckId}-visible-fake-card`, type: 2, type_arg: 3, location: 'table', location_arg: 0 }),
     });
+}
+
+function removeAllFromDeck() {
+    hiddenDeck.removeAll();
 }
 
 function setHiddenDeckCardNumber(cardNumber) {

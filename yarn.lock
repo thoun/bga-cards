@@ -155,10 +155,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bga-animations@thoun/bga-animations#1.0.2":
-  version: 1.0.0
-  resolution: "bga-animations@https://github.com/thoun/bga-animations.git#commit=74a2aa97bc5367a84965aed6b4903d46a024b43e"
-  checksum: c4b4bc65d941c4a52c7c8853a1c1e4391686064bb77aa0548494bdc79676f7ea6c4f9dc2331f35fbb718e81fbdb8ff6079e12fcbc8edf236d386acf6e1af4027
+"bga-animations@thoun/bga-animations#1.1.1":
+  version: 1.1.1
+  resolution: "bga-animations@https://github.com/thoun/bga-animations.git#commit=91a2747fa5f5a7402a5adfa84d976d8216269f6b"
+  checksum: c1c962f6ab3623d1ab4e99067e5ad66179e19ebb35e015bf1c1f4cf0e4f8feaad547969182ac342d2011e3ba835545e27bb122c27d3812be4599c8f2071b294b
   languageName: node
   linkType: hard
 
@@ -167,7 +167,7 @@ __metadata:
   resolution: "bga-cards@workspace:."
   dependencies:
     "@microsoft/tsdoc": 0.14.2
-    bga-animations: "thoun/bga-animations#1.0.2"
+    bga-animations: "thoun/bga-animations#1.1.1"
     sass: ^1.62.1
     typedoc: ^0.24.7
     typescript: ^5.0.4

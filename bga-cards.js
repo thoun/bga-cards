@@ -69,7 +69,7 @@ var BgaCumulatedAnimation = /** @class */ (function (_super) {
     return BgaCumulatedAnimation;
 }(BgaAnimation));
 /**
- * Linear slide of the element from origin to destination.
+ * Slide of the element from origin to destination.
  *
  * @param animationManager the animation manager
  * @param animation a `BgaAnimation` object
@@ -77,17 +77,18 @@ var BgaCumulatedAnimation = /** @class */ (function (_super) {
  */
 function slideAnimation(animationManager, animation) {
     var promise = new Promise(function (success) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e;
         var settings = animation.settings;
         var element = settings.element;
-        var _e = getDeltaCoordinates(element, settings), x = _e.x, y = _e.y;
-        var duration = (_a = settings === null || settings === void 0 ? void 0 : settings.duration) !== null && _a !== void 0 ? _a : 500;
+        var _f = getDeltaCoordinates(element, settings), x = _f.x, y = _f.y;
+        var duration = (_a = settings.duration) !== null && _a !== void 0 ? _a : 500;
         var originalZIndex = element.style.zIndex;
         var originalTransition = element.style.transition;
-        element.style.zIndex = "".concat((_b = settings === null || settings === void 0 ? void 0 : settings.zIndex) !== null && _b !== void 0 ? _b : 10);
+        var transitionTimingFunction = (_b = settings.transitionTimingFunction) !== null && _b !== void 0 ? _b : 'linear';
+        element.style.zIndex = "".concat((_c = settings === null || settings === void 0 ? void 0 : settings.zIndex) !== null && _c !== void 0 ? _c : 10);
         element.style.transition = null;
         element.offsetHeight;
-        element.style.transform = "translate(".concat(-x, "px, ").concat(-y, "px) rotate(").concat((_c = settings === null || settings === void 0 ? void 0 : settings.rotationDelta) !== null && _c !== void 0 ? _c : 0, "deg)");
+        element.style.transform = "translate(".concat(-x, "px, ").concat(-y, "px) rotate(").concat((_d = settings === null || settings === void 0 ? void 0 : settings.rotationDelta) !== null && _d !== void 0 ? _d : 0, "deg)");
         var timeoutId = null;
         var cleanOnTransitionEnd = function () {
             element.style.zIndex = originalZIndex;
@@ -112,9 +113,9 @@ function slideAnimation(animationManager, animation) {
         element.addEventListener('transitionend', cleanOnTransitionEnd);
         document.addEventListener('visibilitychange', cleanOnTransitionCancel);
         element.offsetHeight;
-        element.style.transition = "transform ".concat(duration, "ms linear");
+        element.style.transition = "transform ".concat(duration, "ms ").concat(transitionTimingFunction);
         element.offsetHeight;
-        element.style.transform = (_d = settings === null || settings === void 0 ? void 0 : settings.finalTransform) !== null && _d !== void 0 ? _d : null;
+        element.style.transform = (_e = settings === null || settings === void 0 ? void 0 : settings.finalTransform) !== null && _e !== void 0 ? _e : null;
         // safety in case transitionend and transitioncancel are not called
         timeoutId = setTimeout(cleanOnTransitionEnd, duration + 100);
     });
@@ -128,7 +129,7 @@ var BgaSlideAnimation = /** @class */ (function (_super) {
     return BgaSlideAnimation;
 }(BgaAnimation));
 /**
- * Linear slide of the element from origin to destination.
+ * Slide of the element from destination to origin.
  *
  * @param animationManager the animation manager
  * @param animation a `BgaAnimation` object
@@ -136,14 +137,15 @@ var BgaSlideAnimation = /** @class */ (function (_super) {
  */
 function slideToAnimation(animationManager, animation) {
     var promise = new Promise(function (success) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e;
         var settings = animation.settings;
         var element = settings.element;
-        var _e = getDeltaCoordinates(element, settings), x = _e.x, y = _e.y;
+        var _f = getDeltaCoordinates(element, settings), x = _f.x, y = _f.y;
         var duration = (_a = settings === null || settings === void 0 ? void 0 : settings.duration) !== null && _a !== void 0 ? _a : 500;
         var originalZIndex = element.style.zIndex;
         var originalTransition = element.style.transition;
-        element.style.zIndex = "".concat((_b = settings === null || settings === void 0 ? void 0 : settings.zIndex) !== null && _b !== void 0 ? _b : 10);
+        var transitionTimingFunction = (_b = settings.transitionTimingFunction) !== null && _b !== void 0 ? _b : 'linear';
+        element.style.zIndex = "".concat((_c = settings === null || settings === void 0 ? void 0 : settings.zIndex) !== null && _c !== void 0 ? _c : 10);
         var timeoutId = null;
         var cleanOnTransitionEnd = function () {
             element.style.zIndex = originalZIndex;
@@ -168,9 +170,9 @@ function slideToAnimation(animationManager, animation) {
         element.addEventListener('transitionend', cleanOnTransitionEnd);
         document.addEventListener('visibilitychange', cleanOnTransitionCancel);
         element.offsetHeight;
-        element.style.transition = "transform ".concat(duration, "ms linear");
+        element.style.transition = "transform ".concat(duration, "ms ").concat(transitionTimingFunction);
         element.offsetHeight;
-        element.style.transform = "translate(".concat(-x, "px, ").concat(-y, "px) rotate(").concat((_c = settings === null || settings === void 0 ? void 0 : settings.rotationDelta) !== null && _c !== void 0 ? _c : 0, "deg) scale(").concat((_d = settings.scale) !== null && _d !== void 0 ? _d : 1, ")");
+        element.style.transform = "translate(".concat(-x, "px, ").concat(-y, "px) rotate(").concat((_d = settings === null || settings === void 0 ? void 0 : settings.rotationDelta) !== null && _d !== void 0 ? _d : 0, "deg) scale(").concat((_e = settings.scale) !== null && _e !== void 0 ? _e : 1, ")");
         // safety in case transitionend and transitioncancel are not called
         timeoutId = setTimeout(cleanOnTransitionEnd, duration + 100);
     });
@@ -352,24 +354,24 @@ var AnimationManager = /** @class */ (function () {
      * @returns the animation promise.
      */
     AnimationManager.prototype.play = function (animation) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q;
         return __awaiter(this, void 0, void 0, function () {
-            var settings, _m;
-            return __generator(this, function (_o) {
-                switch (_o.label) {
+            var settings, _r;
+            return __generator(this, function (_s) {
+                switch (_s.label) {
                     case 0:
                         animation.played = animation.playWhenNoAnimation || this.animationsActive();
                         if (!animation.played) return [3 /*break*/, 2];
                         settings = animation.settings;
                         (_a = settings.animationStart) === null || _a === void 0 ? void 0 : _a.call(settings, animation);
                         (_b = settings.element) === null || _b === void 0 ? void 0 : _b.classList.add((_c = settings.animationClass) !== null && _c !== void 0 ? _c : 'bga-animations_animated');
-                        animation.settings = __assign(__assign({}, animation.settings), { duration: (_e = (_d = this.settings) === null || _d === void 0 ? void 0 : _d.duration) !== null && _e !== void 0 ? _e : 500, scale: (_g = (_f = this.zoomManager) === null || _f === void 0 ? void 0 : _f.zoom) !== null && _g !== void 0 ? _g : undefined });
-                        _m = animation;
+                        animation.settings = __assign({ duration: (_g = (_e = (_d = animation.settings) === null || _d === void 0 ? void 0 : _d.duration) !== null && _e !== void 0 ? _e : (_f = this.settings) === null || _f === void 0 ? void 0 : _f.duration) !== null && _g !== void 0 ? _g : 500, scale: (_l = (_j = (_h = animation.settings) === null || _h === void 0 ? void 0 : _h.scale) !== null && _j !== void 0 ? _j : (_k = this.zoomManager) === null || _k === void 0 ? void 0 : _k.zoom) !== null && _l !== void 0 ? _l : undefined }, animation.settings);
+                        _r = animation;
                         return [4 /*yield*/, animation.animationFunction(this, animation)];
                     case 1:
-                        _m.result = _o.sent();
-                        (_j = (_h = animation.settings).animationEnd) === null || _j === void 0 ? void 0 : _j.call(_h, animation);
-                        (_k = settings.element) === null || _k === void 0 ? void 0 : _k.classList.remove((_l = settings.animationClass) !== null && _l !== void 0 ? _l : 'bga-animations_animated');
+                        _r.result = _s.sent();
+                        (_o = (_m = animation.settings).animationEnd) === null || _o === void 0 ? void 0 : _o.call(_m, animation);
+                        (_p = settings.element) === null || _p === void 0 ? void 0 : _p.classList.remove((_q = settings.animationClass) !== null && _q !== void 0 ? _q : 'bga-animations_animated');
                         return [3 /*break*/, 3];
                     case 2: return [2 /*return*/, Promise.resolve(animation)];
                     case 3: return [2 /*return*/];
@@ -616,8 +618,12 @@ var CardStock = /** @class */ (function () {
             }
         }
         if (needsCreation) {
-            var element = this.manager.createCardElement(card, ((_d = settingsWithIndex === null || settingsWithIndex === void 0 ? void 0 : settingsWithIndex.visible) !== null && _d !== void 0 ? _d : this.manager.isCardVisible(card)));
-            promise = this.moveFromElement(card, element, animation, settingsWithIndex);
+            var element = this.getCardElement(card);
+            if (needsCreation && element) {
+                console.warn("Card ".concat(this.manager.getId(card), " already exists, not re-created."));
+            }
+            var newElement = element !== null && element !== void 0 ? element : this.manager.createCardElement(card, ((_d = settingsWithIndex === null || settingsWithIndex === void 0 ? void 0 : settingsWithIndex.visible) !== null && _d !== void 0 ? _d : this.manager.isCardVisible(card)));
+            promise = this.moveFromElement(card, newElement, animation, settingsWithIndex);
         }
         if (settingsWithIndex.index !== null && settingsWithIndex.index !== undefined) {
             this.cards.splice(index, 0, card);
@@ -824,9 +830,13 @@ var CardStock = /** @class */ (function () {
      * @param settings a `RemoveCardSettings` object
      */
     CardStock.prototype.removeAll = function (settings) {
-        var _this = this;
-        var cards = this.getCards(); // use a copy of the array as we iterate and modify it at the same time
-        cards.forEach(function (card) { return _this.removeCard(card, settings); });
+        return __awaiter(this, void 0, void 0, function () {
+            var cards;
+            return __generator(this, function (_a) {
+                cards = this.getCards();
+                return [2 /*return*/, this.removeCards(cards, settings)];
+            });
+        });
     };
     /**
      * Set if the stock is selectable, and if yes if it can be multiple.
@@ -1164,9 +1174,17 @@ var Deck = /** @class */ (function (_super) {
     Deck.prototype.setCardNumber = function (cardNumber, topCard) {
         var _this = this;
         if (topCard === void 0) { topCard = undefined; }
-        var promise = topCard === null || cardNumber == 0 ?
-            Promise.resolve(false) :
-            _super.prototype.addCard.call(this, topCard || this.getFakeCard(), undefined, { autoUpdateCardNumber: false });
+        var promise = Promise.resolve(false);
+        var oldTopCard = this.getTopCard();
+        if (topCard !== null && cardNumber > 0) {
+            var newTopCard = topCard || this.getFakeCard();
+            if (!oldTopCard || this.manager.getId(newTopCard) != this.manager.getId(oldTopCard)) {
+                promise = this.addCard(newTopCard, undefined, { autoUpdateCardNumber: false });
+            }
+        }
+        else if (cardNumber == 0 && oldTopCard) {
+            promise = this.removeCard(oldTopCard, { autoUpdateCardNumber: false });
+        }
         this.cardNumber = cardNumber;
         this.element.dataset.empty = (this.cardNumber == 0).toString();
         var thickness = 0;
@@ -1203,6 +1221,19 @@ var Deck = /** @class */ (function (_super) {
             this.setCardNumber(this.cardNumber - 1);
         }
         _super.prototype.cardRemoved.call(this, card, settings);
+    };
+    Deck.prototype.removeAll = function (settings) {
+        var _a, _b;
+        return __awaiter(this, void 0, void 0, function () {
+            var promise;
+            return __generator(this, function (_c) {
+                promise = _super.prototype.removeAll.call(this, __assign(__assign({}, settings), { autoUpdateCardNumber: (_a = settings === null || settings === void 0 ? void 0 : settings.autoUpdateCardNumber) !== null && _a !== void 0 ? _a : false }));
+                if ((_b = settings === null || settings === void 0 ? void 0 : settings.autoUpdateCardNumber) !== null && _b !== void 0 ? _b : true) {
+                    this.setCardNumber(0, null);
+                }
+                return [2 /*return*/, promise];
+            });
+        });
     };
     Deck.prototype.getTopCard = function () {
         var cards = this.getCards();
