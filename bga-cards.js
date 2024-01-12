@@ -1424,9 +1424,15 @@ var SlotStock = /** @class */ (function (_super) {
             return true;
         }
         else {
-            var currentCardSlot = this.getCardElement(card).closest('.slot').dataset.slotId;
-            var slotId = (_a = settings === null || settings === void 0 ? void 0 : settings.slot) !== null && _a !== void 0 ? _a : (_b = this.mapCardToSlot) === null || _b === void 0 ? void 0 : _b.call(this, card);
-            return currentCardSlot != slotId;
+            var closestSlot = this.getCardElement(card).closest('.slot');
+            if (closestSlot) {
+                var currentCardSlot = closestSlot.dataset.slotId;
+                var slotId = (_a = settings === null || settings === void 0 ? void 0 : settings.slot) !== null && _a !== void 0 ? _a : (_b = this.mapCardToSlot) === null || _b === void 0 ? void 0 : _b.call(this, card);
+                return currentCardSlot != slotId;
+            }
+            else {
+                return true;
+            }
         }
     };
     /**

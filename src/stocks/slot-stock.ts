@@ -121,9 +121,14 @@ class SlotStock<T> extends LineStock<T> {
         if (!this.contains(card)) {
             return true;
         } else {
-            const currentCardSlot = (this.getCardElement(card).closest('.slot') as HTMLDivElement).dataset.slotId;
-            const slotId = settings?.slot ?? this.mapCardToSlot?.(card);
-            return currentCardSlot != slotId;
+            const closestSlot = this.getCardElement(card).closest('.slot') as HTMLDivElement | null;
+            if (closestSlot) {
+                const currentCardSlot = closestSlot.dataset.slotId;
+                const slotId = settings?.slot ?? this.mapCardToSlot?.(card);
+                return currentCardSlot != slotId;
+            } else {
+                return true;
+            }
         }
     }
 
