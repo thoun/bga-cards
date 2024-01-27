@@ -201,7 +201,14 @@ class CardStock<T> {
             if (needsCreation && element) {
                 console.warn(`Card ${this.manager.getId(card)} already exists, not re-created.`);
             }
-            const newElement = element ?? this.manager.createCardElement(card, (settingsWithIndex?.visible ?? this.manager.isCardVisible(card)));
+
+            // if the card comes from a stock but is not found in this stock, the card is probably hudden (deck with a fake top card)
+            const fromBackSide = !settingsWithIndex?.visible && !animation?.originalSide && animation?.fromStock && !animation?.fromStock?.contains(card);
+            
+            const createdVisible = fromBackSide ? false : settingsWithIndex?.visible ?? this.manager.isCardVisible(card);
+
+            const newElement = element ?? this.manager.createCardElement(card, createdVisible);
+
             promise = this.moveFromElement(card, newElement, animation, settingsWithIndex);
         }
 

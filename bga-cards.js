@@ -589,7 +589,7 @@ var CardStock = /** @class */ (function () {
      */
     CardStock.prototype.addCard = function (card, animation, settings) {
         var _this = this;
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e;
         if (!this.canAddCard(card, settings)) {
             return Promise.resolve(false);
         }
@@ -622,7 +622,10 @@ var CardStock = /** @class */ (function () {
             if (needsCreation && element) {
                 console.warn("Card ".concat(this.manager.getId(card), " already exists, not re-created."));
             }
-            var newElement = element !== null && element !== void 0 ? element : this.manager.createCardElement(card, ((_d = settingsWithIndex === null || settingsWithIndex === void 0 ? void 0 : settingsWithIndex.visible) !== null && _d !== void 0 ? _d : this.manager.isCardVisible(card)));
+            // if the card comes from a stock but is not found in this stock, the card is probably hudden (deck with a fake top card)
+            var fromBackSide = !(settingsWithIndex === null || settingsWithIndex === void 0 ? void 0 : settingsWithIndex.visible) && !(animation === null || animation === void 0 ? void 0 : animation.originalSide) && (animation === null || animation === void 0 ? void 0 : animation.fromStock) && !((_d = animation === null || animation === void 0 ? void 0 : animation.fromStock) === null || _d === void 0 ? void 0 : _d.contains(card));
+            var createdVisible = fromBackSide ? false : (_e = settingsWithIndex === null || settingsWithIndex === void 0 ? void 0 : settingsWithIndex.visible) !== null && _e !== void 0 ? _e : this.manager.isCardVisible(card);
+            var newElement = element !== null && element !== void 0 ? element : this.manager.createCardElement(card, createdVisible);
             promise = this.moveFromElement(card, newElement, animation, settingsWithIndex);
         }
         if (settingsWithIndex.index !== null && settingsWithIndex.index !== undefined) {

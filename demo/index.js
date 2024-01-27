@@ -30,7 +30,6 @@ function initLineStock() {
 function initHiddenDeck() {
     hiddenDeck = new Deck(cardsManager, document.getElementById('hidden-deck'), {
         cardNumber: 49,
-        topCard: { id: getCardId() },
         counter: {
             position: 'center',
             extraClasses: 'text-shadow',
@@ -42,15 +41,10 @@ function pickCard() {
     let cardNumber = hiddenDeck.getCardNumber();
 
     if (cardNumber >= 1) {
-        topCard = hiddenDeck.getTopCard();
+        const topCard = { id: getCardId() };
         topCard.type = 1 + Math.floor(Math.random() * 4);
         topCard.type_arg = 1 + Math.floor(Math.random() * 12);
-        lineStock.addCard(topCard);
-
-        cardNumber = hiddenDeck.getCardNumber();
-        if (cardNumber >= 1) {
-            hiddenDeck.setCardNumber(cardNumber, { id: getCardId() });
-        }
+        lineStock.addCard(topCard, { fromStock: hiddenDeck });
     }
 }
 
@@ -67,9 +61,7 @@ function dealCards(oneByOne) {
             cards.push({ id: getCardId(), type: 1 + Math.floor(Math.random() * 4), type_arg: 1 + Math.floor(Math.random() * 12), location: 'table', location_arg: 0 });
         }
 
-        lineStock.addCards(cards, { fromElement: document.getElementById('hidden-deck') }, undefined, oneByOne ? true : 100).then(
-            () => hiddenDeck.setCardNumber(cardNumber - 4, cardNumber - 4 > 0 ? { id: getCardId() } : undefined)
-        );
+        lineStock.addCards(cards, { fromStock: hiddenDeck }, undefined, oneByOne ? true : 100);
     }
 }
 
