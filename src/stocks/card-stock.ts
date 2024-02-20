@@ -343,7 +343,12 @@ class CardStock<T> {
             }
         } else if (typeof shift === 'number') {
             for (let i=0; i<cards.length; i++) {
-                setTimeout(() => promises.push(this.addCard(cards[i], animation, settings)), i * shift);
+                promises.push(new Promise(resolve => {
+                    setTimeout(
+                        () =>  this.addCard(cards[i], animation, settings).then(result => resolve(result)),
+                        i * (shift as number)
+                    );
+                }));
             }
         } else {
             promises = cards.map(card => this.addCard(card, animation, settings));
