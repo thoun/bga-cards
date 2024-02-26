@@ -540,7 +540,7 @@ class CardStock<T> {
     }
 
     /**
-     * Unelect all cards
+     * Unselect all cards
      */
     public unselectAll(silent: boolean = false) {
         const cards = this.getCards(); // use a copy of the array as we iterate and modify it at the same time
