@@ -657,4 +657,25 @@ class CardStock<T> {
 
         cardElement?.classList.remove(selectableCardsClass, unselectableCardsClass, selectedCardsClass);
     }
+
+    /**
+     * Changes the sort function of the stock.
+     * 
+     * @param sort the new sort function. If defined, the stock will be sorted with this new function.
+     */
+    public setSort(sort?: SortFunction) {
+        this.sort = sort;
+
+        if (this.sort && this.cards.length) {
+            this.cards.sort(this.sort);
+
+            let previouslyMovedCardDiv = this.getCardElement(this.cards[this.cards.length - 1]);
+            this.element.appendChild(previouslyMovedCardDiv);
+            for (let i = this.cards.length - 2; i >= 0; i--) {
+                const movedCardDiv = this.getCardElement(this.cards[i]);
+                this.element.insertBefore(movedCardDiv, previouslyMovedCardDiv);
+                previouslyMovedCardDiv = movedCardDiv;
+            }
+        }
+    }
 }

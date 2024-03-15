@@ -15,10 +15,10 @@ function sortFunction(...sortedFields: string[]): SortFunction {
             if (type === 'string') {
                 const compare = a[field].localeCompare(b[field]);
                 if (compare !== 0) {
-                    return compare;
+                    return compare * direction;
                 }
             } else if (type === 'number') {
-                const compare = (a[field] - b[field]) * direction;
+                const compare = (a[field] - b[field]);
                 if (compare !== 0) {
                     return compare * direction;
                 }

@@ -486,11 +486,11 @@ function sortFunction() {
             if (type === 'string') {
                 var compare = a[field].localeCompare(b[field]);
                 if (compare !== 0) {
-                    return compare;
+                    return compare * direction;
                 }
             }
             else if (type === 'number') {
-                var compare = (a[field] - b[field]) * direction;
+                var compare = (a[field] - b[field]);
                 if (compare !== 0) {
                     return compare * direction;
                 }
@@ -960,7 +960,7 @@ var CardStock = /** @class */ (function () {
         }
     };
     /**
-     * Unelect all cards
+     * Unselect all cards
      */
     CardStock.prototype.unselectAll = function (silent) {
         var _this = this;
@@ -1083,6 +1083,24 @@ var CardStock = /** @class */ (function () {
         var unselectableCardsClass = this.getUnselectableCardClass();
         var selectedCardsClass = this.getSelectedCardClass();
         cardElement === null || cardElement === void 0 ? void 0 : cardElement.classList.remove(selectableCardsClass, unselectableCardsClass, selectedCardsClass);
+    };
+    /**
+     * Changes the sort function of the stock.
+     *
+     * @param sort the new sort function. If defined, the stock will be sorted with this new function.
+     */
+    CardStock.prototype.setSort = function (sort) {
+        this.sort = sort;
+        if (this.sort && this.cards.length) {
+            this.cards.sort(this.sort);
+            var previouslyMovedCardDiv = this.getCardElement(this.cards[this.cards.length - 1]);
+            this.element.appendChild(previouslyMovedCardDiv);
+            for (var i = this.cards.length - 2; i >= 0; i--) {
+                var movedCardDiv = this.getCardElement(this.cards[i]);
+                this.element.insertBefore(movedCardDiv, previouslyMovedCardDiv);
+                previouslyMovedCardDiv = movedCardDiv;
+            }
+        }
     };
     return CardStock;
 }());

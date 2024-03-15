@@ -25,9 +25,17 @@
                 <h2>LineStock</h2>
                 <div id="line-stocks">
                     <div id="line-stock"></div>
-                    <button onclick="addCardToLineStockWithAnimation(this, false)">Add card with default animation (slide)</button>
-                    <button onclick="addCardToLineStockWithAnimation(this, true)">Add card with custom function (slide with double loop)</button>
-                    <button onclick="addCardToLineStockFromVoidStock()">Add card from VoidStock</button>
+                    <div>
+                        <button onclick="addCardToLineStockWithAnimation(this, false)">Add card with default animation (slide)</button>
+                        <button onclick="addCardToLineStockWithAnimation(this, true)">Add card with custom function (slide with double loop)</button>
+                        <button onclick="addCardToLineStockFromVoidStock()">Add card from VoidStock</button>
+                    </div>
+                    <div>
+                        <button id="sort-color" class="sort-button selected" onclick="setSortFunction('color')">Sort by : color then number</button>
+                        <button id="sort-number" class="sort-button" onclick="setSortFunction('number')">Sort by : number then color</button>
+                        <button id="sort-number-reversed" class="sort-button" onclick="setSortFunction('number-reversed')">Sort by : reversed number then reversed color</button>
+                        <button id="sort-none" class="sort-button" onclick="setSortFunction('none')">Don't sort</button>
+                    </div>
                     <div id="line-stock-overlap"></div>
                     <div id="line-stock-vertical-overlap"></div>
                 </div>

@@ -59,6 +59,21 @@ function addCardToLineStockFromVoidStock() {
     lineStock.addCard(card);
 }
 
+function setSortFunction(type) {
+    if (type === 'color') {
+        lineStock.setSort(sortFunction('type', 'type_arg'))
+    } else if (type === 'number') {
+        lineStock.setSort(sortFunction('type_arg', 'type'))
+    } else if (type === 'number-reversed') {
+        lineStock.setSort(sortFunction('-type_arg', '-type'))
+    } else {
+        lineStock.setSort(undefined);
+    }
+
+    document.querySelectorAll('.sort-button').forEach(elem => elem.classList.remove('selected'));
+    document.getElementById(`sort-${type}`).classList.add('selected');
+}
+
 function initLineStockOverlap() {
     lineStockOverlap = new LineStock(cardsManager, document.getElementById('line-stock-overlap'));
 

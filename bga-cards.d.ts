@@ -475,7 +475,7 @@ declare class CardStock<T> {
      */
     selectAll(silent?: boolean): void;
     /**
-     * Unelect all cards
+     * Unselect all cards
      */
     unselectAll(silent?: boolean): void;
     protected bindClick(): void;
@@ -511,6 +511,12 @@ declare class CardStock<T> {
     getSelectedCardClass(): string | null;
     removeSelectionClasses(card: T): void;
     removeSelectionClassesFromElement(cardElement: HTMLElement): void;
+    /**
+     * Changes the sort function of the stock.
+     *
+     * @param sort the new sort function. If defined, the stock will be sorted with this new function.
+     */
+    setSort(sort?: SortFunction): void;
 }
 type SideOrAngle = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top' | 'bottom' | 'left' | 'right';
 type SideOrAngleOrCenter = SideOrAngle | 'center';
