@@ -1730,7 +1730,7 @@ var AllVisibleDeck = /** @class */ (function (_super) {
         var top = counterPosition.includes('bottom') ? 100 : (counterPosition.includes('top') ? 0 : 50);
         this.element.style.setProperty('--bga-cards-deck-left', "".concat(left, "%"));
         this.element.style.setProperty('--bga-cards-deck-top', "".concat(top, "%"));
-        this.element.insertAdjacentHTML('beforeend', "\n            <div ".concat(counterId ? "id=\"".concat(counterId, "\"") : '', " class=\"bga-cards_deck-counter ").concat(extraClasses, "\"></div>\n        "));
+        this.element.insertAdjacentHTML('beforeend', "\n            <div ".concat(counterId ? "id=\"".concat(counterId, "\"") : '', " class=\"bga-cards_deck-counter ").concat(extraClasses, "\">0</div>\n        "));
     };
     /**
      * Updates the cards number, if the counter is visible.

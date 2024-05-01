@@ -94,7 +94,7 @@ class AllVisibleDeck<T> extends CardStock<T> {
         this.element.style.setProperty('--bga-cards-deck-top', `${top}%`);
 
         this.element.insertAdjacentHTML('beforeend', `
-            <div ${counterId ? `id="${counterId}"` : ''} class="bga-cards_deck-counter ${extraClasses}"></div>
+            <div ${counterId ? `id="${counterId}"` : ''} class="bga-cards_deck-counter ${extraClasses}">0</div>
         `);
     }
 
