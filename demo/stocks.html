@@ -80,6 +80,26 @@
             </div>
         </div>
 
+        <div class="flex">
+            <div class="block">
+                <h2>Moving a card between stocks</h2>
+                <div class="flex">
+                    <div>
+                        <input type="checkbox" checked id="line-stock-1-tab-diplay-toggle" onclick="document.getElementById('line-stock-1-tab').style.display = this.checked ? 'initial' : 'none'" />
+                        <label for="line-stock-1-tab-diplay-toggle">Show the tab wrapping the line stock <span style="color:green;">1</span></label>
+                        <div id="line-stock-1-tab" style="background: lightgrey;">
+                            <div id="line-stock-1" style="min-height: 150px; outline: 1px dashed green;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div id="line-stock-2" style="min-height: 150px; outline: 1px dashed blue;"></div>
+                    </div>
+                </div>
+                <button onclick="moveCardToStock(1)">Add card to line stock <span style="color:green;">1</span></button>
+                <button onclick="moveCardToStock(2)">Add card to line stock <span style="color: blue;">2</span></button>
+            </div>
+        </div>
+
         <script>
             initCommon();
             initManager();
@@ -93,6 +113,7 @@
             initManualPositionCurveStock();
             initManualPositionFitStock();
             initVoidStock();
+            initLineStocks();
         </script>
     </body>
 </html>

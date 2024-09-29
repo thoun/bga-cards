@@ -2,6 +2,9 @@ let lineStock;
 let lineStockOverlap;
 let lineStockVerticalOverlap;
 
+let lineStock1;
+let lineStock2;
+
 function initLineStock() {
     lineStock = new LineStock(cardsManager, document.getElementById('line-stock'), {
         sort: sortFunction('type', 'type_arg')
@@ -96,4 +99,19 @@ function initLineStockVerticalOverlap() {
         { id: getCardId(), type: 1, type_arg: 5, location: 'table', location_arg: 0 },
         { id: getCardId(), type: 1, type_arg: 6, location: 'table', location_arg: 0 },
     ]);
+}
+
+const lineStocksCard = { id: getCardId(), type: 3, type_arg: 2, location: 'table', location_arg: 0 };
+
+function initLineStocks() {
+    lineStock1 = new LineStock(cardsManager, document.getElementById('line-stock-1'));
+    lineStock2 = new LineStock(cardsManager, document.getElementById('line-stock-2'));
+
+    // add cards
+    lineStock1.addCard(lineStocksCard);
+}
+
+function moveCardToStock(stockNumber) {
+    const stock = stockNumber === 2 ? lineStock2 : lineStock1;
+    stock.addCard(lineStocksCard).then(() => console.log('end of add card to ', stock.element.id));
 }
