@@ -65,7 +65,7 @@ class SlotStock<T> extends LineStock<T> {
      * @param settings a `AddCardToSlotSettings` object
      * @returns the promise when the animation is done (true if it was animated, false if it wasn't)
      */
-    public addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardToSlotSettings): Promise<boolean> {
+    public addCard(card: T, animation?: CardAnimationSettings, settings?: AddCardToSlotSettings): Promise<boolean> {
         const slotId = settings?.slot ?? this.mapCardToSlot?.(card);
         if (slotId === undefined) {
             throw new Error(`Impossible to add card to slot : no SlotId. Add slotId to settings or set mapCardToSlot to SlotCard constructor.`);
@@ -146,7 +146,6 @@ class SlotStock<T> extends LineStock<T> {
         const promises: Promise<boolean>[] = [];
 
         const elements = cards.map(card => this.manager.getCardElement(card));
-        const elementsRects = elements.map(element => element.getBoundingClientRect());
         const cssPositions = elements.map(element => element.style.position);
 
         // we set to absolute so it doesn't mess with slide coordinates when 2 div are at the same place
@@ -170,7 +169,7 @@ class SlotStock<T> extends LineStock<T> {
             }
 
             this.removeSelectionClassesFromElement(cardElement);
-            promise = this.animationFromElement(cardElement, elementsRects[index], {});
+            promise = this.animationFromElement(cardElement, undefined, elements[index], undefined, {});
             
             if (!promise) {
                 console.warn(`CardStock.animationFromElement didn't return a Promise`);

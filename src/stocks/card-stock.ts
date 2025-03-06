@@ -44,6 +44,11 @@ interface AddCardSettings {
      * Set if the card is selectable. Default is true, but will be ignored if the stock is not selectable.
      */
     selectable?: boolean;
+
+    /**
+     * Indicates if we add a fade in effect when adding card (if it comes from an invisible or abstract element).
+     */
+    fadeIn?: boolean;
 }
 
 interface RemoveCardSettings {
@@ -160,7 +165,7 @@ class CardStock<T> {
      * @param settings a `AddCardSettings` object
      * @returns the promise when the animation is done (true if it was animated, false if it wasn't)
      */
-    public addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean> {
+    public addCard(card: T, animation?: CardAnimationSettings, settings?: AddCardSettings): Promise<boolean> {
         if (!this.canAddCard(card, settings)) {
             return Promise.resolve(false);
         }
@@ -261,21 +266,30 @@ class CardStock<T> {
         }
     }
 
-    protected moveFromOtherStock(card: T, cardElement: HTMLElement, animation: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean> {
+    protected moveFromOtherStock(card: T, cardElement: HTMLElement, animation: CardAnimationSettings, settings?: AddCardSettings): Promise<boolean> {
         let promise: Promise<boolean>;
 
-        const element = animation.fromStock.contains(card) ? this.manager.getCardElement(card) : animation.fromStock.element;
-        const fromRect = element?.getBoundingClientRect();
+        const fromElement = animation.fromStock.contains(card) ? this.manager.getCardElement(card) : animation.fromStock.element;
 
-        this.addCardElementToParent(cardElement, settings);
+        //this.addCardElementToParent(cardElement, settings);
 
         this.removeSelectionClassesFromElement(cardElement);
 
-        promise = fromRect ? this.animationFromElement(cardElement, fromRect, {
-            originalSide: animation.originalSide, 
-            rotationDelta: animation.rotationDelta,
-            animation: animation.animation,
-        }) : Promise.resolve(false);
+        const toElement = settings?.forceToElement ?? this.element;
+        let insertBefore = undefined;
+        if (settings?.index === null || settings?.index === undefined || !toElement.children.length || settings?.index >= toElement.children.length) {
+        } else {
+            insertBefore = toElement.children[settings.index];
+        }
+
+        promise = null;
+        if (fromElement) {
+            console.warn('moveFromOtherStock.fromElement', fromElement);
+            promise = this.animationFromElement(cardElement, fromElement, toElement, insertBefore, animation, settings)
+        } else {
+            this.addCardElementToParent(cardElement, settings);
+            promise = Promise.resolve(false);
+        } 
         // in the case the card was move inside the same stock we don't remove it
         if (animation.fromStock && animation.fromStock != this) {
             animation.fromStock.removeCard(card);
@@ -289,27 +303,25 @@ class CardStock<T> {
         return promise;
     }
 
-    protected moveFromElement(card: T, cardElement: HTMLElement, animation: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean> {
+    protected moveFromElement(card: T, cardElement: HTMLElement, animation: CardAnimationSettings, settings?: AddCardSettings): Promise<boolean> {
         let promise: Promise<boolean>;
 
-        this.addCardElementToParent(cardElement, settings);
+        const toElement = settings?.forceToElement ?? this.element;
+        let insertBefore = undefined;
+        if (settings?.index === null || settings?.index === undefined || !toElement.children.length || settings?.index >= toElement.children.length) {
+        } else {
+            insertBefore = toElement.children[settings.index];
+        }
     
         if (animation) {
             if (animation.fromStock) {
-                promise = this.animationFromElement(cardElement, animation.fromStock.element.getBoundingClientRect(), {
-                    originalSide: animation.originalSide, 
-                    rotationDelta: animation.rotationDelta,
-                    animation: animation.animation,
-                });
+                promise = this.animationFromElement(cardElement, animation.fromStock.element, toElement, insertBefore, animation, settings);
                 animation.fromStock.removeCard(card);
             } else if (animation.fromElement) {
-                promise = this.animationFromElement(cardElement,  animation.fromElement.getBoundingClientRect(), {
-                    originalSide: animation.originalSide, 
-                    rotationDelta: animation.rotationDelta,
-                    animation: animation.animation,
-                });
+                promise = this.animationFromElement(cardElement, animation.fromElement, toElement, insertBefore, animation, settings);
             }
         } else {
+            this.addCardElementToParent(cardElement, settings);
             promise = Promise.resolve(false);
         }
         
@@ -329,7 +341,7 @@ class CardStock<T> {
      * @param settings a `AddCardSettings` object
      * @param shift if number, the number of milliseconds between each card. if true, chain animations
      */
-    public async addCards(cards: T[], animation?: CardAnimation<T>, settings?: AddCardSettings, shift: number | boolean = false): Promise<boolean> {
+    public async addCards(cards: T[], animation?: CardAnimationSettings, settings?: AddCardSettings, shift: number | boolean = false): Promise<boolean> {
         if (!this.manager.animationsActive()) {
             shift = false;
         }
@@ -581,30 +593,34 @@ class CardStock<T> {
 
     /**
      * @param element The element to animate. The element is added to the destination stock before the animation starts. 
-     * @param fromElement The HTMLElement to animate from.
+     * @param toElement The HTMLElement to attach the card to.
      */
-    protected async animationFromElement(element: HTMLElement, fromRect: DOMRect, settings: CardAnimationSettings): Promise<boolean> {
+    protected async animationFromElement(element: HTMLElement, fromElement: HTMLElement | null | undefined, toElement: HTMLElement, insertBefore: HTMLElement | null | undefined, animation: CardAnimationSettings, settings: AddCardSettings): Promise<boolean> {
         const side = element.dataset.side;
-        if (settings.originalSide && settings.originalSide != side) {
+        if (animation.originalSide && animation.originalSide != side) {
             const cardSides = element.getElementsByClassName('card-sides')[0] as HTMLDivElement;
             cardSides.style.transition = 'none';
-            element.dataset.side = settings.originalSide;
+            element.dataset.side = animation.originalSide;
             setTimeout(() => {
                 cardSides.style.transition = null;
                 element.dataset.side = side;
             });
         }
 
-        let animation = settings.animation;
-        if (animation) {
-            animation.settings.element = element;
-            (animation.settings as BgaAnimationWithOriginSettings).fromRect = fromRect;
+        if (document.contains(element)) {
+            const result = await this.manager.animationManager.slideAndAttach(element, toElement, animation, insertBefore);
+            return result?.played ?? false;
         } else {
-            animation = new BgaSlideAnimation({ element, fromRect });
-        }
+            (this.manager.animationManager as any).base.attachToElement(element, toElement, insertBefore);
+            let result = null;
+            if (settings && (!animation.fromStock || settings.fadeIn)) {
+                result = this.manager.animationManager.slideIn(element, fromElement, animation);
+            } else {
+                result = this.manager.animationManager.fadeIn(element, fromElement, animation);
+            }            
 
-        const result = await this.manager.animationManager.play(animation);
-        return result?.played ?? false;
+            return result?.played ?? false;
+        }
     }
 
     /**

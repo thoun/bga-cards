@@ -10,14 +10,8 @@
     },
     "files": [
       "src/framework.d.ts",
-      "node_modules/bga-animations/src/animations.ts",
-      "node_modules/bga-animations/src/animations/attach-with-animation.ts",
-      "node_modules/bga-animations/src/animations/cumulated-animations.ts",
-      "node_modules/bga-animations/src/animations/slide-animation.ts",
-      "node_modules/bga-animations/src/animations/slide-to-animation.ts",
-      "node_modules/bga-animations/src/animations/pause-animation.ts",
-      "node_modules/bga-animations/src/animations-utils.ts",
-      "node_modules/bga-animations/src/animation-manager.ts",
+      "node_modules/bga-animations/src/animation.d.ts",
+      "node_modules/bga-animations/bga-animations.d.ts",
       "src/animations.ts",
       "src/sort.ts",
       "src/stocks/card-stock.ts",
@@ -29,7 +23,6 @@
       "src/stocks/manual-position-stock.ts",
       "src/stocks/void-stock.ts",
       "src/stocks/all-visible-deck.ts",
-      "src/card-manager.ts",
-      "src/define.ts"
+      "src/card-manager.ts"
     ]
 }

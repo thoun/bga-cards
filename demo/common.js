@@ -1,5 +1,11 @@
 let game = {
+    instantaneousMode: false,
+    
     addTooltipHtml: (divId, tooltip) => { document.getElementById(divId).title = tooltip },
+
+    bgaAnimationsActive: function() {
+        return document.visibilityState !== 'hidden' && !this.instantaneousMode;
+    },
 };
 
 function initCommon() {

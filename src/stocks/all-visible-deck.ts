@@ -52,7 +52,7 @@ class AllVisibleDeck<T> extends CardStock<T> {
         }
     }        
 
-    public addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean> {
+    public addCard(card: T, animation?: CardAnimationSettings, settings?: AddCardSettings): Promise<boolean> {
         let promise: Promise<boolean>;
 
         const order = this.cards.length;

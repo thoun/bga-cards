@@ -20,7 +20,7 @@ class ManualPositionStock<T> extends CardStock<T> {
      * @param settings a `AddCardSettings` object
      * @returns the promise when the animation is done (true if it was animated, false if it wasn't)
      */
-    public addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean> {
+    public addCard(card: T, animation?: CardAnimationSettings, settings?: AddCardSettings): Promise<boolean> {
         const promise = super.addCard(card, animation, settings);
         this.updateDisplay(this.element, this.getCards(), card, this);
         return promise;

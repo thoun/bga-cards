@@ -162,7 +162,7 @@ class CardManager<T> {
      * @returns if the animations are active.
      */
     public animationsActive(): boolean {
-        return this.animationManager.animationsActive();
+        return this.game.bgaAnimationsActive();
     }
 
     public addStock(stock: CardStock<T>) {

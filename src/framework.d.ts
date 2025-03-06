@@ -5,6 +5,14 @@
 interface Game {
     instantaneousMode: boolean;
     
+    /**
+     * Function to know if animations should be played.
+     * Animations should not be played in instantaneousMode, or if the tab is not displayed in the browser.
+     * 
+     * @returns {boolean} if animations should be played
+     */
+    bgaAnimationsActive(): boolean;
+    
     setup: (gamedatas: any) => void;
     onEnteringState: (stateName: string, args: any) => void;
     onLeavingState: (stateName: string ) => void;

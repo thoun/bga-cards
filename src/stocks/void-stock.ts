@@ -29,7 +29,7 @@ class VoidStock<T> extends CardStock<T> {
      * @param settings a `AddCardToVoidStockSettings` object
      * @returns the promise when the animation is done (true if it was animated, false if it wasn't)
      */
-    public addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardToVoidStockSettings): Promise<boolean> {
+    public addCard(card: T, animation?: CardAnimationSettings, settings?: AddCardToVoidStockSettings): Promise<boolean> {
         let promise = super.addCard(card, animation, settings);
 
         // center the element

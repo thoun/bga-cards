@@ -119,8 +119,8 @@ interface ShuffleAnimationSettings<T> {
     pauseDelayAfterAnimation?: number;
 }
 
-class SlideAndBackAnimation<T> extends BgaCumulatedAnimation<BgaCumulatedAnimationsSettings> {
-    constructor(manager: CardManager<T>, element: HTMLElement, tempElement: boolean) {
+class SlideAndBackAnimation<T> /*extends BgaCumulatedAnimation<BgaCumulatedAnimationsSettings>*/ {
+    /*constructor(manager: CardManager<T>, element: HTMLElement, tempElement: boolean) {
         const distance = (manager.getCardWidth() + manager.getCardHeight()) / 2;
         const angle = Math.random() * Math.PI * 2;
         const fromDelta = {
@@ -134,7 +134,7 @@ class SlideAndBackAnimation<T> extends BgaCumulatedAnimation<BgaCumulatedAnimati
                 new BgaSlideAnimation({ element, fromDelta, duration: 250, animationEnd: tempElement ? (() => element.remove()) : undefined } as BgaAnimationWithOriginSettings),
             ]
         });
-    }
+    }*/
 }
 
 /**
@@ -251,7 +251,7 @@ class Deck<T> extends CardStock<T> {
         return promise;
     }
 
-    public addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardToDeckSettings): Promise<boolean> {
+    public addCard(card: T, animation?: CardAnimationSettings, settings?: AddCardToDeckSettings): Promise<boolean> {
         if (settings?.autoUpdateCardNumber ?? this.autoUpdateCardNumber) {
             this.setCardNumber(this.cardNumber + 1, null);
         }
@@ -335,14 +335,14 @@ class Deck<T> extends CardStock<T> {
                 this.element.prepend(newElement);
                 elements.push(newElement);
             }
-            await this.manager.animationManager.playWithDelay(elements.map(element => new SlideAndBackAnimation(this.manager, element, element.dataset.tempCardForShuffleAnimation == 'true')), 50);
+            /*await this.manager.animationManager.playWithDelay(elements.map(element => new SlideAndBackAnimation(this.manager, element, element.dataset.tempCardForShuffleAnimation == 'true')), 50);
 
             const pauseDelayAfterAnimation = settings?.pauseDelayAfterAnimation ?? 500;
 
             if (pauseDelayAfterAnimation > 0) {
                 await this.manager.animationManager.play(new BgaPauseAnimation({ duration: pauseDelayAfterAnimation }));
             }
-
+*/
             return true;
         } else {
             return Promise.resolve(false);

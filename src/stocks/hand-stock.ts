@@ -28,7 +28,7 @@ class HandStock<T> extends CardStock<T> {
         this.inclination = settings.inclination ?? 4;
     }        
 
-    public addCard(card: T, animation?: CardAnimation<T>, settings?: AddCardSettings): Promise<boolean> {
+    public addCard(card: T, animation?: CardAnimationSettings, settings?: AddCardSettings): Promise<boolean> {
         let promise: Promise<boolean> = super.addCard(card, animation, settings);
 
         this.updateAngles();
