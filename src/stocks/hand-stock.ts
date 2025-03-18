@@ -18,7 +18,7 @@ interface HandStockSettings extends CardStockSettings {
 class HandStock<T> extends CardStock<T> {
     protected inclination: number;
 
-    constructor(protected manager: CardManager<T>, protected element: HTMLElement, settings: HandStockSettings) {
+    constructor(protected manager: CardManager<T>, protected element: HTMLElement, protected settings: HandStockSettings) {
         super(manager, element, settings);
         element.classList.add('hand-stock');
         element.style.setProperty('--card-overlap', settings.cardOverlap ?? '60px');
@@ -29,7 +29,20 @@ class HandStock<T> extends CardStock<T> {
     }        
 
     public addCard(card: T, animation?: CardAnimationSettings, settings?: AddCardSettings): Promise<boolean> {
-        let promise: Promise<boolean> = super.addCard(card, animation, settings);
+        const index = this.getNewCardIndex(card) ?? this.cards.length;
+
+        const addedCards = this.cards.slice();
+        addedCards.splice(index, 0, card);
+        console.warn(index, this.getMiddleIndexes(addedCards));
+        const newCardMiddleIndex = this.getMiddleIndexes(addedCards)[index];
+        const parallelAnimations: ParallelAnimation[] = [
+            { keyframes: [
+                { transform: `translateY(${Math.abs(newCardMiddleIndex) * (/*Number(this.settings.cardShift) ??*/ 15)}px) rotate(${newCardMiddleIndex * (this.settings.inclination ?? 12)}deg)`, offset: 1}
+            ] }
+        ];
+        console.warn(parallelAnimations);
+
+        let promise: Promise<boolean> = super.addCard(card, { ...animation, parallelAnimations}, settings);
 
         this.updateAngles();
 
@@ -42,13 +55,18 @@ class HandStock<T> extends CardStock<T> {
         this.updateAngles();
     }
 
-    protected updateAngles() {
+    protected getMiddleIndexes(cards: T[]): number[] {
+        const middle = (cards.length - 1) / 2;
+        return cards.map((card, index) => index - middle);
+    }
+
+    protected updateAngles(fakeIndex?: number) {
         const middle = (this.cards.length - 1) / 2;
         this.cards.forEach((card, index) => {
             const middleIndex = index - middle;
             const cardElement = this.getCardElement(card);
             cardElement.style.setProperty('--hand-stock-middle-index', `${middleIndex}`);
             cardElement.style.setProperty('--hand-stock-middle-index-abs', `${Math.abs(middleIndex)}`);
-        })
+        });
     }
 }

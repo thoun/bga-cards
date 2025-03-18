@@ -156,7 +156,6 @@ class SlotStock<T> extends LineStock<T> {
 
             let promise: Promise<boolean>;
             const slotId = this.mapCardToSlot?.(card);
-            this.slots[slotId].appendChild(cardElement);
             cardElement.style.position = cssPositions[index];
 
             const cardIndex = this.cards.findIndex(c => this.manager.getId(c) == this.manager.getId(card));
@@ -164,12 +163,10 @@ class SlotStock<T> extends LineStock<T> {
                 this.cards.splice(cardIndex, 1, card);
             }
     
-            if (settings?.updateInformations ?? true) { // after splice/push
-                this.manager.updateCardInformations(card);
-            }
+            this.manager.updateCardInformations(card);
 
             this.removeSelectionClassesFromElement(cardElement);
-            promise = this.animationFromElement(cardElement, undefined, elements[index], undefined, {});
+            promise = this.animationFromElement(card, cardElement, undefined, this.slots[slotId], undefined, {}, settings);
             
             if (!promise) {
                 console.warn(`CardStock.animationFromElement didn't return a Promise`);

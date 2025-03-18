@@ -8,9 +8,4 @@ interface CardAnimationSettings extends SlideAnimationSettings {
      * The element to move the card from.
      */
     fromElement?: HTMLElement;
-
-    /**
-     * The side before animation, if different from current side.
-     */
-    originalSide?: 'front' | 'back';
 }

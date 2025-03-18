@@ -155,15 +155,6 @@ class CardManager<T> {
     constructor(public game: Game, private settings: CardManagerSettings<T>) {
         this.animationManager = settings.animationManager ?? new AnimationManager(game);
     }
-    
-    /**
-     * Returns if the animations are active. Animation aren't active when the window is not visible (`document.visibilityState === 'hidden'`), or `game.instantaneousMode` is true.
-     * 
-     * @returns if the animations are active.
-     */
-    public animationsActive(): boolean {
-        return this.game.bgaAnimationsActive();
-    }
 
     public addStock(stock: CardStock<T>) {
         this.stocks.push(stock);
@@ -184,9 +175,9 @@ class CardManager<T> {
         return this.settings.getId?.(card) ?? `card-${(card as any).id}`;
     }
 
-    public createCardElement(card: T, visible: boolean = true): HTMLDivElement {
+    public createCardElement(card: T, initialSide: 'auto' | 'front' | 'back' = 'auto'): HTMLDivElement {
         const id = this.getId(card);
-        const side = visible ? 'front' : 'back';
+        const side = ['front', 'back'].includes(initialSide) ? initialSide : (this.isCardVisible(card) ? 'front' : 'back'); // to apply auto & ignore invalid values
 
         if (this.getCardElement(card)) {
             throw new Error('This card already exists ' + JSON.stringify(card));
@@ -272,6 +263,8 @@ class CardManager<T> {
      */
     public setCardVisible(card: T, visible?: boolean, settings?: FlipCardSettings): void {
         const element = this.getCardElement(card) as HTMLDivElement;
+
+        console.warn('setCardVisible', !!element);
         if (!element) {
             return;
         }
@@ -290,7 +283,7 @@ class CardManager<T> {
             }
 
             const updateMainDelay = settings?.updateMainDelay ?? 0;
-            if (isVisible && updateMainDelay > 0 && this.animationsActive()) {
+            if (isVisible && updateMainDelay > 0 && this.game.bgaAnimationsActive()) {
                 this.updateMainTimeoutId[stringId] = setTimeout(() => this.settings.setupDiv?.(card, element), updateMainDelay);
             } else {
                 this.settings.setupDiv?.(card, element);
@@ -305,7 +298,7 @@ class CardManager<T> {
 
             const updateFrontDelay = settings?.updateFrontDelay ?? 500;
 
-            if (!isVisible && updateFrontDelay > 0 && this.animationsActive()) {
+            if (!isVisible && updateFrontDelay > 0 && this.game.bgaAnimationsActive()) {
                 this.updateFrontTimeoutId[stringId] = setTimeout(() => this.settings.setupFrontDiv?.(card, element.getElementsByClassName('front')[0] as HTMLDivElement), updateFrontDelay);
             } else {
                 this.settings.setupFrontDiv?.(card, element.getElementsByClassName('front')[0] as HTMLDivElement);
@@ -319,7 +312,7 @@ class CardManager<T> {
             }
 
             const updateBackDelay = settings?.updateBackDelay ?? 0;
-            if (isVisible && updateBackDelay > 0 && this.animationsActive()) {
+            if (isVisible && updateBackDelay > 0 && this.game.bgaAnimationsActive()) {
                 this.updateBackTimeoutId[stringId] = setTimeout(() => this.settings.setupBackDiv?.(card, element.getElementsByClassName('back')[0] as HTMLDivElement), updateBackDelay);
             } else {
                 this.settings.setupBackDiv?.(card, element.getElementsByClassName('back')[0] as HTMLDivElement);

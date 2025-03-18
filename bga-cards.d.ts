@@ -7,10 +7,6 @@ interface CardAnimationSettings extends SlideAnimationSettings {
      * The element to move the card from.
      */
     fromElement?: HTMLElement;
-    /**
-     * The side before animation, if different from current side.
-     */
-    originalSide?: 'front' | 'back';
 }
 type SortFunction = (a: any, b: any) => number;
 declare function sortFunction(...sortedFields: string[]): SortFunction;
@@ -36,18 +32,18 @@ interface CardStockSettings {
 }
 interface AddCardSettings {
     /**
-     * If the card will be on its visible side on the stock
+     * Card side at the beginning of the animation. Default 'auto' to isCardVisible. Ignored if the card already exists.
      */
-    visible?: boolean;
+    initialSide?: 'auto' | 'front' | 'back';
+    /**
+     * Card side at the end of the animation. Default to initialSide.
+     */
+    finalSide?: 'auto' | 'front' | 'back';
     forceToElement?: HTMLElement;
     /**
      * Force card position. Default to end of list. Do not use if sort is defined, as it will override it.
      */
     index?: number;
-    /**
-     * If the card need to be updated. Default true, will flip the card if needed.
-     */
-    updateInformations?: boolean;
     /**
      * Set if the card is selectable. Default is true, but will be ignored if the stock is not selectable.
      */
@@ -138,10 +134,10 @@ declare class CardStock<T> {
      * @returns the promise when the animation is done (true if it was animated, false if it wasn't)
      */
     addCard(card: T, animation?: CardAnimationSettings, settings?: AddCardSettings): Promise<boolean>;
+    protected addExistingCardElement(card: T, cardElement: HTMLElement, animation: CardAnimationSettings, settings?: AddCardSettings): Promise<boolean>;
+    protected addUnexistingCardElement(card: T, animation: CardAnimationSettings, settings?: AddCardSettings): Promise<boolean>;
     protected getNewCardIndex(card: T): number | undefined;
     protected addCardElementToParent(cardElement: HTMLElement, settings?: AddCardSettings): void;
-    protected moveFromOtherStock(card: T, cardElement: HTMLElement, animation: CardAnimationSettings, settings?: AddCardSettings): Promise<boolean>;
-    protected moveFromElement(card: T, cardElement: HTMLElement, animation: CardAnimationSettings, settings?: AddCardSettings): Promise<boolean>;
     /**
      * Add an array of cards to the stock.
      *
@@ -218,7 +214,7 @@ declare class CardStock<T> {
      * @param element The element to animate. The element is added to the destination stock before the animation starts.
      * @param toElement The HTMLElement to attach the card to.
      */
-    protected animationFromElement(element: HTMLElement, fromElement: HTMLElement | null | undefined, toElement: HTMLElement, insertBefore: HTMLElement | null | undefined, animation: CardAnimationSettings, settings: AddCardSettings): Promise<boolean>;
+    protected animationFromElement(card: T, element: HTMLElement, fromElement: HTMLElement | null | undefined, toElement: HTMLElement, insertBefore: HTMLElement | null | undefined, animation: CardAnimationSettings, settings: AddCardSettings): Promise<boolean>;
     /**
      * Set the card to its front (visible) or back (not visible) side.
      *
@@ -567,11 +563,13 @@ interface HandStockSettings extends CardStockSettings {
 declare class HandStock<T> extends CardStock<T> {
     protected manager: CardManager<T>;
     protected element: HTMLElement;
+    protected settings: HandStockSettings;
     protected inclination: number;
     constructor(manager: CardManager<T>, element: HTMLElement, settings: HandStockSettings);
     addCard(card: T, animation?: CardAnimationSettings, settings?: AddCardSettings): Promise<boolean>;
     cardRemoved(card: T, settings?: RemoveCardSettings): void;
-    protected updateAngles(): void;
+    protected getMiddleIndexes(cards: T[]): number[];
+    protected updateAngles(fakeIndex?: number): void;
 }
 /**
  * A stock with manually placed cards
@@ -800,12 +798,6 @@ declare class CardManager<T> {
      * @param settings: a `CardManagerSettings` object
      */
     constructor(game: Game, settings: CardManagerSettings<T>);
-    /**
-     * Returns if the animations are active. Animation aren't active when the window is not visible (`document.visibilityState === 'hidden'`), or `game.instantaneousMode` is true.
-     *
-     * @returns if the animations are active.
-     */
-    animationsActive(): boolean;
     addStock(stock: CardStock<T>): void;
     removeStock(stock: CardStock<T>): void;
     /**
@@ -813,7 +805,7 @@ declare class CardManager<T> {
      * @return the id for a card
      */
     getId(card: T): string;
-    createCardElement(card: T, visible?: boolean): HTMLDivElement;
+    createCardElement(card: T, initialSide?: 'auto' | 'front' | 'back'): HTMLDivElement;
     /**
      * @param card the card informations
      * @return the HTML element of an existing card

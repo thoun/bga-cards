@@ -304,7 +304,7 @@ class Deck<T> extends CardStock<T> {
 
         this.addCard(settings?.newTopCard ?? this.getFakeCard(), undefined, { autoUpdateCardNumber: false });
 
-        if (!this.manager.animationsActive()) { 
+        if (!this.manager.game.bgaAnimationsActive()) { 
             return Promise.resolve(false); // we don't execute as it's just visual temporary stuff
         }
 
@@ -330,7 +330,7 @@ class Deck<T> extends CardStock<T> {
                     newCard = getFakeCard(uid++)
                 } while (this.manager.getCardElement(newCard)); // To make sure there isn't a fake card remaining with the same uid
 
-                const newElement = this.manager.createCardElement(newCard, false);
+                const newElement = this.manager.createCardElement(newCard, 'back');
                 newElement.dataset.tempCardForShuffleAnimation = 'true';
                 this.element.prepend(newElement);
                 elements.push(newElement);

@@ -24,9 +24,14 @@ interface CardStockSettings {
 
 interface AddCardSettings {
     /**
-     * If the card will be on its visible side on the stock
+     * Card side at the beginning of the animation. Default 'auto' to isCardVisible. Ignored if the card already exists.
      */
-    visible?: boolean;
+    initialSide?: 'auto' | 'front' | 'back';
+
+    /**
+     * Card side at the end of the animation. Default to initialSide.
+     */
+    finalSide?: 'auto' | 'front' | 'back';
 
     forceToElement?: HTMLElement;
 
@@ -34,11 +39,6 @@ interface AddCardSettings {
      * Force card position. Default to end of list. Do not use if sort is defined, as it will override it.
      */
     index?: number;
-    
-    /**
-     * If the card need to be updated. Default true, will flip the card if needed.
-     */
-    updateInformations?: boolean;
     
     /**
      * Set if the card is selectable. Default is true, but will be ignored if the stock is not selectable.
@@ -170,74 +170,83 @@ class CardStock<T> {
             return Promise.resolve(false);
         }
 
-        let promise: Promise<boolean>;
-
         // we check if card is in a stock
+        let cardElement = this.getCardElement(card);
         const originStock = this.manager.getCardStock(card);
 
-        const index = this.getNewCardIndex(card);
-        const settingsWithIndex: AddCardSettings = {
-            index,
-            ...(settings ?? {})
-        };
-
-        const updateInformations = settingsWithIndex.updateInformations ?? true;
-
-        let needsCreation = true;
-        if (originStock?.contains(card)) {
-            let element = this.getCardElement(card);
-            if (element) {
-                promise = this.moveFromOtherStock(card, element, { ...animation, fromStock: originStock,  }, settingsWithIndex);
-                needsCreation = false;
-                if (!updateInformations) {
-                    element.dataset.side = (settingsWithIndex?.visible ?? this.manager.isCardVisible(card)) ? 'front' : 'back';
-                }
-            }
-        } else if (animation?.fromStock?.contains(card)) {
-            let element = this.getCardElement(card);
-            if (element) {
-                promise = this.moveFromOtherStock(card, element, animation, settingsWithIndex);
-                needsCreation = false;
-            }
-        } 
-        
-        if (needsCreation) {
-            const element = this.getCardElement(card);
-            if (needsCreation && element) {
-                console.warn(`Card ${this.manager.getId(card)} already exists, not re-created.`);
-            }
-
-            // if the card comes from a stock but is not found in this stock, the card is probably hudden (deck with a fake top card)
-            const fromBackSide = !settingsWithIndex?.visible && !animation?.originalSide && animation?.fromStock && !animation?.fromStock?.contains(card);
-            
-            const createdVisible = fromBackSide ? false : settingsWithIndex?.visible ?? this.manager.isCardVisible(card);
-
-            const newElement = element ?? this.manager.createCardElement(card, createdVisible);
-
-            promise = this.moveFromElement(card, newElement, animation, settingsWithIndex);
+        if (cardElement && !originStock) {
+            throw new Error('The card element exists but is not attached to any Stock');
+        }
+        if (cardElement) { // unselect the card
+            this.removeSelectionClassesFromElement(cardElement);
+            originStock.unselectCard(card);
+        }
+        const animationSettings: CardAnimationSettings = animation ?? {};
+        if (originStock) { // if the card is in a Stock, the animation must come from it
+            animationSettings.fromStock = originStock;
         }
 
-        if (settingsWithIndex.index !== null && settingsWithIndex.index !== undefined) {
+        const addCardSettings: AddCardSettings = settings ?? {};
+        const index = this.getNewCardIndex(card);
+        if (index !== undefined) {
+            addCardSettings.index = index;
+        }
+
+        if (addCardSettings.index !== null && addCardSettings.index !== undefined) {
             this.cards.splice(index, 0, card);
         } else {
             this.cards.push(card);
         }
 
-        if (updateInformations) { // after splice/push
-            this.manager.updateCardInformations(card);
-        }
+        let promise: Promise<boolean> = cardElement ? 
+            this.addExistingCardElement(card, cardElement, animationSettings, addCardSettings) : 
+            this.addUnexistingCardElement(card, animationSettings, addCardSettings);
 
-        if (!promise) {
-            console.warn(`CardStock.addCard didn't return a Promise`);
-            promise = Promise.resolve(false);
+        this.manager.updateCardInformations(card);
+
+        // if the card was from a stock, we remove the card from it. 
+        // Must be called after the animation is started, so it doesn't delete the element
+        if (animationSettings.fromStock && animationSettings.fromStock != this) {
+            animationSettings.fromStock.removeCard(card);
         }
 
         if (this.selectionMode !== 'none') {
             // make selectable only at the end of the animation
-            promise.then(() => this.setSelectableCard(card, settingsWithIndex.selectable ?? true));
+            promise.then(() => this.setSelectableCard(card, addCardSettings.selectable ?? true));
         }
 
         return promise;
+    }
+
+    protected addExistingCardElement(card: T, cardElement: HTMLElement, animation: CardAnimationSettings, settings?: AddCardSettings): Promise<boolean> {
+        const toElement = settings?.forceToElement ?? this.element;
+
+        let insertBefore = undefined;
+        if (settings?.index === null || settings?.index === undefined || !toElement.children.length || settings?.index >= toElement.children.length) {
+        } else {
+            insertBefore = toElement.children[settings.index];
+        }
+
+        const promise = this.animationFromElement(card, cardElement, animation.fromStock?.element ?? animation.fromElement, toElement, insertBefore, animation, settings);
+
+        return promise;
+    }
+
+    protected addUnexistingCardElement(card: T, animation: CardAnimationSettings, settings?: AddCardSettings): Promise<boolean> {
+        let initialSide = settings?.initialSide;        
+        
+        if (!['front', 'back'].includes(initialSide)) { // unset or invalid value
+            // if the card comes from a stock but is not found in this stock, the card is probably hidden (deck with a fake top card)
+            if (animation?.fromStock && !animation?.fromStock?.contains(card)) {
+                initialSide = 'back';
+            } else {
+                initialSide = this.manager.isCardVisible(card) ? 'front' : 'back';
+            }
+        }
+
+        const cardElement = this.manager.createCardElement(card, initialSide);
+
+        return this.addExistingCardElement(card, cardElement, animation, settings);
     }
 
     protected getNewCardIndex(card: T): number | undefined {
@@ -266,73 +275,6 @@ class CardStock<T> {
         }
     }
 
-    protected moveFromOtherStock(card: T, cardElement: HTMLElement, animation: CardAnimationSettings, settings?: AddCardSettings): Promise<boolean> {
-        let promise: Promise<boolean>;
-
-        const fromElement = animation.fromStock.contains(card) ? this.manager.getCardElement(card) : animation.fromStock.element;
-
-        //this.addCardElementToParent(cardElement, settings);
-
-        this.removeSelectionClassesFromElement(cardElement);
-
-        const toElement = settings?.forceToElement ?? this.element;
-        let insertBefore = undefined;
-        if (settings?.index === null || settings?.index === undefined || !toElement.children.length || settings?.index >= toElement.children.length) {
-        } else {
-            insertBefore = toElement.children[settings.index];
-        }
-
-        promise = null;
-        if (fromElement) {
-            console.warn('moveFromOtherStock.fromElement', fromElement);
-            promise = this.animationFromElement(cardElement, fromElement, toElement, insertBefore, animation, settings)
-        } else {
-            this.addCardElementToParent(cardElement, settings);
-            promise = Promise.resolve(false);
-        } 
-        // in the case the card was move inside the same stock we don't remove it
-        if (animation.fromStock && animation.fromStock != this) {
-            animation.fromStock.removeCard(card);
-        }
-        
-        if (!promise) {
-            console.warn(`CardStock.moveFromOtherStock didn't return a Promise`);
-            promise = Promise.resolve(false);
-        }
-
-        return promise;
-    }
-
-    protected moveFromElement(card: T, cardElement: HTMLElement, animation: CardAnimationSettings, settings?: AddCardSettings): Promise<boolean> {
-        let promise: Promise<boolean>;
-
-        const toElement = settings?.forceToElement ?? this.element;
-        let insertBefore = undefined;
-        if (settings?.index === null || settings?.index === undefined || !toElement.children.length || settings?.index >= toElement.children.length) {
-        } else {
-            insertBefore = toElement.children[settings.index];
-        }
-    
-        if (animation) {
-            if (animation.fromStock) {
-                promise = this.animationFromElement(cardElement, animation.fromStock.element, toElement, insertBefore, animation, settings);
-                animation.fromStock.removeCard(card);
-            } else if (animation.fromElement) {
-                promise = this.animationFromElement(cardElement, animation.fromElement, toElement, insertBefore, animation, settings);
-            }
-        } else {
-            this.addCardElementToParent(cardElement, settings);
-            promise = Promise.resolve(false);
-        }
-        
-        if (!promise) {
-            console.warn(`CardStock.moveFromElement didn't return a Promise`);
-            promise = Promise.resolve(false);
-        }
-
-        return promise;
-    }
-
     /**
      * Add an array of cards to the stock.
      * 
@@ -342,7 +284,7 @@ class CardStock<T> {
      * @param shift if number, the number of milliseconds between each card. if true, chain animations
      */
     public async addCards(cards: T[], animation?: CardAnimationSettings, settings?: AddCardSettings, shift: number | boolean = false): Promise<boolean> {
-        if (!this.manager.animationsActive()) {
+        if (!this.manager.game.bgaAnimationsActive()) {
             shift = false;
         }
         let promises: Promise<boolean>[] = [];
@@ -595,16 +537,17 @@ class CardStock<T> {
      * @param element The element to animate. The element is added to the destination stock before the animation starts. 
      * @param toElement The HTMLElement to attach the card to.
      */
-    protected async animationFromElement(element: HTMLElement, fromElement: HTMLElement | null | undefined, toElement: HTMLElement, insertBefore: HTMLElement | null | undefined, animation: CardAnimationSettings, settings: AddCardSettings): Promise<boolean> {
-        const side = element.dataset.side;
-        if (animation.originalSide && animation.originalSide != side) {
+    protected async animationFromElement(card: T, element: HTMLElement, fromElement: HTMLElement | null | undefined, toElement: HTMLElement, insertBefore: HTMLElement | null | undefined, animation: CardAnimationSettings, settings: AddCardSettings): Promise<boolean> {
+        const initialSide = element.dataset.side;
+        const finalSide = ['front', 'back'].includes(settings?.finalSide) ? settings.finalSide : (this.manager.isCardVisible(card) ? 'front' : 'back'); // to apply auto & ignore invalid values;
+        if (finalSide != initialSide) {
             const cardSides = element.getElementsByClassName('card-sides')[0] as HTMLDivElement;
             cardSides.style.transition = 'none';
-            element.dataset.side = animation.originalSide;
+            element.dataset.side = initialSide;
             setTimeout(() => {
                 cardSides.style.transition = null;
-                element.dataset.side = side;
-            });
+                element.dataset.side = finalSide;
+            });        
         }
 
         if (document.contains(element)) {
@@ -613,10 +556,10 @@ class CardStock<T> {
         } else {
             (this.manager.animationManager as any).base.attachToElement(element, toElement, insertBefore);
             let result = null;
-            if (settings && (!animation.fromStock || settings.fadeIn)) {
-                result = this.manager.animationManager.slideIn(element, fromElement, animation);
+            if (!animation.fromStock || settings.fadeIn) {
+                result = await this.manager.animationManager.fadeIn(element, fromElement, animation);
             } else {
-                result = this.manager.animationManager.fadeIn(element, fromElement, animation);
+                result = await this.manager.animationManager.slideIn(element, fromElement, animation);
             }            
 
             return result?.played ?? false;

@@ -31,17 +31,6 @@ function sortFunction() {
         return 0;
     };
 }
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -168,63 +157,75 @@ var CardStock = /** @class */ (function () {
      */
     CardStock.prototype.addCard = function (card, animation, settings) {
         var _this = this;
-        var _a, _b, _c, _d, _e;
         if (!this.canAddCard(card, settings)) {
             return Promise.resolve(false);
         }
-        var promise;
         // we check if card is in a stock
+        var cardElement = this.getCardElement(card);
         var originStock = this.manager.getCardStock(card);
+        if (cardElement && !originStock) {
+            throw new Error('The card element exists but is not attached to any Stock');
+        }
+        if (cardElement) { // unselect the card
+            this.removeSelectionClassesFromElement(cardElement);
+            originStock.unselectCard(card);
+        }
+        var animationSettings = animation !== null && animation !== void 0 ? animation : {};
+        if (originStock) { // if the card is in a Stock, the animation must come from it
+            animationSettings.fromStock = originStock;
+        }
+        var addCardSettings = settings !== null && settings !== void 0 ? settings : {};
         var index = this.getNewCardIndex(card);
-        var settingsWithIndex = __assign({ index: index }, (settings !== null && settings !== void 0 ? settings : {}));
-        var updateInformations = (_a = settingsWithIndex.updateInformations) !== null && _a !== void 0 ? _a : true;
-        var needsCreation = true;
-        if (originStock === null || originStock === void 0 ? void 0 : originStock.contains(card)) {
-            var element = this.getCardElement(card);
-            if (element) {
-                promise = this.moveFromOtherStock(card, element, __assign(__assign({}, animation), { fromStock: originStock }), settingsWithIndex);
-                needsCreation = false;
-                if (!updateInformations) {
-                    element.dataset.side = ((_b = settingsWithIndex === null || settingsWithIndex === void 0 ? void 0 : settingsWithIndex.visible) !== null && _b !== void 0 ? _b : this.manager.isCardVisible(card)) ? 'front' : 'back';
-                }
-            }
+        if (index !== undefined) {
+            addCardSettings.index = index;
         }
-        else if ((_c = animation === null || animation === void 0 ? void 0 : animation.fromStock) === null || _c === void 0 ? void 0 : _c.contains(card)) {
-            var element = this.getCardElement(card);
-            if (element) {
-                promise = this.moveFromOtherStock(card, element, animation, settingsWithIndex);
-                needsCreation = false;
-            }
-        }
-        if (needsCreation) {
-            var element = this.getCardElement(card);
-            if (needsCreation && element) {
-                console.warn("Card ".concat(this.manager.getId(card), " already exists, not re-created."));
-            }
-            // if the card comes from a stock but is not found in this stock, the card is probably hudden (deck with a fake top card)
-            var fromBackSide = !(settingsWithIndex === null || settingsWithIndex === void 0 ? void 0 : settingsWithIndex.visible) && !(animation === null || animation === void 0 ? void 0 : animation.originalSide) && (animation === null || animation === void 0 ? void 0 : animation.fromStock) && !((_d = animation === null || animation === void 0 ? void 0 : animation.fromStock) === null || _d === void 0 ? void 0 : _d.contains(card));
-            var createdVisible = fromBackSide ? false : (_e = settingsWithIndex === null || settingsWithIndex === void 0 ? void 0 : settingsWithIndex.visible) !== null && _e !== void 0 ? _e : this.manager.isCardVisible(card);
-            var newElement = element !== null && element !== void 0 ? element : this.manager.createCardElement(card, createdVisible);
-            promise = this.moveFromElement(card, newElement, animation, settingsWithIndex);
-        }
-        if (settingsWithIndex.index !== null && settingsWithIndex.index !== undefined) {
+        if (addCardSettings.index !== null && addCardSettings.index !== undefined) {
             this.cards.splice(index, 0, card);
         }
         else {
             this.cards.push(card);
         }
-        if (updateInformations) { // after splice/push
-            this.manager.updateCardInformations(card);
-        }
-        if (!promise) {
-            console.warn("CardStock.addCard didn't return a Promise");
-            promise = Promise.resolve(false);
+        var promise = cardElement ?
+            this.addExistingCardElement(card, cardElement, animationSettings, addCardSettings) :
+            this.addUnexistingCardElement(card, animationSettings, addCardSettings);
+        this.manager.updateCardInformations(card);
+        // if the card was from a stock, we remove the card from it. 
+        // Must be called after the animation is started, so it doesn't delete the element
+        if (animationSettings.fromStock && animationSettings.fromStock != this) {
+            animationSettings.fromStock.removeCard(card);
         }
         if (this.selectionMode !== 'none') {
             // make selectable only at the end of the animation
-            promise.then(function () { var _a; return _this.setSelectableCard(card, (_a = settingsWithIndex.selectable) !== null && _a !== void 0 ? _a : true); });
+            promise.then(function () { var _a; return _this.setSelectableCard(card, (_a = addCardSettings.selectable) !== null && _a !== void 0 ? _a : true); });
         }
         return promise;
+    };
+    CardStock.prototype.addExistingCardElement = function (card, cardElement, animation, settings) {
+        var _a, _b, _c;
+        var toElement = (_a = settings === null || settings === void 0 ? void 0 : settings.forceToElement) !== null && _a !== void 0 ? _a : this.element;
+        var insertBefore = undefined;
+        if ((settings === null || settings === void 0 ? void 0 : settings.index) === null || (settings === null || settings === void 0 ? void 0 : settings.index) === undefined || !toElement.children.length || (settings === null || settings === void 0 ? void 0 : settings.index) >= toElement.children.length) {
+        }
+        else {
+            insertBefore = toElement.children[settings.index];
+        }
+        var promise = this.animationFromElement(card, cardElement, (_c = (_b = animation.fromStock) === null || _b === void 0 ? void 0 : _b.element) !== null && _c !== void 0 ? _c : animation.fromElement, toElement, insertBefore, animation, settings);
+        return promise;
+    };
+    CardStock.prototype.addUnexistingCardElement = function (card, animation, settings) {
+        var _a;
+        var initialSide = settings === null || settings === void 0 ? void 0 : settings.initialSide;
+        if (!['front', 'back'].includes(initialSide)) { // unset or invalid value
+            // if the card comes from a stock but is not found in this stock, the card is probably hidden (deck with a fake top card)
+            if ((animation === null || animation === void 0 ? void 0 : animation.fromStock) && !((_a = animation === null || animation === void 0 ? void 0 : animation.fromStock) === null || _a === void 0 ? void 0 : _a.contains(card))) {
+                initialSide = 'back';
+            }
+            else {
+                initialSide = this.manager.isCardVisible(card) ? 'front' : 'back';
+            }
+        }
+        var cardElement = this.manager.createCardElement(card, initialSide);
+        return this.addExistingCardElement(card, cardElement, animation, settings);
     };
     CardStock.prototype.getNewCardIndex = function (card) {
         if (this.sort) {
@@ -251,67 +252,6 @@ var CardStock = /** @class */ (function () {
             parent.insertBefore(cardElement, parent.children[settings.index]);
         }
     };
-    CardStock.prototype.moveFromOtherStock = function (card, cardElement, animation, settings) {
-        var _a;
-        var promise;
-        var fromElement = animation.fromStock.contains(card) ? this.manager.getCardElement(card) : animation.fromStock.element;
-        //this.addCardElementToParent(cardElement, settings);
-        this.removeSelectionClassesFromElement(cardElement);
-        var toElement = (_a = settings === null || settings === void 0 ? void 0 : settings.forceToElement) !== null && _a !== void 0 ? _a : this.element;
-        var insertBefore = undefined;
-        if ((settings === null || settings === void 0 ? void 0 : settings.index) === null || (settings === null || settings === void 0 ? void 0 : settings.index) === undefined || !toElement.children.length || (settings === null || settings === void 0 ? void 0 : settings.index) >= toElement.children.length) {
-        }
-        else {
-            insertBefore = toElement.children[settings.index];
-        }
-        promise = null;
-        if (fromElement) {
-            console.warn('moveFromOtherStock.fromElement', fromElement);
-            promise = this.animationFromElement(cardElement, fromElement, toElement, insertBefore, animation, settings);
-        }
-        else {
-            this.addCardElementToParent(cardElement, settings);
-            promise = Promise.resolve(false);
-        }
-        // in the case the card was move inside the same stock we don't remove it
-        if (animation.fromStock && animation.fromStock != this) {
-            animation.fromStock.removeCard(card);
-        }
-        if (!promise) {
-            console.warn("CardStock.moveFromOtherStock didn't return a Promise");
-            promise = Promise.resolve(false);
-        }
-        return promise;
-    };
-    CardStock.prototype.moveFromElement = function (card, cardElement, animation, settings) {
-        var _a;
-        var promise;
-        var toElement = (_a = settings === null || settings === void 0 ? void 0 : settings.forceToElement) !== null && _a !== void 0 ? _a : this.element;
-        var insertBefore = undefined;
-        if ((settings === null || settings === void 0 ? void 0 : settings.index) === null || (settings === null || settings === void 0 ? void 0 : settings.index) === undefined || !toElement.children.length || (settings === null || settings === void 0 ? void 0 : settings.index) >= toElement.children.length) {
-        }
-        else {
-            insertBefore = toElement.children[settings.index];
-        }
-        if (animation) {
-            if (animation.fromStock) {
-                promise = this.animationFromElement(cardElement, animation.fromStock.element, toElement, insertBefore, animation, settings);
-                animation.fromStock.removeCard(card);
-            }
-            else if (animation.fromElement) {
-                promise = this.animationFromElement(cardElement, animation.fromElement, toElement, insertBefore, animation, settings);
-            }
-        }
-        else {
-            this.addCardElementToParent(cardElement, settings);
-            promise = Promise.resolve(false);
-        }
-        if (!promise) {
-            console.warn("CardStock.moveFromElement didn't return a Promise");
-            promise = Promise.resolve(false);
-        }
-        return promise;
-    };
     /**
      * Add an array of cards to the stock.
      *
@@ -328,7 +268,7 @@ var CardStock = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!this.manager.animationsActive()) {
+                        if (!this.manager.game.bgaAnimationsActive()) {
                             shift = false;
                         }
                         promises = [];
@@ -595,21 +535,22 @@ var CardStock = /** @class */ (function () {
      * @param element The element to animate. The element is added to the destination stock before the animation starts.
      * @param toElement The HTMLElement to attach the card to.
      */
-    CardStock.prototype.animationFromElement = function (element, fromElement, toElement, insertBefore, animation, settings) {
+    CardStock.prototype.animationFromElement = function (card, element, fromElement, toElement, insertBefore, animation, settings) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function () {
-            var side, cardSides_1, result, result;
+            var initialSide, finalSide, cardSides_1, result, result;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
-                        side = element.dataset.side;
-                        if (animation.originalSide && animation.originalSide != side) {
+                        initialSide = element.dataset.side;
+                        finalSide = ['front', 'back'].includes(settings === null || settings === void 0 ? void 0 : settings.finalSide) ? settings.finalSide : (this.manager.isCardVisible(card) ? 'front' : 'back');
+                        if (finalSide != initialSide) {
                             cardSides_1 = element.getElementsByClassName('card-sides')[0];
                             cardSides_1.style.transition = 'none';
-                            element.dataset.side = animation.originalSide;
+                            element.dataset.side = initialSide;
                             setTimeout(function () {
                                 cardSides_1.style.transition = null;
-                                element.dataset.side = side;
+                                element.dataset.side = finalSide;
                             });
                         }
                         if (!document.contains(element)) return [3 /*break*/, 2];
@@ -620,13 +561,16 @@ var CardStock = /** @class */ (function () {
                     case 2:
                         this.manager.animationManager.base.attachToElement(element, toElement, insertBefore);
                         result = null;
-                        if (settings && (!animation.fromStock || settings.fadeIn)) {
-                            result = this.manager.animationManager.slideIn(element, fromElement, animation);
-                        }
-                        else {
-                            result = this.manager.animationManager.fadeIn(element, fromElement, animation);
-                        }
-                        return [2 /*return*/, (_b = result === null || result === void 0 ? void 0 : result.played) !== null && _b !== void 0 ? _b : false];
+                        if (!(!animation.fromStock || settings.fadeIn)) return [3 /*break*/, 4];
+                        return [4 /*yield*/, this.manager.animationManager.fadeIn(element, fromElement, animation)];
+                    case 3:
+                        result = _c.sent();
+                        return [3 /*break*/, 6];
+                    case 4: return [4 /*yield*/, this.manager.animationManager.slideIn(element, fromElement, animation)];
+                    case 5:
+                        result = _c.sent();
+                        _c.label = 6;
+                    case 6: return [2 /*return*/, (_b = result === null || result === void 0 ? void 0 : result.played) !== null && _b !== void 0 ? _b : false];
                 }
             });
         });
@@ -712,6 +656,17 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var SlideAndBackAnimation = /** @class */ (function () {
     function SlideAndBackAnimation() {
     }
@@ -871,7 +826,7 @@ var Deck = /** @class */ (function (_super) {
             return __generator(this, function (_c) {
                 animatedCardsMax = (_a = settings === null || settings === void 0 ? void 0 : settings.animatedCardsMax) !== null && _a !== void 0 ? _a : 10;
                 this.addCard((_b = settings === null || settings === void 0 ? void 0 : settings.newTopCard) !== null && _b !== void 0 ? _b : this.getFakeCard(), undefined, { autoUpdateCardNumber: false });
-                if (!this.manager.animationsActive()) {
+                if (!this.manager.game.bgaAnimationsActive()) {
                     return [2 /*return*/, Promise.resolve(false)]; // we don't execute as it's just visual temporary stuff
                 }
                 animatedCards = Math.min(10, animatedCardsMax, this.getCardNumber());
@@ -894,7 +849,7 @@ var Deck = /** @class */ (function (_super) {
                         do {
                             newCard = getFakeCard(uid++);
                         } while (this.manager.getCardElement(newCard)); // To make sure there isn't a fake card remaining with the same uid
-                        newElement = this.manager.createCardElement(newCard, false);
+                        newElement = this.manager.createCardElement(newCard, 'back');
                         newElement.dataset.tempCardForShuffleAnimation = 'true';
                         this.element.prepend(newElement);
                         elements.push(newElement);
@@ -1076,21 +1031,18 @@ var SlotStock = /** @class */ (function (_super) {
         // we set to absolute so it doesn't mess with slide coordinates when 2 div are at the same place
         elements.forEach(function (element) { return element.style.position = 'absolute'; });
         cards.forEach(function (card, index) {
-            var _a, _b;
+            var _a;
             var cardElement = elements[index];
             var promise;
             var slotId = (_a = _this.mapCardToSlot) === null || _a === void 0 ? void 0 : _a.call(_this, card);
-            _this.slots[slotId].appendChild(cardElement);
             cardElement.style.position = cssPositions[index];
             var cardIndex = _this.cards.findIndex(function (c) { return _this.manager.getId(c) == _this.manager.getId(card); });
             if (cardIndex !== -1) {
                 _this.cards.splice(cardIndex, 1, card);
             }
-            if ((_b = settings === null || settings === void 0 ? void 0 : settings.updateInformations) !== null && _b !== void 0 ? _b : true) { // after splice/push
-                _this.manager.updateCardInformations(card);
-            }
+            _this.manager.updateCardInformations(card);
             _this.removeSelectionClassesFromElement(cardElement);
-            promise = _this.animationFromElement(cardElement, undefined, elements[index], undefined, {});
+            promise = _this.animationFromElement(card, cardElement, undefined, _this.slots[slotId], undefined, {}, settings);
             if (!promise) {
                 console.warn("CardStock.animationFromElement didn't return a Promise");
                 promise = Promise.resolve(false);
@@ -1157,6 +1109,7 @@ var HandStock = /** @class */ (function (_super) {
         var _this = _super.call(this, manager, element, settings) || this;
         _this.manager = manager;
         _this.element = element;
+        _this.settings = settings;
         element.classList.add('hand-stock');
         element.style.setProperty('--card-overlap', (_a = settings.cardOverlap) !== null && _a !== void 0 ? _a : '60px');
         element.style.setProperty('--card-shift', (_b = settings.cardShift) !== null && _b !== void 0 ? _b : '15px');
@@ -1165,7 +1118,19 @@ var HandStock = /** @class */ (function (_super) {
         return _this;
     }
     HandStock.prototype.addCard = function (card, animation, settings) {
-        var promise = _super.prototype.addCard.call(this, card, animation, settings);
+        var _a, _b;
+        var index = (_a = this.getNewCardIndex(card)) !== null && _a !== void 0 ? _a : this.cards.length;
+        var addedCards = this.cards.slice();
+        addedCards.splice(index, 0, card);
+        console.warn(index, this.getMiddleIndexes(addedCards));
+        var newCardMiddleIndex = this.getMiddleIndexes(addedCards)[index];
+        var parallelAnimations = [
+            { keyframes: [
+                    { transform: "translateY(".concat(Math.abs(newCardMiddleIndex) * ( /*Number(this.settings.cardShift) ??*/15), "px) rotate(").concat(newCardMiddleIndex * ((_b = this.settings.inclination) !== null && _b !== void 0 ? _b : 12), "deg)"), offset: 1 }
+                ] }
+        ];
+        console.warn(parallelAnimations);
+        var promise = _super.prototype.addCard.call(this, card, __assign(__assign({}, animation), { parallelAnimations: parallelAnimations }), settings);
         this.updateAngles();
         return promise;
     };
@@ -1173,7 +1138,11 @@ var HandStock = /** @class */ (function (_super) {
         _super.prototype.cardRemoved.call(this, card, settings);
         this.updateAngles();
     };
-    HandStock.prototype.updateAngles = function () {
+    HandStock.prototype.getMiddleIndexes = function (cards) {
+        var middle = (cards.length - 1) / 2;
+        return cards.map(function (card, index) { return index - middle; });
+    };
+    HandStock.prototype.updateAngles = function (fakeIndex) {
         var _this = this;
         var middle = (this.cards.length - 1) / 2;
         this.cards.forEach(function (card, index) {
@@ -1364,14 +1333,6 @@ var CardManager = /** @class */ (function () {
         this.updateBackTimeoutId = [];
         this.animationManager = (_a = settings.animationManager) !== null && _a !== void 0 ? _a : new AnimationManager(game);
     }
-    /**
-     * Returns if the animations are active. Animation aren't active when the window is not visible (`document.visibilityState === 'hidden'`), or `game.instantaneousMode` is true.
-     *
-     * @returns if the animations are active.
-     */
-    CardManager.prototype.animationsActive = function () {
-        return this.game.bgaAnimationsActive();
-    };
     CardManager.prototype.addStock = function (stock) {
         this.stocks.push(stock);
     };
@@ -1389,11 +1350,11 @@ var CardManager = /** @class */ (function () {
         var _a, _b, _c;
         return (_c = (_b = (_a = this.settings).getId) === null || _b === void 0 ? void 0 : _b.call(_a, card)) !== null && _c !== void 0 ? _c : "card-".concat(card.id);
     };
-    CardManager.prototype.createCardElement = function (card, visible) {
+    CardManager.prototype.createCardElement = function (card, initialSide) {
         var _a, _b, _c, _d, _e, _f;
-        if (visible === void 0) { visible = true; }
+        if (initialSide === void 0) { initialSide = 'auto'; }
         var id = this.getId(card);
-        var side = visible ? 'front' : 'back';
+        var side = ['front', 'back'].includes(initialSide) ? initialSide : (this.isCardVisible(card) ? 'front' : 'back'); // to apply auto & ignore invalid values
         if (this.getCardElement(card)) {
             throw new Error('This card already exists ' + JSON.stringify(card));
         }
@@ -1466,6 +1427,7 @@ var CardManager = /** @class */ (function () {
         var _this = this;
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
         var element = this.getCardElement(card);
+        console.warn('setCardVisible', !!element);
         if (!element) {
             return;
         }
@@ -1478,7 +1440,7 @@ var CardManager = /** @class */ (function () {
                 delete this.updateMainTimeoutId[stringId];
             }
             var updateMainDelay = (_b = settings === null || settings === void 0 ? void 0 : settings.updateMainDelay) !== null && _b !== void 0 ? _b : 0;
-            if (isVisible && updateMainDelay > 0 && this.animationsActive()) {
+            if (isVisible && updateMainDelay > 0 && this.game.bgaAnimationsActive()) {
                 this.updateMainTimeoutId[stringId] = setTimeout(function () { var _a, _b; return (_b = (_a = _this.settings).setupDiv) === null || _b === void 0 ? void 0 : _b.call(_a, card, element); }, updateMainDelay);
             }
             else {
@@ -1491,7 +1453,7 @@ var CardManager = /** @class */ (function () {
                 delete this.updateFrontTimeoutId[stringId];
             }
             var updateFrontDelay = (_f = settings === null || settings === void 0 ? void 0 : settings.updateFrontDelay) !== null && _f !== void 0 ? _f : 500;
-            if (!isVisible && updateFrontDelay > 0 && this.animationsActive()) {
+            if (!isVisible && updateFrontDelay > 0 && this.game.bgaAnimationsActive()) {
                 this.updateFrontTimeoutId[stringId] = setTimeout(function () { var _a, _b; return (_b = (_a = _this.settings).setupFrontDiv) === null || _b === void 0 ? void 0 : _b.call(_a, card, element.getElementsByClassName('front')[0]); }, updateFrontDelay);
             }
             else {
@@ -1504,7 +1466,7 @@ var CardManager = /** @class */ (function () {
                 delete this.updateBackTimeoutId[stringId];
             }
             var updateBackDelay = (_k = settings === null || settings === void 0 ? void 0 : settings.updateBackDelay) !== null && _k !== void 0 ? _k : 0;
-            if (isVisible && updateBackDelay > 0 && this.animationsActive()) {
+            if (isVisible && updateBackDelay > 0 && this.game.bgaAnimationsActive()) {
                 this.updateBackTimeoutId[stringId] = setTimeout(function () { var _a, _b; return (_b = (_a = _this.settings).setupBackDiv) === null || _b === void 0 ? void 0 : _b.call(_a, card, element.getElementsByClassName('back')[0]); }, updateBackDelay);
             }
             else {
