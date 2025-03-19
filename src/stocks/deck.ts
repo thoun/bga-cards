@@ -119,24 +119,6 @@ interface ShuffleAnimationSettings<T> {
     pauseDelayAfterAnimation?: number;
 }
 
-class SlideAndBackAnimation<T> /*extends BgaCumulatedAnimation<BgaCumulatedAnimationsSettings>*/ {
-    /*constructor(manager: CardManager<T>, element: HTMLElement, tempElement: boolean) {
-        const distance = (manager.getCardWidth() + manager.getCardHeight()) / 2;
-        const angle = Math.random() * Math.PI * 2;
-        const fromDelta = {
-            x: distance * Math.cos(angle),
-            y: distance * Math.sin(angle),
-        }
-
-        super({
-            animations: [
-                new BgaSlideToAnimation({ element, fromDelta, duration: 250 } as BgaAnimationWithOriginSettings),
-                new BgaSlideAnimation({ element, fromDelta, duration: 250, animationEnd: tempElement ? (() => element.remove()) : undefined } as BgaAnimationWithOriginSettings),
-            ]
-        });
-    }*/
-}
-
 /**
  * Abstract stock to represent a deck. (pile of cards, with a fake 3d effect of thickness). * 
  * Needs cardWidth and cardHeight to be set in the card manager.
@@ -300,7 +282,7 @@ class Deck<T> extends CardStock<T> {
      * @returns promise when animation ends
      */
     public async shuffle(settings?: ShuffleAnimationSettings<T>): Promise<boolean> {
-        const animatedCardsMax = settings?.animatedCardsMax ?? 10;
+        const animatedCardsMax = settings?.animatedCardsMax ?? 8;
 
         this.addCard(settings?.newTopCard ?? this.getFakeCard(), undefined, { autoUpdateCardNumber: false });
 
@@ -308,7 +290,7 @@ class Deck<T> extends CardStock<T> {
             return Promise.resolve(false); // we don't execute as it's just visual temporary stuff
         }
 
-        const animatedCards = Math.min(10, animatedCardsMax, this.getCardNumber());
+        const animatedCards = Math.min(8, animatedCardsMax, this.getCardNumber());
 
         if (animatedCards > 1) {
             const elements = [this.getCardElement(this.getTopCard())];
@@ -335,14 +317,37 @@ class Deck<T> extends CardStock<T> {
                 this.element.prepend(newElement);
                 elements.push(newElement);
             }
-            /*await this.manager.animationManager.playWithDelay(elements.map(element => new SlideAndBackAnimation(this.manager, element, element.dataset.tempCardForShuffleAnimation == 'true')), 50);
+            await this.manager.animationManager.playInterval(elements.map(element => {
+                // all directions
+                //const distance = (this.manager.getCardWidth() + this.manager.getCardHeight()) / 2;
+                //const angle = Math.random() * Math.PI * 2;
+                //const x = distance * Math.cos(angle);
+                //const y = distance * Math.sin(angle);
+                // to bottom
+                const distance = this.manager.getCardHeight() / 2;
+                const x = 0;
+                const y = distance;
+                const r = -15 + Math.random() * 30;
+                
+                const parallelAnimations: ParallelAnimation[] = [
+                    {
+                        keyframes: [{
+                            transform: `translate(${x}px, ${y}px) rotate(${r}deg)`,
+                            offset: 0.5
+                        }],                        
+                    }
+                ]
+                return () => this.manager.animationManager.slideIn(element, undefined, { parallelAnimations, duration: 1000 })
+            }), 80);
+
+            elements.filter(element => element.dataset.tempCardForShuffleAnimation === 'true').forEach(element => element?.remove());
 
             const pauseDelayAfterAnimation = settings?.pauseDelayAfterAnimation ?? 500;
 
             if (pauseDelayAfterAnimation > 0) {
-                await this.manager.animationManager.play(new BgaPauseAnimation({ duration: pauseDelayAfterAnimation }));
+                await this.manager.game.wait(pauseDelayAfterAnimation);
             }
-*/
+
             return true;
         } else {
             return Promise.resolve(false);

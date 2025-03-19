@@ -348,8 +348,6 @@ interface ShuffleAnimationSettings<T> {
      */
     pauseDelayAfterAnimation?: number;
 }
-declare class SlideAndBackAnimation<T> {
-}
 /**
  * Abstract stock to represent a deck. (pile of cards, with a fake 3d effect of thickness). *
  * Needs cardWidth and cardHeight to be set in the card manager.
@@ -488,7 +486,7 @@ declare class SlotStock<T> extends LineStock<T> {
      * @param cards the cards to swap
      * @param settings for `updateInformations` and `selectable`
      */
-    swapCards(cards: T[], settings?: AddCardSettings): Promise<boolean[]>;
+    swapCards(cards: T[], settings?: AddCardSettings): Promise<any>;
 }
 interface ScrollableStockButtonSettings {
     /**

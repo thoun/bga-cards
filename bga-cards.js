@@ -538,21 +538,10 @@ var CardStock = /** @class */ (function () {
     CardStock.prototype.animationFromElement = function (card, element, fromElement, toElement, insertBefore, animation, settings) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function () {
-            var initialSide, finalSide, cardSides_1, result, result;
+            var result, result;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
-                        initialSide = element.dataset.side;
-                        finalSide = ['front', 'back'].includes(settings === null || settings === void 0 ? void 0 : settings.finalSide) ? settings.finalSide : (this.manager.isCardVisible(card) ? 'front' : 'back');
-                        if (finalSide != initialSide) {
-                            cardSides_1 = element.getElementsByClassName('card-sides')[0];
-                            cardSides_1.style.transition = 'none';
-                            element.dataset.side = initialSide;
-                            setTimeout(function () {
-                                cardSides_1.style.transition = null;
-                                element.dataset.side = finalSide;
-                            });
-                        }
                         if (!document.contains(element)) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.manager.animationManager.slideAndAttach(element, toElement, animation, insertBefore)];
                     case 1:
@@ -667,11 +656,6 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-var SlideAndBackAnimation = /** @class */ (function () {
-    function SlideAndBackAnimation() {
-    }
-    return SlideAndBackAnimation;
-}());
 /**
  * Abstract stock to represent a deck. (pile of cards, with a fake 3d effect of thickness). *
  * Needs cardWidth and cardHeight to be set in the card manager.
@@ -819,55 +803,76 @@ var Deck = /** @class */ (function (_super) {
      * @returns promise when animation ends
      */
     Deck.prototype.shuffle = function (settings) {
-        var _a, _b;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
-            var animatedCardsMax, animatedCards, elements, getFakeCard, uid, i, newCard, newElement;
+            var animatedCardsMax, animatedCards, elements, getFakeCard, uid, i, newCard, newElement, pauseDelayAfterAnimation;
             var _this = this;
-            return __generator(this, function (_c) {
-                animatedCardsMax = (_a = settings === null || settings === void 0 ? void 0 : settings.animatedCardsMax) !== null && _a !== void 0 ? _a : 10;
-                this.addCard((_b = settings === null || settings === void 0 ? void 0 : settings.newTopCard) !== null && _b !== void 0 ? _b : this.getFakeCard(), undefined, { autoUpdateCardNumber: false });
-                if (!this.manager.game.bgaAnimationsActive()) {
-                    return [2 /*return*/, Promise.resolve(false)]; // we don't execute as it's just visual temporary stuff
-                }
-                animatedCards = Math.min(10, animatedCardsMax, this.getCardNumber());
-                if (animatedCards > 1) {
-                    elements = [this.getCardElement(this.getTopCard())];
-                    getFakeCard = function (uid) {
-                        var newCard;
-                        if (settings === null || settings === void 0 ? void 0 : settings.fakeCardSetter) {
-                            newCard = {};
-                            settings === null || settings === void 0 ? void 0 : settings.fakeCardSetter(newCard, uid);
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0:
+                        animatedCardsMax = (_a = settings === null || settings === void 0 ? void 0 : settings.animatedCardsMax) !== null && _a !== void 0 ? _a : 8;
+                        this.addCard((_b = settings === null || settings === void 0 ? void 0 : settings.newTopCard) !== null && _b !== void 0 ? _b : this.getFakeCard(), undefined, { autoUpdateCardNumber: false });
+                        if (!this.manager.game.bgaAnimationsActive()) {
+                            return [2 /*return*/, Promise.resolve(false)]; // we don't execute as it's just visual temporary stuff
                         }
-                        else {
-                            newCard = _this.fakeCardGenerator("".concat(_this.element.id, "-shuffle-").concat(uid));
+                        animatedCards = Math.min(8, animatedCardsMax, this.getCardNumber());
+                        if (!(animatedCards > 1)) return [3 /*break*/, 4];
+                        elements = [this.getCardElement(this.getTopCard())];
+                        getFakeCard = function (uid) {
+                            var newCard;
+                            if (settings === null || settings === void 0 ? void 0 : settings.fakeCardSetter) {
+                                newCard = {};
+                                settings === null || settings === void 0 ? void 0 : settings.fakeCardSetter(newCard, uid);
+                            }
+                            else {
+                                newCard = _this.fakeCardGenerator("".concat(_this.element.id, "-shuffle-").concat(uid));
+                            }
+                            return newCard;
+                        };
+                        uid = 0;
+                        for (i = elements.length; i <= animatedCards; i++) {
+                            newCard = void 0;
+                            do {
+                                newCard = getFakeCard(uid++);
+                            } while (this.manager.getCardElement(newCard)); // To make sure there isn't a fake card remaining with the same uid
+                            newElement = this.manager.createCardElement(newCard, 'back');
+                            newElement.dataset.tempCardForShuffleAnimation = 'true';
+                            this.element.prepend(newElement);
+                            elements.push(newElement);
                         }
-                        return newCard;
-                    };
-                    uid = 0;
-                    for (i = elements.length; i <= animatedCards; i++) {
-                        newCard = void 0;
-                        do {
-                            newCard = getFakeCard(uid++);
-                        } while (this.manager.getCardElement(newCard)); // To make sure there isn't a fake card remaining with the same uid
-                        newElement = this.manager.createCardElement(newCard, 'back');
-                        newElement.dataset.tempCardForShuffleAnimation = 'true';
-                        this.element.prepend(newElement);
-                        elements.push(newElement);
-                    }
-                    /*await this.manager.animationManager.playWithDelay(elements.map(element => new SlideAndBackAnimation(this.manager, element, element.dataset.tempCardForShuffleAnimation == 'true')), 50);
-        
-                    const pauseDelayAfterAnimation = settings?.pauseDelayAfterAnimation ?? 500;
-        
-                    if (pauseDelayAfterAnimation > 0) {
-                        await this.manager.animationManager.play(new BgaPauseAnimation({ duration: pauseDelayAfterAnimation }));
-                    }
-        */
-                    return [2 /*return*/, true];
+                        return [4 /*yield*/, this.manager.animationManager.playInterval(elements.map(function (element) {
+                                // all directions
+                                //const distance = (this.manager.getCardWidth() + this.manager.getCardHeight()) / 2;
+                                //const angle = Math.random() * Math.PI * 2;
+                                //const x = distance * Math.cos(angle);
+                                //const y = distance * Math.sin(angle);
+                                // to bottom
+                                var distance = _this.manager.getCardHeight() / 2;
+                                var x = 0;
+                                var y = distance;
+                                var r = -15 + Math.random() * 30;
+                                var parallelAnimations = [
+                                    {
+                                        keyframes: [{
+                                                transform: "translate(".concat(x, "px, ").concat(y, "px) rotate(").concat(r, "deg)"),
+                                                offset: 0.5
+                                            }],
+                                    }
+                                ];
+                                return function () { return _this.manager.animationManager.slideIn(element, undefined, { parallelAnimations: parallelAnimations, duration: 1000 }); };
+                            }), 80)];
+                    case 1:
+                        _d.sent();
+                        elements.filter(function (element) { return element.dataset.tempCardForShuffleAnimation === 'true'; }).forEach(function (element) { return element === null || element === void 0 ? void 0 : element.remove(); });
+                        pauseDelayAfterAnimation = (_c = settings === null || settings === void 0 ? void 0 : settings.pauseDelayAfterAnimation) !== null && _c !== void 0 ? _c : 500;
+                        if (!(pauseDelayAfterAnimation > 0)) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.manager.game.wait(pauseDelayAfterAnimation)];
+                    case 2:
+                        _d.sent();
+                        _d.label = 3;
+                    case 3: return [2 /*return*/, true];
+                    case 4: return [2 /*return*/, Promise.resolve(false)];
                 }
-                else {
-                    return [2 /*return*/, Promise.resolve(false)];
-                }
-                return [2 /*return*/];
             });
         });
     };
@@ -1025,32 +1030,25 @@ var SlotStock = /** @class */ (function (_super) {
         if (!this.mapCardToSlot) {
             throw new Error('You need to define SlotStock.mapCardToSlot to use SlotStock.swapCards');
         }
-        var promises = [];
         var elements = cards.map(function (card) { return _this.manager.getCardElement(card); });
-        var cssPositions = elements.map(function (element) { return element.style.position; });
-        // we set to absolute so it doesn't mess with slide coordinates when 2 div are at the same place
-        elements.forEach(function (element) { return element.style.position = 'absolute'; });
         cards.forEach(function (card, index) {
-            var _a;
             var cardElement = elements[index];
-            var promise;
-            var slotId = (_a = _this.mapCardToSlot) === null || _a === void 0 ? void 0 : _a.call(_this, card);
-            cardElement.style.position = cssPositions[index];
             var cardIndex = _this.cards.findIndex(function (c) { return _this.manager.getId(c) == _this.manager.getId(card); });
             if (cardIndex !== -1) {
                 _this.cards.splice(cardIndex, 1, card);
             }
             _this.manager.updateCardInformations(card);
             _this.removeSelectionClassesFromElement(cardElement);
-            promise = _this.animationFromElement(card, cardElement, undefined, _this.slots[slotId], undefined, {}, settings);
-            if (!promise) {
-                console.warn("CardStock.animationFromElement didn't return a Promise");
-                promise = Promise.resolve(false);
-            }
-            promise.then(function () { var _a; return _this.setSelectableCard(card, (_a = settings === null || settings === void 0 ? void 0 : settings.selectable) !== null && _a !== void 0 ? _a : true); });
-            promises.push(promise);
         });
-        return Promise.all(promises);
+        var promise = this.manager.animationManager.swap(elements);
+        cards.forEach(function (card, index) {
+            promise.then(function () {
+                var _a;
+                //this.manager.animationManager.base.attachToElement(cardElement, this.slots[slotId]);
+                _this.setSelectableCard(card, (_a = settings === null || settings === void 0 ? void 0 : settings.selectable) !== null && _a !== void 0 ? _a : true);
+            });
+        });
+        return promise;
     };
     return SlotStock;
 }(LineStock));

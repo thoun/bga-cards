@@ -98,6 +98,7 @@ body > .card {
   justify-content: center;
 }
 .card-stock.hand-stock .card {
+  transition: transform 0.5s;
   transform: translateY(calc(var(--card-shift) * var(--hand-stock-middle-index-abs))) rotate(calc(var(--hand-stock-middle-index) * var(--card-inclination)));
 }
 .card-stock.hand-stock .card:not(:first-child) {

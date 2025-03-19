@@ -143,20 +143,10 @@ class SlotStock<T> extends LineStock<T> {
             throw new Error('You need to define SlotStock.mapCardToSlot to use SlotStock.swapCards');
         }
 
-        const promises: Promise<boolean>[] = [];
-
         const elements = cards.map(card => this.manager.getCardElement(card));
-        const cssPositions = elements.map(element => element.style.position);
-
-        // we set to absolute so it doesn't mess with slide coordinates when 2 div are at the same place
-        elements.forEach(element => element.style.position = 'absolute');
 
         cards.forEach((card, index) => {
             const cardElement = elements[index];
-
-            let promise: Promise<boolean>;
-            const slotId = this.mapCardToSlot?.(card);
-            cardElement.style.position = cssPositions[index];
 
             const cardIndex = this.cards.findIndex(c => this.manager.getId(c) == this.manager.getId(card));
             if (cardIndex !== -1) {
@@ -166,18 +156,17 @@ class SlotStock<T> extends LineStock<T> {
             this.manager.updateCardInformations(card);
 
             this.removeSelectionClassesFromElement(cardElement);
-            promise = this.animationFromElement(card, cardElement, undefined, this.slots[slotId], undefined, {}, settings);
-            
-            if (!promise) {
-                console.warn(`CardStock.animationFromElement didn't return a Promise`);
-                promise = Promise.resolve(false);
-            }
-
-            promise.then(() => this.setSelectableCard(card, settings?.selectable ?? true));
-
-            promises.push(promise);
         });
 
-        return Promise.all(promises);
+        const promise = this.manager.animationManager.swap(elements);
+
+        cards.forEach((card, index) => {
+            promise.then(() => {
+                //this.manager.animationManager.base.attachToElement(cardElement, this.slots[slotId]);
+                this.setSelectableCard(card, settings?.selectable ?? true);
+            });
+        });
+
+        return promise;
     }
 }

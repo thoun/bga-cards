@@ -6,6 +6,13 @@ let game = {
     bgaAnimationsActive: function() {
         return document.visibilityState !== 'hidden' && !this.instantaneousMode;
     },
+    wait: function(delay) {
+        if (delay > 0 && this.bgaAnimationsActive()) {
+            return new Promise(resolve => setTimeout(resolve, delay));
+        } else {
+            return Promise.resolve();
+        }
+    },
 };
 
 function initCommon() {

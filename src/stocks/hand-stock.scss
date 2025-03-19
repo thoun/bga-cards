@@ -5,6 +5,7 @@
         justify-content: center;
 
         .card {
+            transition: transform 0.5s;
             transform: translateY(calc(var(--card-shift) * var(--hand-stock-middle-index-abs))) rotate(calc(var(--hand-stock-middle-index) * var(--card-inclination)));
 
             &:not(:first-child) {

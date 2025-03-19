@@ -538,18 +538,6 @@ class CardStock<T> {
      * @param toElement The HTMLElement to attach the card to.
      */
     protected async animationFromElement(card: T, element: HTMLElement, fromElement: HTMLElement | null | undefined, toElement: HTMLElement, insertBefore: HTMLElement | null | undefined, animation: CardAnimationSettings, settings: AddCardSettings): Promise<boolean> {
-        const initialSide = element.dataset.side;
-        const finalSide = ['front', 'back'].includes(settings?.finalSide) ? settings.finalSide : (this.manager.isCardVisible(card) ? 'front' : 'back'); // to apply auto & ignore invalid values;
-        if (finalSide != initialSide) {
-            const cardSides = element.getElementsByClassName('card-sides')[0] as HTMLDivElement;
-            cardSides.style.transition = 'none';
-            element.dataset.side = initialSide;
-            setTimeout(() => {
-                cardSides.style.transition = null;
-                element.dataset.side = finalSide;
-            });        
-        }
-
         if (document.contains(element)) {
             const result = await this.manager.animationManager.slideAndAttach(element, toElement, animation, insertBefore);
             return result?.played ?? false;
