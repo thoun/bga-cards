@@ -13,15 +13,13 @@
         <script src="./common.js" type="text/javascript"></script>
         <script src="./manager.js" type="text/javascript"></script>
         <script src="./line-stock.js" type="text/javascript"></script>
-        <script src="./slot-stock.js" type="text/javascript"></script>
         <script src="./hand-stock.js" type="text/javascript"></script>
         <script src="./scrollable-stock.js" type="text/javascript"></script>
         <script src="./manual-position-stock.js" type="text/javascript"></script>
         <script src="./void-stock.js" type="text/javascript"></script>
-        <script src="./custom-animation-function.js" type="text/javascript"></script>
     </head>
     <body>
-        <h1>Stocks</h1>
+        <h1>Linear stocks</h1>
 
         <div class="flex">
             <div class="block">
@@ -42,12 +40,6 @@
                     <div id="line-stock-overlap"></div>
                     <div id="line-stock-vertical-overlap"></div>
                 </div>
-            </div>
-
-            <div class="block">
-                <h2>SlotStock</h2>
-                <div id="slot-stock"></div>
-                <button onclick="swapSlotStockCards()">Swap cards</button>
             </div>
 
             <div class="block">
@@ -109,7 +101,6 @@
             initLineStock();
             initLineStockOverlap();
             initLineStockVerticalOverlap();
-            initSlotStock();
             initScrollableStock();
             initHandStock();
             initManualPositionDiagonalStock();

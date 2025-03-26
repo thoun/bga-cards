@@ -13,6 +13,21 @@ interface SlotStockSettings<T> extends LineStockSettings {
      * How to place the card on a slot automatically
      */
     mapCardToSlot?: (card: T) => SlotId;
+
+    /**
+     * The class to apply to selectable slots. Use class from manager is unset.
+     */
+    selectableSlotClass?: string | null;
+
+    /**
+     * The class to apply to selectable slots. Use class from manager is unset.
+     */
+    unselectableSlotClass?: string | null;
+
+    /**
+     * The class to apply to selected slots. Use class from manager is unset.
+     */
+    selectedSlotClass?: string | null;
 }
 
 type SlotId = number | string;
@@ -32,6 +47,23 @@ class SlotStock<T> extends LineStock<T> {
     protected slots: HTMLDivElement[] = [];
     protected slotClasses: string[];
     protected mapCardToSlot?: (card: T) => SlotId;
+    protected selectedSlots: SlotId[] = [];
+    protected slotSelectionMode: CardSelectionMode = 'none';
+
+    /**
+     * Called when the slot selection change. Returns the selection.
+     * 
+     * selection: the selected SlotId of the stock  
+     * lastChange: the last change on selection slot (can be selected or unselected)
+     */
+    public onSlotSelectionChange?: (selection: SlotId[], lastChange: SlotId | null) => void;
+
+    /**
+     * Called when slot selection change. Returns the clicked slot.
+     * 
+     * slot: the clicked slot (can be selected or unselected)
+     */
+    public onSlotClick?: (slotId: SlotId) => void;
 
     /**
      * @param manager the card manager  
@@ -55,6 +87,19 @@ class SlotStock<T> extends LineStock<T> {
         this.slots[slotId].dataset.slotId = slotId;
         this.element.appendChild(this.slots[slotId]);
         this.slots[slotId].classList.add(...['slot', ...this.slotClasses]);
+        this.slots[slotId].addEventListener('click', () => {
+            if (this.slotSelectionMode != 'none') {
+                const alreadySelected = this.selectedSlots.includes(slotId);
+    
+                if (alreadySelected) {
+                    this.unselectSlot(slotId);
+                } else {
+                    this.selectSlot(slotId);
+                }
+            }
+    
+            this.onSlotClick?.(slotId);
+        })
     }
 
     /**
@@ -79,6 +124,10 @@ class SlotStock<T> extends LineStock<T> {
             forceToElement: this.slots[slotId],
         };
         return super.addCard(card, animation, newSettings);
+    }
+
+    public getSlotsIds() {
+        return this.slotsIds;
     }
 
     /**
@@ -115,6 +164,27 @@ class SlotStock<T> extends LineStock<T> {
         newSlotsIds.forEach(slotId => {
             this.createSlot(slotId);
         });
+    }
+
+    /**
+     * @returns the class to apply to selectable slots. Use class from manager is unset.
+     */
+    public getSelectableSlotClass(): string | null {
+        return (this.settings as SlotStockSettings<T>)?.selectableSlotClass === undefined ? this.manager.getSelectableSlotClass() : (this.settings as SlotStockSettings<T>)?.selectableSlotClass;
+    }
+
+    /**
+     * @returns the class to apply to selectable slots. Use class from manager is unset.
+     */
+    public getUnselectableSlotClass(): string | null {
+        return (this.settings as SlotStockSettings<T>)?.unselectableSlotClass === undefined ? this.manager.getUnselectableSlotClass() : (this.settings as SlotStockSettings<T>)?.unselectableSlotClass;
+    }
+
+    /**
+     * @returns the class to apply to selected slots. Use class from manager is unset.
+     */
+    public getSelectedSlotClass(): string | null {
+        return (this.settings as SlotStockSettings<T>)?.selectedSlotClass === undefined ? this.manager.getSelectedSlotClass() : (this.settings as SlotStockSettings<T>)?.selectedSlotClass;
     }
 
     protected canAddCard(card: T, settings?: AddCardToSlotSettings) {
@@ -168,5 +238,155 @@ class SlotStock<T> extends LineStock<T> {
         });
 
         return promise;
+    }
+
+    /**
+     * Set if the stock slot are selectable, and if yes if it can be multiple.
+     * If set to 'none', it will unselect all selected slots.
+     * 
+     * @param selectionMode the selection mode
+     * @param selectableSlots the selectable slats (all if unset). Calls `setSelectableSlots` method
+     */
+    public setSlotSelectionMode(selectionMode: CardSelectionMode, selectableSlots?: SlotId[]) {
+        if (selectionMode !== this.slotSelectionMode) {
+            this.unselectAll(true);
+        }
+
+        this.slotsIds.forEach(slotId => this.setSelectableSlot(slotId, selectionMode != 'none'));
+        this.element.classList.toggle('bga-cards_selectable-stock-slots', selectionMode != 'none');
+        this.slotSelectionMode = selectionMode;
+        
+        if (selectionMode === 'none') {
+            this.slotsIds.forEach(slotId => this.removeSlotSelectionClasses(slotId));
+        } else {
+            this.setSelectableSlots(selectableSlots ?? this.slotsIds);
+        }
+    }
+
+    public removeSlotSelectionClasses(slotId: SlotId) {        
+        this.removeSlotSelectionClassesFromElement(this.slots[slotId]);
+    }
+
+    public removeSlotSelectionClassesFromElement(slotElement: HTMLElement) {        
+        const selectableSlotsClass = this.getSelectableSlotClass();
+        const unselectableSlotsClass = this.getUnselectableSlotClass();
+        const selectedSlotsClass = this.getSelectedSlotClass();
+
+        slotElement?.classList.remove(selectableSlotsClass, unselectableSlotsClass, selectedSlotsClass);
+    }
+
+    protected setSelectableSlot(slotId: SlotId, selectable: boolean) {
+        if (this.slotSelectionMode === 'none') {
+            return;
+        }
+
+        const element = this.slots[slotId];            
+        const selectableSlotClass = this.getSelectableSlotClass();
+        const unselectableSlotClass = this.getUnselectableSlotClass();
+
+        if (selectableSlotClass) {
+            element?.classList.toggle(selectableSlotClass, selectable);
+        }
+        if (unselectableSlotClass) {
+            element?.classList.toggle(unselectableSlotClass, !selectable);
+        }
+
+        if (!selectable && this.isSlotSelected(slotId)) {
+            this.unselectSlot(slotId);
+        }
+    }
+
+    /**
+     * Set the selectable class for each slot.
+     * 
+     * @param selectableSlots the selectable slots. If unset, all slots are marked selectable. Default unset.
+     */
+    public setSelectableSlots(slotIds?: SlotId[]) {
+        if (this.slotSelectionMode === 'none') {
+            return;
+        }
+
+        console.warn(slotIds);
+        this.slotsIds.forEach(slotId =>
+            this.setSelectableSlot(slotId, slotIds ? slotIds.includes(slotId) : true)
+        );
+    }
+
+    /**
+     * Set selected state to a slot.
+     * 
+     * @param slotId the slot to select
+     */
+    public selectSlot(slotId: SlotId) {
+        if (this.slotSelectionMode == 'none') {
+            return;
+        }
+
+        const element = this.slots[slotId];
+
+        const selectableSlotsClass = this.getSelectableSlotClass();
+        if (!element || !element.classList.contains(selectableSlotsClass)) {
+            return;
+        }
+        
+        if (this.slotSelectionMode === 'single') {
+            this.slotsIds.filter(c => c !== slotId).forEach(c => this.unselectSlot(c));
+        }
+
+        const selectedSlotsClass = this.getSelectedSlotClass();
+        element.classList.add(selectedSlotsClass);
+        this.selectedSlots.push(slotId);
+
+        this.onSlotSelectionChange?.(this.selectedSlots.slice(), slotId);
+    }
+
+    /**
+     * Set unselected state to a slot.
+     * 
+     * @param slot the slot to unselect
+     */
+    public unselectSlot(slotId: SlotId) {
+        const element = this.slots[slotId];      
+        const selectedSlotClass = this.getSelectedSlotClass();
+        element?.classList.remove(selectedSlotClass);
+
+        const index = this.selectedSlots.findIndex(c => c === slotId);
+        if (index !== -1) {
+            this.selectedSlots.splice(index, 1);
+        }
+
+        this.onSlotSelectionChange?.(this.selectedSlots.slice(), slotId);
+    }
+
+    /**
+     * Select all slots
+     */
+    public selectAllSlots() {
+        if (this.slotSelectionMode == 'none') {
+            return;
+        }
+
+        this.slotsIds.forEach(slotId => this.selectSlot(slotId));
+    }
+
+    /**
+     * Unselect all slots
+     */
+    public unselectAllSlots() {
+        this.slotsIds.forEach(slotId => this.unselectSlot(slotId));
+    }
+
+    /**
+     * @returns the selected slots
+     */
+    public getSlotSelection(): SlotId[] {
+        return this.selectedSlots.slice();
+    }
+
+    /**
+     * @returns if the slot is selectd
+     */
+    public isSlotSelected(slotId: SlotId): boolean {
+        return this.selectedSlots.includes(slotId);
     }
 }

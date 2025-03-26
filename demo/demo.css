@@ -171,3 +171,11 @@ h1, h2 {
 .sort-button.selected {
     outline: 2px solid black;
 }
+
+.slot-selection-stock .mygame-slot.bga-cards_selectable-slot {
+    /*box-shadow: 0 0 5px 3px lightgoldenrodyellow;*/
+    box-shadow: 0 0 3px 3px orange;
+}
+.slot-selection-stock .mygame-slot.bga-cards_selected-slot {
+    box-shadow: 0 0 5px 3px blueviolet;
+}

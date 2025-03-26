@@ -62,7 +62,7 @@ type CardSelectionMode = 'none' | 'single' | 'multiple';
 declare class CardStock<T> {
     protected manager: CardManager<T>;
     protected element: HTMLElement;
-    private settings?;
+    protected settings?: CardStockSettings;
     protected cards: T[];
     protected selectedCards: T[];
     protected selectionMode: CardSelectionMode;
@@ -104,7 +104,7 @@ declare class CardStock<T> {
      */
     getSelection(): T[];
     /**
-     * @returns the selected cards
+     * @returns if the card is selectd
      */
     isSelected(card: T): boolean;
     /**
@@ -433,6 +433,18 @@ interface SlotStockSettings<T> extends LineStockSettings {
      * How to place the card on a slot automatically
      */
     mapCardToSlot?: (card: T) => SlotId;
+    /**
+     * The class to apply to selectable slots. Use class from manager is unset.
+     */
+    selectableSlotClass?: string | null;
+    /**
+     * The class to apply to selectable slots. Use class from manager is unset.
+     */
+    unselectableSlotClass?: string | null;
+    /**
+     * The class to apply to selected slots. Use class from manager is unset.
+     */
+    selectedSlotClass?: string | null;
 }
 type SlotId = number | string;
 interface AddCardToSlotSettings extends AddCardSettings {
@@ -451,6 +463,21 @@ declare class SlotStock<T> extends LineStock<T> {
     protected slots: HTMLDivElement[];
     protected slotClasses: string[];
     protected mapCardToSlot?: (card: T) => SlotId;
+    protected selectedSlots: SlotId[];
+    protected slotSelectionMode: CardSelectionMode;
+    /**
+     * Called when the slot selection change. Returns the selection.
+     *
+     * selection: the selected SlotId of the stock
+     * lastChange: the last change on selection slot (can be selected or unselected)
+     */
+    onSlotSelectionChange?: (selection: SlotId[], lastChange: SlotId | null) => void;
+    /**
+     * Called when slot selection change. Returns the clicked slot.
+     *
+     * slot: the clicked slot (can be selected or unselected)
+     */
+    onSlotClick?: (slotId: SlotId) => void;
     /**
      * @param manager the card manager
      * @param element the stock element (should be an empty HTML Element)
@@ -467,6 +494,7 @@ declare class SlotStock<T> extends LineStock<T> {
      * @returns the promise when the animation is done (true if it was animated, false if it wasn't)
      */
     addCard(card: T, animation?: CardAnimationSettings, settings?: AddCardToSlotSettings): Promise<boolean>;
+    getSlotsIds(): SlotId[];
     /**
      * Change the slots ids. Will empty the stock before re-creating the slots.
      *
@@ -479,6 +507,18 @@ declare class SlotStock<T> extends LineStock<T> {
      * @param slotsIds the new slotsIds. Will be merged with the old ones.
      */
     addSlotsIds(newSlotsIds: SlotId[]): void;
+    /**
+     * @returns the class to apply to selectable slots. Use class from manager is unset.
+     */
+    getSelectableSlotClass(): string | null;
+    /**
+     * @returns the class to apply to selectable slots. Use class from manager is unset.
+     */
+    getUnselectableSlotClass(): string | null;
+    /**
+     * @returns the class to apply to selected slots. Use class from manager is unset.
+     */
+    getSelectedSlotClass(): string | null;
     protected canAddCard(card: T, settings?: AddCardToSlotSettings): boolean;
     /**
      * Swap cards inside the slot stock.
@@ -487,6 +527,51 @@ declare class SlotStock<T> extends LineStock<T> {
      * @param settings for `updateInformations` and `selectable`
      */
     swapCards(cards: T[], settings?: AddCardSettings): Promise<any>;
+    /**
+     * Set if the stock slot are selectable, and if yes if it can be multiple.
+     * If set to 'none', it will unselect all selected slots.
+     *
+     * @param selectionMode the selection mode
+     * @param selectableSlots the selectable slats (all if unset). Calls `setSelectableSlots` method
+     */
+    setSlotSelectionMode(selectionMode: CardSelectionMode, selectableSlots?: SlotId[]): void;
+    removeSlotSelectionClasses(slotId: SlotId): void;
+    removeSlotSelectionClassesFromElement(slotElement: HTMLElement): void;
+    protected setSelectableSlot(slotId: SlotId, selectable: boolean): void;
+    /**
+     * Set the selectable class for each slot.
+     *
+     * @param selectableSlots the selectable slots. If unset, all slots are marked selectable. Default unset.
+     */
+    setSelectableSlots(slotIds?: SlotId[]): void;
+    /**
+     * Set selected state to a slot.
+     *
+     * @param slotId the slot to select
+     */
+    selectSlot(slotId: SlotId): void;
+    /**
+     * Set unselected state to a slot.
+     *
+     * @param slot the slot to unselect
+     */
+    unselectSlot(slotId: SlotId): void;
+    /**
+     * Select all slots
+     */
+    selectAllSlots(): void;
+    /**
+     * Unselect all slots
+     */
+    unselectAllSlots(): void;
+    /**
+     * @returns the selected slots
+     */
+    getSlotSelection(): SlotId[];
+    /**
+     * @returns if the slot is selectd
+     */
+    isSlotSelected(slotId: SlotId): boolean;
 }
 interface ScrollableStockButtonSettings {
     /**
@@ -739,6 +824,18 @@ interface CardManagerSettings<T> {
      * The class to apply to selected cards. Default 'bga-cards_selected-card'.
      */
     selectedCardClass?: string | null;
+    /**
+     * The class to apply to selectable slots. Default 'bga-cards_selectable-slot'.
+     */
+    selectableSlotClass?: string | null;
+    /**
+     * The class to apply to selectable slots. Default 'bga-cards_disabled-slot'.
+     */
+    unselectableSlotClass?: string | null;
+    /**
+     * The class to apply to selected slots. Default 'bga-cards_selected-slot'.
+     */
+    selectedSlotClass?: string | null;
 }
 interface FlipCardSettings {
     /**
@@ -872,5 +969,17 @@ declare class CardManager<T> {
      * @returns the class to apply to selected cards. Default 'bga-cards_selected-card'.
      */
     getSelectedCardClass(): string | null;
+    /**
+     * @returns the class to apply to selectable slots. Default 'bga-cards_selectable-slot'.
+     */
+    getSelectableSlotClass(): string | null;
+    /**
+     * @returns the class to apply to selectable slots. Default 'bga-cards_disabled-slot'.
+     */
+    getUnselectableSlotClass(): string | null;
+    /**
+     * @returns the class to apply to selected slots. Default 'bga-cards_selected-slot'.
+     */
+    getSelectedSlotClass(): string | null;
     getFakeCardGenerator(): (deckId: string) => T;
 }

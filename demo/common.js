@@ -19,7 +19,8 @@ function initCommon() {
     document.body.insertAdjacentHTML('afterbegin', `    
     <div class="nav">
         <a href="index.html">Index</a> | 
-        <a href="stocks.html">Stocks</a> | 
+        <a href="linear-stocks.html">Linear stocks</a> | 
+        <a href="slot-stocks.html">Slot stocks</a> | 
         <a href="decks.html">Decks</a> |
         <a href="selection.html">Card selection</a>
     </div>

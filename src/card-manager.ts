@@ -87,6 +87,21 @@ interface CardManagerSettings<T> {
      * The class to apply to selected cards. Default 'bga-cards_selected-card'.
      */
     selectedCardClass?: string | null;
+
+    /**
+     * The class to apply to selectable slots. Default 'bga-cards_selectable-slot'.
+     */
+    selectableSlotClass?: string | null;
+
+    /**
+     * The class to apply to selectable slots. Default 'bga-cards_disabled-slot'.
+     */
+    unselectableSlotClass?: string | null;
+
+    /**
+     * The class to apply to selected slots. Default 'bga-cards_selected-slot'.
+     */
+    selectedSlotClass?: string | null;
 }
 
 interface FlipCardSettings {
@@ -264,7 +279,6 @@ class CardManager<T> {
     public setCardVisible(card: T, visible?: boolean, settings?: FlipCardSettings): void {
         const element = this.getCardElement(card) as HTMLDivElement;
 
-        console.warn('setCardVisible', !!element);
         if (!element) {
             return;
         }
@@ -385,6 +399,27 @@ class CardManager<T> {
      */
     public getSelectedCardClass(): string | null {
         return this.settings?.selectedCardClass === undefined ? 'bga-cards_selected-card' : this.settings?.selectedCardClass;
+    }
+
+    /**
+     * @returns the class to apply to selectable slots. Default 'bga-cards_selectable-slot'.
+     */
+    public getSelectableSlotClass(): string | null {
+        return this.settings?.selectableSlotClass === undefined ? 'bga-cards_selectable-slot' : this.settings?.selectableSlotClass;
+    }
+
+    /**
+     * @returns the class to apply to selectable slots. Default 'bga-cards_disabled-slot'.
+     */
+    public getUnselectableSlotClass(): string | null {
+        return this.settings?.unselectableSlotClass === undefined ? 'bga-cards_disabled-slot' : this.settings?.unselectableSlotClass;
+    }
+
+    /**
+     * @returns the class to apply to selected slots. Default 'bga-cards_selected-slot'.
+     */
+    public getSelectedSlotClass(): string | null {
+        return this.settings?.selectedSlotClass === undefined ? 'bga-cards_selected-slot' : this.settings?.selectedSlotClass;
     }
     
     public getFakeCardGenerator(): (deckId: string) => T {

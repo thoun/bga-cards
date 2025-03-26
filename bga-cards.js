@@ -116,7 +116,7 @@ var CardStock = /** @class */ (function () {
         return this.selectedCards.slice();
     };
     /**
-     * @returns the selected cards
+     * @returns if the card is selectd
      */
     CardStock.prototype.isSelected = function (card) {
         var _this = this;
@@ -931,6 +931,8 @@ var SlotStock = /** @class */ (function (_super) {
         _this.element = element;
         _this.slotsIds = [];
         _this.slots = [];
+        _this.selectedSlots = [];
+        _this.slotSelectionMode = 'none';
         element.classList.add('slot-stock');
         _this.mapCardToSlot = settings.mapCardToSlot;
         _this.slotsIds = (_a = settings.slotsIds) !== null && _a !== void 0 ? _a : [];
@@ -942,10 +944,24 @@ var SlotStock = /** @class */ (function (_super) {
     }
     SlotStock.prototype.createSlot = function (slotId) {
         var _a;
+        var _this = this;
         this.slots[slotId] = document.createElement("div");
         this.slots[slotId].dataset.slotId = slotId;
         this.element.appendChild(this.slots[slotId]);
         (_a = this.slots[slotId].classList).add.apply(_a, __spreadArray(['slot'], this.slotClasses, true));
+        this.slots[slotId].addEventListener('click', function () {
+            var _a;
+            if (_this.slotSelectionMode != 'none') {
+                var alreadySelected = _this.selectedSlots.includes(slotId);
+                if (alreadySelected) {
+                    _this.unselectSlot(slotId);
+                }
+                else {
+                    _this.selectSlot(slotId);
+                }
+            }
+            (_a = _this.onSlotClick) === null || _a === void 0 ? void 0 : _a.call(_this, slotId);
+        });
     };
     /**
      * Add a card to the stock.
@@ -966,6 +982,9 @@ var SlotStock = /** @class */ (function (_super) {
         }
         var newSettings = __assign(__assign({}, settings), { forceToElement: this.slots[slotId] });
         return _super.prototype.addCard.call(this, card, animation, newSettings);
+    };
+    SlotStock.prototype.getSlotsIds = function () {
+        return this.slotsIds;
     };
     /**
      * Change the slots ids. Will empty the stock before re-creating the slots.
@@ -1001,6 +1020,27 @@ var SlotStock = /** @class */ (function (_super) {
         newSlotsIds.forEach(function (slotId) {
             _this.createSlot(slotId);
         });
+    };
+    /**
+     * @returns the class to apply to selectable slots. Use class from manager is unset.
+     */
+    SlotStock.prototype.getSelectableSlotClass = function () {
+        var _a, _b;
+        return ((_a = this.settings) === null || _a === void 0 ? void 0 : _a.selectableSlotClass) === undefined ? this.manager.getSelectableSlotClass() : (_b = this.settings) === null || _b === void 0 ? void 0 : _b.selectableSlotClass;
+    };
+    /**
+     * @returns the class to apply to selectable slots. Use class from manager is unset.
+     */
+    SlotStock.prototype.getUnselectableSlotClass = function () {
+        var _a, _b;
+        return ((_a = this.settings) === null || _a === void 0 ? void 0 : _a.unselectableSlotClass) === undefined ? this.manager.getUnselectableSlotClass() : (_b = this.settings) === null || _b === void 0 ? void 0 : _b.unselectableSlotClass;
+    };
+    /**
+     * @returns the class to apply to selected slots. Use class from manager is unset.
+     */
+    SlotStock.prototype.getSelectedSlotClass = function () {
+        var _a, _b;
+        return ((_a = this.settings) === null || _a === void 0 ? void 0 : _a.selectedSlotClass) === undefined ? this.manager.getSelectedSlotClass() : (_b = this.settings) === null || _b === void 0 ? void 0 : _b.selectedSlotClass;
     };
     SlotStock.prototype.canAddCard = function (card, settings) {
         var _a, _b;
@@ -1049,6 +1089,138 @@ var SlotStock = /** @class */ (function (_super) {
             });
         });
         return promise;
+    };
+    /**
+     * Set if the stock slot are selectable, and if yes if it can be multiple.
+     * If set to 'none', it will unselect all selected slots.
+     *
+     * @param selectionMode the selection mode
+     * @param selectableSlots the selectable slats (all if unset). Calls `setSelectableSlots` method
+     */
+    SlotStock.prototype.setSlotSelectionMode = function (selectionMode, selectableSlots) {
+        var _this = this;
+        if (selectionMode !== this.slotSelectionMode) {
+            this.unselectAll(true);
+        }
+        this.slotsIds.forEach(function (slotId) { return _this.setSelectableSlot(slotId, selectionMode != 'none'); });
+        this.element.classList.toggle('bga-cards_selectable-stock-slots', selectionMode != 'none');
+        this.slotSelectionMode = selectionMode;
+        if (selectionMode === 'none') {
+            this.slotsIds.forEach(function (slotId) { return _this.removeSlotSelectionClasses(slotId); });
+        }
+        else {
+            this.setSelectableSlots(selectableSlots !== null && selectableSlots !== void 0 ? selectableSlots : this.slotsIds);
+        }
+    };
+    SlotStock.prototype.removeSlotSelectionClasses = function (slotId) {
+        this.removeSlotSelectionClassesFromElement(this.slots[slotId]);
+    };
+    SlotStock.prototype.removeSlotSelectionClassesFromElement = function (slotElement) {
+        var selectableSlotsClass = this.getSelectableSlotClass();
+        var unselectableSlotsClass = this.getUnselectableSlotClass();
+        var selectedSlotsClass = this.getSelectedSlotClass();
+        slotElement === null || slotElement === void 0 ? void 0 : slotElement.classList.remove(selectableSlotsClass, unselectableSlotsClass, selectedSlotsClass);
+    };
+    SlotStock.prototype.setSelectableSlot = function (slotId, selectable) {
+        if (this.slotSelectionMode === 'none') {
+            return;
+        }
+        var element = this.slots[slotId];
+        var selectableSlotClass = this.getSelectableSlotClass();
+        var unselectableSlotClass = this.getUnselectableSlotClass();
+        if (selectableSlotClass) {
+            element === null || element === void 0 ? void 0 : element.classList.toggle(selectableSlotClass, selectable);
+        }
+        if (unselectableSlotClass) {
+            element === null || element === void 0 ? void 0 : element.classList.toggle(unselectableSlotClass, !selectable);
+        }
+        if (!selectable && this.isSlotSelected(slotId)) {
+            this.unselectSlot(slotId);
+        }
+    };
+    /**
+     * Set the selectable class for each slot.
+     *
+     * @param selectableSlots the selectable slots. If unset, all slots are marked selectable. Default unset.
+     */
+    SlotStock.prototype.setSelectableSlots = function (slotIds) {
+        var _this = this;
+        if (this.slotSelectionMode === 'none') {
+            return;
+        }
+        console.warn(slotIds);
+        this.slotsIds.forEach(function (slotId) {
+            return _this.setSelectableSlot(slotId, slotIds ? slotIds.includes(slotId) : true);
+        });
+    };
+    /**
+     * Set selected state to a slot.
+     *
+     * @param slotId the slot to select
+     */
+    SlotStock.prototype.selectSlot = function (slotId) {
+        var _this = this;
+        var _a;
+        if (this.slotSelectionMode == 'none') {
+            return;
+        }
+        var element = this.slots[slotId];
+        var selectableSlotsClass = this.getSelectableSlotClass();
+        if (!element || !element.classList.contains(selectableSlotsClass)) {
+            return;
+        }
+        if (this.slotSelectionMode === 'single') {
+            this.slotsIds.filter(function (c) { return c !== slotId; }).forEach(function (c) { return _this.unselectSlot(c); });
+        }
+        var selectedSlotsClass = this.getSelectedSlotClass();
+        element.classList.add(selectedSlotsClass);
+        this.selectedSlots.push(slotId);
+        (_a = this.onSlotSelectionChange) === null || _a === void 0 ? void 0 : _a.call(this, this.selectedSlots.slice(), slotId);
+    };
+    /**
+     * Set unselected state to a slot.
+     *
+     * @param slot the slot to unselect
+     */
+    SlotStock.prototype.unselectSlot = function (slotId) {
+        var _a;
+        var element = this.slots[slotId];
+        var selectedSlotClass = this.getSelectedSlotClass();
+        element === null || element === void 0 ? void 0 : element.classList.remove(selectedSlotClass);
+        var index = this.selectedSlots.findIndex(function (c) { return c === slotId; });
+        if (index !== -1) {
+            this.selectedSlots.splice(index, 1);
+        }
+        (_a = this.onSlotSelectionChange) === null || _a === void 0 ? void 0 : _a.call(this, this.selectedSlots.slice(), slotId);
+    };
+    /**
+     * Select all slots
+     */
+    SlotStock.prototype.selectAllSlots = function () {
+        var _this = this;
+        if (this.slotSelectionMode == 'none') {
+            return;
+        }
+        this.slotsIds.forEach(function (slotId) { return _this.selectSlot(slotId); });
+    };
+    /**
+     * Unselect all slots
+     */
+    SlotStock.prototype.unselectAllSlots = function () {
+        var _this = this;
+        this.slotsIds.forEach(function (slotId) { return _this.unselectSlot(slotId); });
+    };
+    /**
+     * @returns the selected slots
+     */
+    SlotStock.prototype.getSlotSelection = function () {
+        return this.selectedSlots.slice();
+    };
+    /**
+     * @returns if the slot is selectd
+     */
+    SlotStock.prototype.isSlotSelected = function (slotId) {
+        return this.selectedSlots.includes(slotId);
     };
     return SlotStock;
 }(LineStock));
@@ -1425,7 +1597,6 @@ var CardManager = /** @class */ (function () {
         var _this = this;
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
         var element = this.getCardElement(card);
-        console.warn('setCardVisible', !!element);
         if (!element) {
             return;
         }
@@ -1535,6 +1706,27 @@ var CardManager = /** @class */ (function () {
     CardManager.prototype.getSelectedCardClass = function () {
         var _a, _b;
         return ((_a = this.settings) === null || _a === void 0 ? void 0 : _a.selectedCardClass) === undefined ? 'bga-cards_selected-card' : (_b = this.settings) === null || _b === void 0 ? void 0 : _b.selectedCardClass;
+    };
+    /**
+     * @returns the class to apply to selectable slots. Default 'bga-cards_selectable-slot'.
+     */
+    CardManager.prototype.getSelectableSlotClass = function () {
+        var _a, _b;
+        return ((_a = this.settings) === null || _a === void 0 ? void 0 : _a.selectableSlotClass) === undefined ? 'bga-cards_selectable-slot' : (_b = this.settings) === null || _b === void 0 ? void 0 : _b.selectableSlotClass;
+    };
+    /**
+     * @returns the class to apply to selectable slots. Default 'bga-cards_disabled-slot'.
+     */
+    CardManager.prototype.getUnselectableSlotClass = function () {
+        var _a, _b;
+        return ((_a = this.settings) === null || _a === void 0 ? void 0 : _a.unselectableSlotClass) === undefined ? 'bga-cards_disabled-slot' : (_b = this.settings) === null || _b === void 0 ? void 0 : _b.unselectableSlotClass;
+    };
+    /**
+     * @returns the class to apply to selected slots. Default 'bga-cards_selected-slot'.
+     */
+    CardManager.prototype.getSelectedSlotClass = function () {
+        var _a, _b;
+        return ((_a = this.settings) === null || _a === void 0 ? void 0 : _a.selectedSlotClass) === undefined ? 'bga-cards_selected-slot' : (_b = this.settings) === null || _b === void 0 ? void 0 : _b.selectedSlotClass;
     };
     CardManager.prototype.getFakeCardGenerator = function () {
         var _this = this;

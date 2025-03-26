@@ -86,7 +86,7 @@ class CardStock<T> {
      * @param manager the card manager  
      * @param element the stock element (should be an empty HTML Element)
      */
-    constructor(protected manager: CardManager<T>, protected element: HTMLElement, private settings?: CardStockSettings) {
+    constructor(protected manager: CardManager<T>, protected element: HTMLElement, protected settings?: CardStockSettings) {
         manager.addStock(this);
         element?.classList.add('card-stock'/*, this.constructor.name.split(/(?=[A-Z])/).join('-').toLowerCase()* doesn't work in production because of minification */);
         this.bindClick();
@@ -124,7 +124,7 @@ class CardStock<T> {
     }
 
     /**
-     * @returns the selected cards
+     * @returns if the card is selectd
      */
     public isSelected(card: T): boolean {
         return this.selectedCards.some(c => this.manager.getId(c) == this.manager.getId(card));
