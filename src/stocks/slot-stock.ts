@@ -322,7 +322,6 @@ class SlotStock<T> extends LineStock<T> {
             return;
         }
 
-        console.warn(slotIds);
         this.slotsIds.forEach(slotId =>
             this.setSelectableSlot(slotId, slotIds ? slotIds.includes(slotId) : true)
         );

@@ -64,14 +64,19 @@ interface CardManagerSettings<T> {
     animationManager?: AnimationManager;
 
     /**
-     * Indicate the width of a card (in px). Used for Deck stocks.
+     * Indicate the width of a card (in px).
      */
     cardWidth?: number;
 
     /**
-     * Indicate the height of a card (in px). Used for Deck stocks.
+     * Indicate the height of a card (in px).
      */
     cardHeight?: number;
+
+    /**
+     * Indicate the width of a card border radius (example : '10px', '50%').
+     */
+    cardBorderRadius?: string;
 
     /**
      * The class to apply to selectable cards. Default 'bga-cards_selectable-card'.
@@ -201,6 +206,9 @@ class CardManager<T> {
         const element = document.createElement("div");
         element.id = id;
         element.dataset.side = ''+side;
+        element.style.setProperty('--bga-cards_card-width', `${this.getCardWidth()}px`)
+        element.style.setProperty('--bga-cards_card-height', `${this.getCardHeight()}px`)
+        element.style.setProperty('--bga-cards_card-border-radius', `${this.getCardBorderRadius()}`);
         element.innerHTML = `
             <div class="card-sides">
                 <div id="${id}-front" class="card-side front">
@@ -378,6 +386,13 @@ class CardManager<T> {
      */
     public getCardHeight(): number | undefined {
         return this.settings?.cardHeight;
+    }
+
+    /**
+     * @returns the card height set in the settings (undefined if unset)
+     */
+    public getCardBorderRadius(): string | undefined {
+        return this.settings?.cardBorderRadius; 
     }
 
     /**

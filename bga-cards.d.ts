@@ -930,13 +930,17 @@ interface CardManagerSettings<T> {
      */
     animationManager?: AnimationManager;
     /**
-     * Indicate the width of a card (in px). Used for Deck stocks.
+     * Indicate the width of a card (in px).
      */
     cardWidth?: number;
     /**
-     * Indicate the height of a card (in px). Used for Deck stocks.
+     * Indicate the height of a card (in px).
      */
     cardHeight?: number;
+    /**
+     * Indicate the width of a card border radius (example : '10px', '50%').
+     */
+    cardBorderRadius?: string;
     /**
      * The class to apply to selectable cards. Default 'bga-cards_selectable-card'.
      */
@@ -1082,6 +1086,10 @@ declare class CardManager<T> {
      * @returns the card height set in the settings (undefined if unset)
      */
     getCardHeight(): number | undefined;
+    /**
+     * @returns the card height set in the settings (undefined if unset)
+     */
+    getCardBorderRadius(): string | undefined;
     /**
      * @returns the class to apply to selectable cards. Default 'bga-cards_selectable-card'.
      */

@@ -14,10 +14,12 @@ function initManager() {
             div.style.backgroundPositionX = `${(card.type_arg - 1) * 100 / 14}%`;
             div.style.backgroundPositionY = `${(card.type - 1) * 100 / 3}%`;
             /*div.style.background = 'white';
-            div.innerHTML = `
-                <div class="type" data-type="${card.type}">Type ${card.type}</div>
-                <div>SubType ${card.type_arg}</div>
-            `;*/
+            if (!div.lastElementChild) {
+                div.innerHTML = `
+                    <div class="type" data-type="${card.type}">Type ${card.type}</div>
+                    <div>SubType ${card.type_arg}</div>
+                `;
+            }*/
             if (card.type) {
                 game.addTooltipHtml(div.id, `tooltip of ${card.type} > ${card.type_arg}`);
             }
@@ -28,6 +30,7 @@ function initManager() {
         isCardVisible: card => Boolean(card.type),
         cardWidth: 100,
         cardHeight: 150,
+        cardBorderRadius: '5px',
     });
 }
 

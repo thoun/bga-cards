@@ -5,6 +5,10 @@ body > .card {
 }
 
 .card {
+  position: relative;
+  width: var(--bga-cards_card-width);
+  height: var(--bga-cards_card-height);
+  border-radius: var(--bga-cards_card-border-radius);
   flex-shrink: 0;
 }
 .card[data-side=back] .card-sides {
@@ -29,7 +33,7 @@ body > .card {
   -webkit-backface-visibility: hidden; /* Safari */
   backface-visibility: hidden;
   transform-origin: center center;
-  box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.5);
+  border-radius: var(--bga-cards_card-border-radius);
   overflow: hidden;
 }
 .card .card-sides .card-side.front > * {

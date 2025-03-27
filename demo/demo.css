@@ -32,12 +32,10 @@ h1, h2 {
     min-width: 500px;
 }
 
-.mygame-card {
-    width: 100px;
-    height: 150px;
-    position: relative;
-    border-radius: 5px;
+.mygame-card .card-side {
+    box-shadow: 1px 1px 2px 1px rgba(0,0,0,0.5);
 }
+
 .selection-stock .mygame-card.bga-cards_selectable-card {
     /*box-shadow: 0 0 5px 3px lightgoldenrodyellow;*/
     box-shadow: 0 0 8px 8px orange;

@@ -1165,7 +1165,6 @@ var SlotStock = /** @class */ (function (_super) {
         if (this.slotSelectionMode === 'none') {
             return;
         }
-        console.warn(slotIds);
         this.slotsIds.forEach(function (slotId) {
             return _this.setSelectableSlot(slotId, slotIds ? slotIds.includes(slotId) : true);
         });
@@ -1619,14 +1618,12 @@ var HandStock = /** @class */ (function (_super) {
         var index = (_a = this.getNewCardIndex(card)) !== null && _a !== void 0 ? _a : this.cards.length;
         var addedCards = this.cards.slice();
         addedCards.splice(index, 0, card);
-        console.warn(index, this.getMiddleIndexes(addedCards));
         var newCardMiddleIndex = this.getMiddleIndexes(addedCards)[index];
         var parallelAnimations = [
             { keyframes: [
                     { transform: "translateY(".concat(Math.abs(newCardMiddleIndex) * ( /*Number(this.settings.cardShift) ??*/15), "px) rotate(").concat(newCardMiddleIndex * ((_b = this.settings.inclination) !== null && _b !== void 0 ? _b : 12), "deg)"), offset: 1 }
                 ] }
         ];
-        console.warn(parallelAnimations);
         var promise = _super.prototype.addCard.call(this, card, __assign(__assign({}, animation), { parallelAnimations: parallelAnimations }), settings);
         this.updateAngles();
         return promise;
@@ -1858,6 +1855,9 @@ var CardManager = /** @class */ (function () {
         var element = document.createElement("div");
         element.id = id;
         element.dataset.side = '' + side;
+        element.style.setProperty('--bga-cards_card-width', "".concat(this.getCardWidth(), "px"));
+        element.style.setProperty('--bga-cards_card-height', "".concat(this.getCardHeight(), "px"));
+        element.style.setProperty('--bga-cards_card-border-radius', "".concat(this.getCardBorderRadius()));
         element.innerHTML = "\n            <div class=\"card-sides\">\n                <div id=\"".concat(id, "-front\" class=\"card-side front\">\n                </div>\n                <div id=\"").concat(id, "-back\" class=\"card-side back\">\n                </div>\n            </div>\n        ");
         element.classList.add('card');
         document.body.appendChild(element);
@@ -2012,6 +2012,13 @@ var CardManager = /** @class */ (function () {
     CardManager.prototype.getCardHeight = function () {
         var _a;
         return (_a = this.settings) === null || _a === void 0 ? void 0 : _a.cardHeight;
+    };
+    /**
+     * @returns the card height set in the settings (undefined if unset)
+     */
+    CardManager.prototype.getCardBorderRadius = function () {
+        var _a;
+        return (_a = this.settings) === null || _a === void 0 ? void 0 : _a.cardBorderRadius;
     };
     /**
      * @returns the class to apply to selectable cards. Default 'bga-cards_selectable-card'.

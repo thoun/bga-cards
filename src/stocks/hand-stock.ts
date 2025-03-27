@@ -33,14 +33,12 @@ class HandStock<T> extends CardStock<T> {
 
         const addedCards = this.cards.slice();
         addedCards.splice(index, 0, card);
-        console.warn(index, this.getMiddleIndexes(addedCards));
         const newCardMiddleIndex = this.getMiddleIndexes(addedCards)[index];
         const parallelAnimations: ParallelAnimation[] = [
             { keyframes: [
                 { transform: `translateY(${Math.abs(newCardMiddleIndex) * (/*Number(this.settings.cardShift) ??*/ 15)}px) rotate(${newCardMiddleIndex * (this.settings.inclination ?? 12)}deg)`, offset: 1}
             ] }
         ];
-        console.warn(parallelAnimations);
 
         let promise: Promise<boolean> = super.addCard(card, { ...animation, parallelAnimations}, settings);
 
