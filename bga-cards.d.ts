@@ -432,7 +432,7 @@ interface SlotStockSettings<T> extends LineStockSettings {
     /**
      * How to place the card on a slot automatically
      */
-    mapCardToSlot?: (card: T) => SlotId;
+    mapCardToSlot: (card: T) => SlotId;
     /**
      * The class to apply to selectable slots. Use class from manager is unset.
      */
@@ -462,7 +462,7 @@ declare class SlotStock<T> extends LineStock<T> {
     protected slotsIds: SlotId[];
     protected slots: HTMLDivElement[];
     protected slotClasses: string[];
-    protected mapCardToSlot?: (card: T) => SlotId;
+    protected mapCardToSlot: (card: T) => SlotId;
     protected selectedSlots: SlotId[];
     protected slotSelectionMode: CardSelectionMode;
     /**
@@ -501,6 +501,7 @@ declare class SlotStock<T> extends LineStock<T> {
      * @param slotsIds the new slotsIds. Will replace the old ones.
      */
     setSlotsIds(slotsIds: SlotId[]): void;
+    removeSlot(slotId: SlotId): void;
     /**
      * Add new slots ids. Will not change nor empty the existing ones.
      *
@@ -572,6 +573,130 @@ declare class SlotStock<T> extends LineStock<T> {
      * @returns if the slot is selectd
      */
     isSlotSelected(slotId: SlotId): boolean;
+}
+type GridStockCoordinates = {
+    x: number;
+    y: number;
+};
+interface GridStockSettings<T> extends SlotStockSettings<T> {
+    /**
+     * How to place the card on a slot automatically
+     */
+    mapCardToCoordinates?: (card: T) => GridStockCoordinates;
+    /**
+     * Define the minX for the grid. Useful if the grid is of a fixed size.
+     */
+    minX?: number;
+    /**
+     * Define the minY for the grid. Useful if the grid is of a fixed size.
+     */
+    minY?: number;
+    /**
+     * Define the maxX for the grid. Useful if the grid is of a fixed size.
+     */
+    maxX?: number;
+    /**
+     * Define the maxY for the grid. Useful if the grid is of a fixed size.
+     */
+    maxY?: number;
+}
+interface AddCardToGridSettings extends AddCardToSlotSettings {
+    /**
+     * The coordinates to place the card on.
+     */
+    coordinates: GridStockCoordinates;
+}
+/**
+ * A grid stock with fixed slots (some can be empty)
+ */
+declare class GridStock<T> extends SlotStock<T> {
+    protected manager: CardManager<T>;
+    protected element: HTMLElement;
+    protected minX: number | null;
+    protected minY: number | null;
+    protected maxX: number | null;
+    protected maxY: number | null;
+    protected mapCardToCoordinates: (card: T) => GridStockCoordinates;
+    /**
+     * @param manager the card manager
+     * @param element the stock element (should be an empty HTML Element)
+     * @param settings a `GridStockSettings` object
+     */
+    constructor(manager: CardManager<T>, element: HTMLElement, settings: GridStockSettings<T>);
+    /**
+     * Return the slotId based on the coordinates
+     */
+    protected getGridSlotId(coordinates: GridStockCoordinates): string;
+    protected createSlot(slotId: SlotId): void;
+    addCard(card: T, animation?: CardAnimationSettings, settings?: AddCardToGridSettings): Promise<boolean>;
+    /**
+     * Expand the grid until a slot exists for the given coordinates.
+     */
+    makeSlotForCoordinates(coordinates: GridStockCoordinates): void;
+    /**
+     * Expand the grid until slots exists for the given coordinates.
+     */
+    makeSlotsForCoordinates(coordinatesList: GridStockCoordinates[]): void;
+    getMinX(): number;
+    getMinY(): number;
+    getMaxX(): number;
+    getMaxY(): number;
+    /**
+     * Expand the grid until slots exists for the given x.
+     */
+    extendToX(x: number): void;
+    /**
+     * Expand the grid until slots exists for the given y.
+     */
+    extendToY(y: number): void;
+    /**
+     * Must be called each time new slots are created.
+     */
+    protected updateGridTemplateAreas(): void;
+    addSlotsIds(newSlotsIds: string[]): void;
+    /**
+     * Add slots to the left of the grid.
+     */
+    addColumnToTheLeft(): void;
+    /**
+     * Add slots to the right of the grid.
+     */
+    addColumnToTheRight(): void;
+    /**
+     * Add slots to the top of the grid.
+     */
+    addRowToTheTop(): void;
+    /**
+     * Add slots to the bottom of the grid.
+     */
+    addRowToTheBottom(): void;
+    /**
+     * Remove the slots on the leftmost column of the grid. Remove the cards in it if there are some.
+     */
+    removeLeftmostColumn(): void;
+    /**
+     * Remove the slots on the rightmost column of the grid. Remove the cards in it if there are some.
+     */
+    removeRightmostColumn(): void;
+    /**
+     * Remove the slots on the top row of the grid. Remove the cards in it if there are some.
+     */
+    removeTopRow(): void;
+    /**
+     * Remove the slots on the bottom row of the grid. Remove the cards in it if there are some.
+     */
+    removeBottomRow(): void;
+    /**
+     * Returns true if a grid slot already exists
+     */
+    gridSlotExists(coordinates: GridStockCoordinates): boolean;
+    protected setSelectableGridSlot(coordinates: GridStockCoordinates, selectable: boolean): void;
+    setSelectableGridSlots(coordinates?: GridStockCoordinates[]): void;
+    setGridSlotSelectionMode(selectionMode: CardSelectionMode, selectableCoordinates?: GridStockCoordinates[]): void;
+    /**
+     * Remove all slots at the border (top/bottom lines and left/right columns) until there is no unnecessary space surrounding the cards.
+     */
+    removeEmptySurroundingSlots(): void;
 }
 interface ScrollableStockButtonSettings {
     /**

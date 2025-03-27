@@ -26,7 +26,7 @@ function (dojo, declare, debounce, gamegui, /*...,*/ bgaCards) {
                 div.style.background = 'blue';
                 div.classList.add('mygame-card-front');
                 div.id = `card-${card.id}-front`;
-                this.addTooltipHtml(div.id, `tooltip de ${card.type}`);
+                this.addTooltipHtml(div.id, `tooltip of ${card.type}`);
             },
             setupBackDiv: (card, div) => {
                 div.style.background = 'url(' + g_gamethemeurl + 'img/card-back.jpg)';

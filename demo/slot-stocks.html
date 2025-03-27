@@ -13,6 +13,7 @@
         <script src="./common.js" type="text/javascript"></script>
         <script src="./manager.js" type="text/javascript"></script>
         <script src="./slot-stock.js" type="text/javascript"></script>
+        <script src="./grid-stock.js" type="text/javascript"></script>
     </head>
     <body>
         <h1>Slot stocks</h1>
@@ -45,12 +46,26 @@
                     Last slot click event : <span id="slot-stock-last-click"></span>
                 </div>
             </div>
+
+            <div class="block">
+                <h2>GridStock (fixed 4x3 size)</h2>
+                <div id="fixed-grid-stock"></div>
+            </div>
+
+            <div class="block">
+                <h2>GridStock (undefined size)</h2>
+                <div id="grid-stock" class="slot-selection-stock"></div>
+                <button onclick="makeGridSlotsAroundCardsSelectable()">Show selectable slots around cards</button>
+                <button onclick="removeEmptySurroundingSlots()">Remove empty surrounding slots</button>
+            </div>
         </div>
 
         <script>
             initCommon();
             initManager();
             initSlotStock();
+            initFixedGridStock();
+            initGridStock();
         </script>
     </body>
 </html>

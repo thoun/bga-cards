@@ -1,0 +1,12 @@
+.card-stock {
+
+    &.grid-stock {
+        display: grid;
+        direction: ltr;
+        gap: var(--gap);
+
+        .slot {
+            grid-area: var(--area);
+        }
+    }
+}

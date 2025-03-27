@@ -72,6 +72,15 @@ body > .card {
   justify-content: center;
 }
 
+.card-stock.grid-stock {
+  display: grid;
+  direction: ltr;
+  gap: var(--gap);
+}
+.card-stock.grid-stock .slot {
+  grid-area: var(--area);
+}
+
 .card-stock.scrollable-stock {
   display: flex;
   gap: var(--button-gap);

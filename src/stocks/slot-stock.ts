@@ -12,7 +12,7 @@ interface SlotStockSettings<T> extends LineStockSettings {
     /**
      * How to place the card on a slot automatically
      */
-    mapCardToSlot?: (card: T) => SlotId;
+    mapCardToSlot: (card: T) => SlotId;
 
     /**
      * The class to apply to selectable slots. Use class from manager is unset.
@@ -46,7 +46,7 @@ class SlotStock<T> extends LineStock<T> {
     protected slotsIds: SlotId[] = [];
     protected slots: HTMLDivElement[] = [];
     protected slotClasses: string[];
-    protected mapCardToSlot?: (card: T) => SlotId;
+    protected mapCardToSlot: (card: T) => SlotId;
     protected selectedSlots: SlotId[] = [];
     protected slotSelectionMode: CardSelectionMode = 'none';
 
@@ -72,6 +72,9 @@ class SlotStock<T> extends LineStock<T> {
      */
     constructor(protected manager: CardManager<T>, protected element: HTMLElement, settings: SlotStockSettings<T>) {
         super(manager, element, settings);
+        if (!settings.mapCardToSlot) {
+            throw new Error('You need to define SlotStock settings.mapCardToSlot to use SlotStock');
+        }
         element.classList.add('slot-stock');
 
         this.mapCardToSlot = settings.mapCardToSlot;
@@ -83,6 +86,9 @@ class SlotStock<T> extends LineStock<T> {
     }
 
     protected createSlot(slotId: SlotId) {
+        if (this.slots[slotId]) {
+            throw new Error(`The element for ${slotId} already exists`);
+        }
         this.slots[slotId] = document.createElement("div");
         this.slots[slotId].dataset.slotId = slotId;
         this.element.appendChild(this.slots[slotId]);
@@ -111,9 +117,9 @@ class SlotStock<T> extends LineStock<T> {
      * @returns the promise when the animation is done (true if it was animated, false if it wasn't)
      */
     public addCard(card: T, animation?: CardAnimationSettings, settings?: AddCardToSlotSettings): Promise<boolean> {
-        const slotId = settings?.slot ?? this.mapCardToSlot?.(card);
+        const slotId = settings?.slot ?? this.mapCardToSlot(card);
         if (slotId === undefined) {
-            throw new Error(`Impossible to add card to slot : no SlotId. Add slotId to settings or set mapCardToSlot to SlotCard constructor.`);
+            throw new Error(`Impossible to add card to slot : no SlotId. Add slotId to settings or make sure mapCardToSlot return a valid slotId.`);
         }
         if (!this.slots[slotId]) {
             throw new Error(`Impossible to add card to slot "${slotId}" : slot "${slotId}" doesn't exists.`);
@@ -143,10 +149,22 @@ class SlotStock<T> extends LineStock<T> {
 
         this.removeAll();
         this.element.innerHTML = '';
+        this.selectedSlots = [];
+        this.slots = [];
         this.slotsIds = slotsIds ?? [];
         this.slotsIds.forEach(slotId => {
             this.createSlot(slotId);
         });
+    }
+
+    public removeSlot(slotId: SlotId) {
+        const removedCards = this.getCards().filter(card => this.mapCardToSlot(card) === slotId);
+        this.removeCards(removedCards);
+
+        this.slots[slotId]?.remove();
+        delete this.slots[slotId];
+        this.slotsIds = this.slotsIds.filter(si => si !== slotId);
+        this.selectedSlots = this.selectedSlots.filter(si => si !== slotId);
     }
 
     /**
@@ -155,13 +173,15 @@ class SlotStock<T> extends LineStock<T> {
      * @param slotsIds the new slotsIds. Will be merged with the old ones.
      */
     public addSlotsIds(newSlotsIds: SlotId[]) {
-        if (newSlotsIds.length == 0) {
+        // ignore slotsIds we already have
+        const filteredSlotsIds = newSlotsIds.filter(slotId => !this.slotsIds.includes(slotId));
+        if (filteredSlotsIds.length == 0) {
             // no change
             return;
         }
 
-        this.slotsIds.push(...newSlotsIds);
-        newSlotsIds.forEach(slotId => {
+        this.slotsIds.push(...filteredSlotsIds);
+        filteredSlotsIds.forEach(slotId => {
             this.createSlot(slotId);
         });
     }
@@ -194,7 +214,7 @@ class SlotStock<T> extends LineStock<T> {
             const closestSlot = this.getCardElement(card).closest('.slot') as HTMLDivElement | null;
             if (closestSlot) {
                 const currentCardSlot = closestSlot.dataset.slotId;
-                const slotId = settings?.slot ?? this.mapCardToSlot?.(card);
+                const slotId = settings?.slot ?? this.mapCardToSlot(card);
                 return currentCardSlot != slotId;
             } else {
                 return true;
@@ -209,10 +229,6 @@ class SlotStock<T> extends LineStock<T> {
      * @param settings for `updateInformations` and `selectable`
      */
     public swapCards(cards: T[], settings?: AddCardSettings) {
-        if (!this.mapCardToSlot) {
-            throw new Error('You need to define SlotStock.mapCardToSlot to use SlotStock.swapCards');
-        }
-
         const elements = cards.map(card => this.manager.getCardElement(card));
 
         cards.forEach((card, index) => {

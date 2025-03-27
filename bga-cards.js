@@ -933,6 +933,9 @@ var SlotStock = /** @class */ (function (_super) {
         _this.slots = [];
         _this.selectedSlots = [];
         _this.slotSelectionMode = 'none';
+        if (!settings.mapCardToSlot) {
+            throw new Error('You need to define SlotStock settings.mapCardToSlot to use SlotStock');
+        }
         element.classList.add('slot-stock');
         _this.mapCardToSlot = settings.mapCardToSlot;
         _this.slotsIds = (_a = settings.slotsIds) !== null && _a !== void 0 ? _a : [];
@@ -945,6 +948,9 @@ var SlotStock = /** @class */ (function (_super) {
     SlotStock.prototype.createSlot = function (slotId) {
         var _a;
         var _this = this;
+        if (this.slots[slotId]) {
+            throw new Error("The element for ".concat(slotId, " already exists"));
+        }
         this.slots[slotId] = document.createElement("div");
         this.slots[slotId].dataset.slotId = slotId;
         this.element.appendChild(this.slots[slotId]);
@@ -972,10 +978,10 @@ var SlotStock = /** @class */ (function (_super) {
      * @returns the promise when the animation is done (true if it was animated, false if it wasn't)
      */
     SlotStock.prototype.addCard = function (card, animation, settings) {
-        var _a, _b;
-        var slotId = (_a = settings === null || settings === void 0 ? void 0 : settings.slot) !== null && _a !== void 0 ? _a : (_b = this.mapCardToSlot) === null || _b === void 0 ? void 0 : _b.call(this, card);
+        var _a;
+        var slotId = (_a = settings === null || settings === void 0 ? void 0 : settings.slot) !== null && _a !== void 0 ? _a : this.mapCardToSlot(card);
         if (slotId === undefined) {
-            throw new Error("Impossible to add card to slot : no SlotId. Add slotId to settings or set mapCardToSlot to SlotCard constructor.");
+            throw new Error("Impossible to add card to slot : no SlotId. Add slotId to settings or make sure mapCardToSlot return a valid slotId.");
         }
         if (!this.slots[slotId]) {
             throw new Error("Impossible to add card to slot \"".concat(slotId, "\" : slot \"").concat(slotId, "\" doesn't exists."));
@@ -999,10 +1005,22 @@ var SlotStock = /** @class */ (function (_super) {
         }
         this.removeAll();
         this.element.innerHTML = '';
+        this.selectedSlots = [];
+        this.slots = [];
         this.slotsIds = slotsIds !== null && slotsIds !== void 0 ? slotsIds : [];
         this.slotsIds.forEach(function (slotId) {
             _this.createSlot(slotId);
         });
+    };
+    SlotStock.prototype.removeSlot = function (slotId) {
+        var _this = this;
+        var _a;
+        var removedCards = this.getCards().filter(function (card) { return _this.mapCardToSlot(card) === slotId; });
+        this.removeCards(removedCards);
+        (_a = this.slots[slotId]) === null || _a === void 0 ? void 0 : _a.remove();
+        delete this.slots[slotId];
+        this.slotsIds = this.slotsIds.filter(function (si) { return si !== slotId; });
+        this.selectedSlots = this.selectedSlots.filter(function (si) { return si !== slotId; });
     };
     /**
      * Add new slots ids. Will not change nor empty the existing ones.
@@ -1012,12 +1030,14 @@ var SlotStock = /** @class */ (function (_super) {
     SlotStock.prototype.addSlotsIds = function (newSlotsIds) {
         var _a;
         var _this = this;
-        if (newSlotsIds.length == 0) {
+        // ignore slotsIds we already have
+        var filteredSlotsIds = newSlotsIds.filter(function (slotId) { return !_this.slotsIds.includes(slotId); });
+        if (filteredSlotsIds.length == 0) {
             // no change
             return;
         }
-        (_a = this.slotsIds).push.apply(_a, newSlotsIds);
-        newSlotsIds.forEach(function (slotId) {
+        (_a = this.slotsIds).push.apply(_a, filteredSlotsIds);
+        filteredSlotsIds.forEach(function (slotId) {
             _this.createSlot(slotId);
         });
     };
@@ -1043,7 +1063,7 @@ var SlotStock = /** @class */ (function (_super) {
         return ((_a = this.settings) === null || _a === void 0 ? void 0 : _a.selectedSlotClass) === undefined ? this.manager.getSelectedSlotClass() : (_b = this.settings) === null || _b === void 0 ? void 0 : _b.selectedSlotClass;
     };
     SlotStock.prototype.canAddCard = function (card, settings) {
-        var _a, _b;
+        var _a;
         if (!this.contains(card)) {
             return true;
         }
@@ -1051,7 +1071,7 @@ var SlotStock = /** @class */ (function (_super) {
             var closestSlot = this.getCardElement(card).closest('.slot');
             if (closestSlot) {
                 var currentCardSlot = closestSlot.dataset.slotId;
-                var slotId = (_a = settings === null || settings === void 0 ? void 0 : settings.slot) !== null && _a !== void 0 ? _a : (_b = this.mapCardToSlot) === null || _b === void 0 ? void 0 : _b.call(this, card);
+                var slotId = (_a = settings === null || settings === void 0 ? void 0 : settings.slot) !== null && _a !== void 0 ? _a : this.mapCardToSlot(card);
                 return currentCardSlot != slotId;
             }
             else {
@@ -1067,9 +1087,6 @@ var SlotStock = /** @class */ (function (_super) {
      */
     SlotStock.prototype.swapCards = function (cards, settings) {
         var _this = this;
-        if (!this.mapCardToSlot) {
-            throw new Error('You need to define SlotStock.mapCardToSlot to use SlotStock.swapCards');
-        }
         var elements = cards.map(function (card) { return _this.manager.getCardElement(card); });
         cards.forEach(function (card, index) {
             var cardElement = elements[index];
@@ -1224,6 +1241,316 @@ var SlotStock = /** @class */ (function (_super) {
     };
     return SlotStock;
 }(LineStock));
+/**
+ * A grid stock with fixed slots (some can be empty)
+ */
+var GridStock = /** @class */ (function (_super) {
+    __extends(GridStock, _super);
+    /**
+     * @param manager the card manager
+     * @param element the stock element (should be an empty HTML Element)
+     * @param settings a `GridStockSettings` object
+     */
+    function GridStock(manager, element, settings) {
+        var _a;
+        var _this = _super.call(this, manager, element, __assign(__assign({}, settings), { slotsIds: [], mapCardToSlot: function (card) { return _this.getGridSlotId(settings.mapCardToCoordinates(card)); } })) || this;
+        _this.manager = manager;
+        _this.element = element;
+        _this.minX = null;
+        _this.minY = null;
+        _this.maxX = null;
+        _this.maxY = null;
+        if (!settings.mapCardToCoordinates) {
+            throw new Error('You need to define GridStock settings.mapCardToCoordinates to use GridStock');
+        }
+        element.classList.add('grid-stock');
+        _this.mapCardToCoordinates = settings.mapCardToCoordinates;
+        if ((settings === null || settings === void 0 ? void 0 : settings.minX) !== undefined || (settings === null || settings === void 0 ? void 0 : settings.maxX) !== undefined || (settings === null || settings === void 0 ? void 0 : settings.minY) !== undefined || (settings === null || settings === void 0 ? void 0 : settings.maxY) !== undefined) {
+            if (settings.minX === undefined || settings.maxX === undefined || settings.minY === undefined || settings.maxY === undefined) {
+                throw new Error("If you define a min or a max for GridStockSettings, you need to define all of them");
+            }
+            if (settings.maxX < settings.minX) {
+                throw new Error("GridStockSettings: maxX must be superior or equal to minX");
+            }
+            if (settings.maxY < settings.minY) {
+                throw new Error("GridStockSettings: maxX must be superior or equal to minX");
+            }
+            _this.minX = settings.minX;
+            _this.maxX = settings.maxX;
+            _this.minY = settings.minY;
+            _this.maxY = settings.maxY;
+            for (var x = settings.minX; x <= settings.maxX; x++) {
+                for (var y = settings.minY; y <= settings.maxY; y++) {
+                    _this.slotsIds.push(_this.getGridSlotId({ x: x, y: y }));
+                }
+            }
+        }
+        _this.slotClasses = (_a = settings.slotClasses) !== null && _a !== void 0 ? _a : [];
+        _this.slotsIds.forEach(function (slotId) {
+            _this.createSlot(slotId);
+        });
+        _this.updateGridTemplateAreas();
+        return _this;
+    }
+    /**
+     * Return the slotId based on the coordinates
+     */
+    GridStock.prototype.getGridSlotId = function (coordinates) {
+        return "".concat(coordinates.x, "_").concat(coordinates.y);
+    };
+    GridStock.prototype.createSlot = function (slotId) {
+        _super.prototype.createSlot.call(this, slotId);
+        this.slots[slotId].style.setProperty('--area', "area_".concat(slotId));
+    };
+    GridStock.prototype.addCard = function (card, animation, settings) {
+        var _a, _b;
+        var coordinates = (_a = settings === null || settings === void 0 ? void 0 : settings.coordinates) !== null && _a !== void 0 ? _a : (_b = this.mapCardToCoordinates) === null || _b === void 0 ? void 0 : _b.call(this, card);
+        this.makeSlotForCoordinates(coordinates);
+        var slotSettings = __assign(__assign({}, settings), { slot: this.getGridSlotId(coordinates) });
+        return _super.prototype.addCard.call(this, card, animation, slotSettings);
+    };
+    /**
+     * Expand the grid until a slot exists for the given coordinates.
+     */
+    GridStock.prototype.makeSlotForCoordinates = function (coordinates) {
+        if (this.minX === null) { // no slot yet
+            this.minX = coordinates.x;
+            this.maxX = coordinates.x;
+            this.minY = coordinates.y;
+            this.maxY = coordinates.y;
+            var slotId = this.getGridSlotId(coordinates);
+            if (!this.slotsIds.includes(slotId)) {
+                this.addSlotsIds([slotId]);
+            }
+            return;
+        }
+        this.extendToX(coordinates.x);
+        this.extendToY(coordinates.y);
+    };
+    /**
+     * Expand the grid until slots exists for the given coordinates.
+     */
+    GridStock.prototype.makeSlotsForCoordinates = function (coordinatesList) {
+        var _this = this;
+        coordinatesList.forEach(function (coordinates) { return _this.makeSlotForCoordinates(coordinates); });
+    };
+    GridStock.prototype.getMinX = function () {
+        return this.minX;
+    };
+    GridStock.prototype.getMinY = function () {
+        return this.minY;
+    };
+    GridStock.prototype.getMaxX = function () {
+        return this.maxX;
+    };
+    GridStock.prototype.getMaxY = function () {
+        return this.maxY;
+    };
+    /**
+     * Expand the grid until slots exists for the given x.
+     */
+    GridStock.prototype.extendToX = function (x) {
+        if (!this.slotsIds.length) {
+            throw new Error('There is no slot on the grid, impossible to extend the grid');
+        }
+        while (x < this.minX) {
+            this.addColumnToTheLeft();
+        }
+        while (x > this.maxX) {
+            this.addColumnToTheRight();
+        }
+    };
+    /**
+     * Expand the grid until slots exists for the given y.
+     */
+    GridStock.prototype.extendToY = function (y) {
+        if (!this.slotsIds.length) {
+            throw new Error('There is no slot on the grid, impossible to extend the grid');
+        }
+        while (y < this.minY) {
+            this.addRowToTheTop();
+        }
+        while (y > this.maxY) {
+            this.addRowToTheBottom();
+        }
+    };
+    /**
+     * Must be called each time new slots are created.
+     */
+    GridStock.prototype.updateGridTemplateAreas = function () {
+        var linesAreas = [];
+        for (var y = this.minY; y <= this.maxY; y++) {
+            var lineAreas = [];
+            for (var x = this.minX; x <= this.maxX; x++) {
+                lineAreas.push("area_".concat(x, "_").concat(y));
+            }
+            linesAreas.push(lineAreas.join(' '));
+        }
+        this.element.style.gridTemplateAreas = linesAreas.map(function (line) { return "\"".concat(line, "\""); }).join(' ');
+    };
+    GridStock.prototype.addSlotsIds = function (newSlotsIds) {
+        _super.prototype.addSlotsIds.call(this, newSlotsIds);
+        this.updateGridTemplateAreas();
+    };
+    /**
+     * Add slots to the left of the grid.
+     */
+    GridStock.prototype.addColumnToTheLeft = function () {
+        if (!this.slotsIds.length) {
+            throw new Error('There is no slot on the grid, impossible to add a column to the left');
+        }
+        this.minX = this.minX - 1;
+        var newSlotsIds = [];
+        for (var y = this.minY; y <= this.maxY; y++) {
+            newSlotsIds.push("".concat(this.minX, "_").concat(y));
+        }
+        this.addSlotsIds(newSlotsIds);
+    };
+    /**
+     * Add slots to the right of the grid.
+     */
+    GridStock.prototype.addColumnToTheRight = function () {
+        if (!this.slotsIds.length) {
+            throw new Error('There is no slot on the grid, impossible to add a column to the right');
+        }
+        this.maxX = this.maxX + 1;
+        var newSlotsIds = [];
+        for (var y = this.minY; y <= this.maxY; y++) {
+            newSlotsIds.push("".concat(this.maxX, "_").concat(y));
+        }
+        this.addSlotsIds(newSlotsIds);
+    };
+    /**
+     * Add slots to the top of the grid.
+     */
+    GridStock.prototype.addRowToTheTop = function () {
+        if (!this.slotsIds.length) {
+            throw new Error('There is no slot on the grid, impossible to add a row to the top');
+        }
+        this.minY = this.minY - 1;
+        var newSlotsIds = [];
+        for (var x = this.minX; x <= this.maxX; x++) {
+            newSlotsIds.push("".concat(x, "_").concat(this.minY));
+        }
+        this.addSlotsIds(newSlotsIds);
+    };
+    /**
+     * Add slots to the bottom of the grid.
+     */
+    GridStock.prototype.addRowToTheBottom = function () {
+        if (!this.slotsIds.length) {
+            throw new Error('There is no slot on the grid, impossible to add a row to the bottom');
+        }
+        this.maxY = this.maxY + 1;
+        var newSlotsIds = [];
+        for (var x = this.minX; x <= this.maxX; x++) {
+            newSlotsIds.push("".concat(x, "_").concat(this.maxY));
+        }
+        this.addSlotsIds(newSlotsIds);
+    };
+    /**
+     * Remove the slots on the leftmost column of the grid. Remove the cards in it if there are some.
+     */
+    GridStock.prototype.removeLeftmostColumn = function () {
+        if (!this.slotsIds.length) {
+            throw new Error('There is no slot on the grid, impossible to remove the leftmost column');
+        }
+        for (var y = this.minY; y <= this.maxY; y++) {
+            this.removeSlot("".concat(this.minX, "_").concat(y));
+        }
+        this.minX = this.minX + 1;
+        this.updateGridTemplateAreas();
+    };
+    /**
+     * Remove the slots on the rightmost column of the grid. Remove the cards in it if there are some.
+     */
+    GridStock.prototype.removeRightmostColumn = function () {
+        if (!this.slotsIds.length) {
+            throw new Error('There is no slot on the grid, impossible to remove the rightmost column');
+        }
+        for (var y = this.minY; y <= this.maxY; y++) {
+            this.removeSlot("".concat(this.maxX, "_").concat(y));
+        }
+        this.maxX = this.maxX - 1;
+        this.updateGridTemplateAreas();
+    };
+    /**
+     * Remove the slots on the top row of the grid. Remove the cards in it if there are some.
+     */
+    GridStock.prototype.removeTopRow = function () {
+        if (!this.slotsIds.length) {
+            throw new Error('There is no slot on the grid, impossible to remove a row to the top');
+        }
+        for (var x = this.minX; x <= this.maxX; x++) {
+            this.removeSlot("".concat(x, "_").concat(this.minY));
+        }
+        this.minY = this.minY + 1;
+        this.updateGridTemplateAreas();
+    };
+    /**
+     * Remove the slots on the bottom row of the grid. Remove the cards in it if there are some.
+     */
+    GridStock.prototype.removeBottomRow = function () {
+        if (!this.slotsIds.length) {
+            throw new Error('There is no slot on the grid, impossible to remove a row to the bottom');
+        }
+        for (var x = this.minX; x <= this.maxX; x++) {
+            this.removeSlot("".concat(x, "_").concat(this.maxY));
+        }
+        this.maxY = this.maxY - 1;
+        this.updateGridTemplateAreas();
+    };
+    /**
+     * Returns true if a grid slot already exists
+     */
+    GridStock.prototype.gridSlotExists = function (coordinates) {
+        return this.slotsIds.includes(this.getGridSlotId(coordinates));
+    };
+    GridStock.prototype.setSelectableGridSlot = function (coordinates, selectable) {
+        this.setSelectableSlot(this.getGridSlotId(coordinates), selectable);
+    };
+    GridStock.prototype.setSelectableGridSlots = function (coordinates) {
+        var _this = this;
+        this.setSelectableSlots(coordinates === null || coordinates === void 0 ? void 0 : coordinates.map(function (coord) { return _this.getGridSlotId(coord); }));
+    };
+    GridStock.prototype.setGridSlotSelectionMode = function (selectionMode, selectableCoordinates) {
+        var _this = this;
+        this.setSlotSelectionMode(selectionMode, selectableCoordinates === null || selectableCoordinates === void 0 ? void 0 : selectableCoordinates.map(function (coordinates) { return _this.getGridSlotId(coordinates); }));
+    };
+    /**
+     * Remove all slots at the border (top/bottom lines and left/right columns) until there is no unnecessary space surrounding the cards.
+     */
+    GridStock.prototype.removeEmptySurroundingSlots = function () {
+        var _this = this;
+        if (!this.slotsIds.length) {
+            return;
+        }
+        if (!this.getCards().length) {
+            this.setSlotsIds([]); // remove all
+            return;
+        }
+        var cardsCoordinates = this.getCards().map(function (card) { return _this.mapCardToCoordinates(card); });
+        var xs = cardsCoordinates.map(function (coordinates) { return coordinates.x; });
+        var ys = cardsCoordinates.map(function (coordinates) { return coordinates.y; });
+        var newMinX = Math.min.apply(Math, xs);
+        var newMaxX = Math.max.apply(Math, xs);
+        var newMinY = Math.min.apply(Math, ys);
+        var newMaxY = Math.max.apply(Math, ys);
+        while (newMinX > this.minX) {
+            this.removeLeftmostColumn();
+        }
+        while (newMaxX < this.maxX) {
+            this.removeRightmostColumn();
+        }
+        while (newMinY > this.minY) {
+            this.removeTopRow();
+        }
+        while (newMaxY < this.maxY) {
+            this.removeBottomRow();
+        }
+    };
+    return GridStock;
+}(SlotStock));
 /**
  * A stock with button to scroll left/right if content is bigger than available width
  */

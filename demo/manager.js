@@ -19,7 +19,7 @@ function initManager() {
                 <div>SubType ${card.type_arg}</div>
             `;*/
             if (card.type) {
-                game.addTooltipHtml(div.id, `tooltip de ${card.type} > ${card.type_arg}`);
+                game.addTooltipHtml(div.id, `tooltip of ${card.type} > ${card.type_arg}`);
             }
         },
         setupBackDiv: (card, div) => {
