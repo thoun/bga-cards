@@ -47,16 +47,25 @@ class CardStock {
      * @param element the stock element (should be an empty HTML Element)
      */
     constructor(manager, element, settings) {
+        var _a, _b, _c, _d;
         this.manager = manager;
         this.element = element;
         this.settings = settings;
         this.cards = [];
         this.selectedCards = [];
         this.selectionMode = 'none';
+        this.counterDiv = null;
         manager.addStock(this);
         element === null || element === void 0 ? void 0 : element.classList.add('card-stock' /*, this.constructor.name.split(/(?=[A-Z])/).join('-').toLowerCase()* doesn't work in production because of minification */);
         this.bindClick();
         this.sort = settings === null || settings === void 0 ? void 0 : settings.sort;
+        if ((settings === null || settings === void 0 ? void 0 : settings.counter) && ((_a = settings.counter.show) !== null && _a !== void 0 ? _a : true)) {
+            this.createCounter((_b = settings.counter.position) !== null && _b !== void 0 ? _b : 'bottom', (_c = settings.counter.extraClasses) !== null && _c !== void 0 ? _c : 'round', settings.counter.hideWhenEmpty, settings.counter.counterId);
+            if ((_d = settings.counter) === null || _d === void 0 ? void 0 : _d.hideWhenEmpty) {
+                this.element.querySelector('.bga-cards_card-counter').classList.add('hide-when-empty');
+                this.element.dataset.empty = 'true';
+            }
+        }
     }
     /**
      * Removes the stock and unregister it on the manager.
@@ -164,6 +173,7 @@ class CardStock {
             // make selectable only at the end of the animation
             promise.then(() => { var _a; return this.setSelectableCard(card, (_a = addCardSettings.selectable) !== null && _a !== void 0 ? _a : true); });
         }
+        this.cardNumberUpdated();
         return promise;
     }
     addExistingCardElement(card, cardElement, animation, settings) {
@@ -284,6 +294,7 @@ class CardStock {
         if (this.selectedCards.find(c => this.manager.getId(c) == this.manager.getId(card))) {
             this.unselectCard(card);
         }
+        this.cardNumberUpdated();
     }
     /**
      * Remove a set of card from the stock.
@@ -540,6 +551,35 @@ class CardStock {
             }
         }
     }
+    createCounter(counterPosition, extraClasses, hideWhenEmpty, counterId) {
+        const left = counterPosition.includes('right') ? 100 : (counterPosition.includes('left') ? 0 : 50);
+        const top = counterPosition.includes('bottom') ? 100 : (counterPosition.includes('top') ? 0 : 50);
+        this.element.style.setProperty('--bga-cards-deck-left', `${left}%`);
+        this.element.style.setProperty('--bga-cards-deck-top', `${top}%`);
+        this.counterDiv = document.createElement('div');
+        if (counterId) {
+            this.counterDiv.id = counterId;
+        }
+        this.counterDiv.classList.add('bga-cards_card-counter', ...(extraClasses.trim() === '' ? [] : extraClasses.split(/\s+/)));
+        this.counterDiv.innerText = '0';
+        if (hideWhenEmpty !== null && hideWhenEmpty !== void 0 ? hideWhenEmpty : false) {
+            this.counterDiv.classList.add('hide-when-empty');
+        }
+        this.element.appendChild(this.counterDiv);
+    }
+    /**
+     * Updates the cards number, if the counter is visible.
+     */
+    cardNumberUpdated() {
+        var _a;
+        const cardNumber = this.cards.length;
+        this.element.style.setProperty('--tile-count', '' + cardNumber);
+        this.element.dataset.empty = (cardNumber == 0).toString();
+        (_a = this.onCardCountChange) === null || _a === void 0 ? void 0 : _a.call(this, cardNumber);
+        if (this.counterDiv) {
+            this.counterDiv.innerHTML = `${cardNumber}`;
+        }
+    }
 }
 /**
  * Abstract stock to represent a deck. (pile of cards, with a fake 3d effect of thickness). *
@@ -547,8 +587,8 @@ class CardStock {
  */
 class Deck extends CardStock {
     constructor(manager, element, settings) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
-        super(manager, element);
+        var _a, _b, _c, _d, _e, _f, _g;
+        super(manager, element, settings);
         this.manager = manager;
         this.element = element;
         element.classList.add('deck');
@@ -582,21 +622,7 @@ class Deck extends CardStock {
             if (settings.cardNumber === null || settings.cardNumber === undefined) {
                 console.warn(`Deck card counter created without a cardNumber`);
             }
-            this.createCounter((_h = settings.counter.position) !== null && _h !== void 0 ? _h : 'bottom', (_j = settings.counter.extraClasses) !== null && _j !== void 0 ? _j : 'round', settings.counter.counterId);
-            if ((_k = settings.counter) === null || _k === void 0 ? void 0 : _k.hideWhenEmpty) {
-                this.element.querySelector('.bga-cards_deck-counter').classList.add('hide-when-empty');
-            }
         }
-        this.setCardNumber((_l = settings.cardNumber) !== null && _l !== void 0 ? _l : 0);
-    }
-    createCounter(counterPosition, extraClasses, counterId) {
-        const left = counterPosition.includes('right') ? 100 : (counterPosition.includes('left') ? 0 : 50);
-        const top = counterPosition.includes('bottom') ? 100 : (counterPosition.includes('top') ? 0 : 50);
-        this.element.style.setProperty('--bga-cards-deck-left', `${left}%`);
-        this.element.style.setProperty('--bga-cards-deck-top', `${top}%`);
-        this.element.insertAdjacentHTML('beforeend', `
-            <div ${counterId ? `id="${counterId}"` : ''} class="bga-cards_deck-counter ${extraClasses}"></div>
-        `);
     }
     /**
      * Get the the cards number.
@@ -613,6 +639,7 @@ class Deck extends CardStock {
      * @param topCard the deck top card. If unset, will generated a fake card (default). Set it to null to not generate a new topCard.
      */
     setCardNumber(cardNumber, topCard = undefined) {
+        var _a;
         let promise = Promise.resolve(false);
         const oldTopCard = this.getTopCard();
         if (topCard !== null && cardNumber > 0) {
@@ -633,10 +660,10 @@ class Deck extends CardStock {
             }
         });
         this.element.style.setProperty('--thickness', `${thickness}px`);
-        const counterDiv = this.element.querySelector('.bga-cards_deck-counter');
-        if (counterDiv) {
-            counterDiv.innerHTML = `${cardNumber}`;
+        if (this.counterDiv) {
+            this.counterDiv.innerHTML = `${cardNumber}`;
         }
+        (_a = this.onCardCountChange) === null || _a === void 0 ? void 0 : _a.call(this, cardNumber);
         return promise;
     }
     addCard(card, animation, settings) {
@@ -1558,7 +1585,7 @@ class VoidStock extends CardStock {
 }
 class AllVisibleDeck extends CardStock {
     constructor(manager, element, settings) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+        var _a, _b, _c, _d, _e;
         super(manager, element, settings);
         this.manager = manager;
         this.element = element;
@@ -1574,13 +1601,6 @@ class AllVisibleDeck extends CardStock {
         }
         element.style.setProperty('--vertical-shift', (_c = (_b = settings.verticalShift) !== null && _b !== void 0 ? _b : settings.shift) !== null && _c !== void 0 ? _c : '3px');
         element.style.setProperty('--horizontal-shift', (_e = (_d = settings.horizontalShift) !== null && _d !== void 0 ? _d : settings.shift) !== null && _e !== void 0 ? _e : '3px');
-        if (settings.counter && ((_f = settings.counter.show) !== null && _f !== void 0 ? _f : true)) {
-            this.createCounter((_g = settings.counter.position) !== null && _g !== void 0 ? _g : 'bottom', (_h = settings.counter.extraClasses) !== null && _h !== void 0 ? _h : 'round', settings.counter.counterId);
-            if ((_j = settings.counter) === null || _j === void 0 ? void 0 : _j.hideWhenEmpty) {
-                this.element.querySelector('.bga-cards_deck-counter').classList.add('hide-when-empty');
-                this.element.dataset.empty = 'true';
-            }
-        }
     }
     addCard(card, animation, settings) {
         let promise;
@@ -1589,7 +1609,6 @@ class AllVisibleDeck extends CardStock {
         const cardId = this.manager.getId(card);
         const cardDiv = document.getElementById(cardId);
         cardDiv.style.setProperty('--order', '' + order);
-        this.cardNumberUpdated();
         return promise;
     }
     /**
@@ -1607,28 +1626,6 @@ class AllVisibleDeck extends CardStock {
             const cardDiv = document.getElementById(cardId);
             cardDiv.style.setProperty('--order', '' + index);
         });
-        this.cardNumberUpdated();
-    }
-    createCounter(counterPosition, extraClasses, counterId) {
-        const left = counterPosition.includes('right') ? 100 : (counterPosition.includes('left') ? 0 : 50);
-        const top = counterPosition.includes('bottom') ? 100 : (counterPosition.includes('top') ? 0 : 50);
-        this.element.style.setProperty('--bga-cards-deck-left', `${left}%`);
-        this.element.style.setProperty('--bga-cards-deck-top', `${top}%`);
-        this.element.insertAdjacentHTML('beforeend', `
-            <div ${counterId ? `id="${counterId}"` : ''} class="bga-cards_deck-counter ${extraClasses}">0</div>
-        `);
-    }
-    /**
-     * Updates the cards number, if the counter is visible.
-     */
-    cardNumberUpdated() {
-        const cardNumber = this.cards.length;
-        this.element.style.setProperty('--tile-count', '' + cardNumber);
-        this.element.dataset.empty = (cardNumber == 0).toString();
-        const counterDiv = this.element.querySelector('.bga-cards_deck-counter');
-        if (counterDiv) {
-            counterDiv.innerHTML = `${cardNumber}`;
-        }
     }
 }
 class DiscardDeck extends CardStock {
@@ -1657,7 +1654,7 @@ class DiscardDeck extends CardStock {
             this.createCounter(settings.counter.position ?? 'bottom', settings.counter.extraClasses ?? 'round', settings.counter.counterId);
 
             if (settings.counter?.hideWhenEmpty) {
-                this.element.querySelector('.bga-cards_deck-counter').classList.add('hide-when-empty');
+                this.element.querySelector('.bga-cards_card-counter').classList.add('hide-when-empty');
                 this.element.dataset.empty = 'true';
             }
         }*/
@@ -1683,33 +1680,7 @@ class DiscardDeck extends CardStock {
         cardDiv.style.setProperty('--discard-deck-left', `${this.getRandomArbitrary(-this.maxHorizontalShift, this.maxHorizontalShift)}px`);
         cardDiv.style.setProperty('--discard-deck-top', `${this.getRandomArbitrary(-this.maxVerticalShift, this.maxVerticalShift)}px`);
         cardDiv.style.setProperty('--discard-deck-rotate', `${this.getRandomArbitrary(-this.maxRotation, this.maxRotation)}deg`);
-        this.cardNumberUpdated();
         return promise;
-    }
-    cardRemoved(card) {
-        super.cardRemoved(card);
-        this.cardNumberUpdated();
-    }
-    createCounter(counterPosition, extraClasses, counterId) {
-        const left = counterPosition.includes('right') ? 100 : (counterPosition.includes('left') ? 0 : 50);
-        const top = counterPosition.includes('bottom') ? 100 : (counterPosition.includes('top') ? 0 : 50);
-        this.element.style.setProperty('--bga-cards-deck-left', `${left}%`);
-        this.element.style.setProperty('--bga-cards-deck-top', `${top}%`);
-        this.element.insertAdjacentHTML('beforeend', `
-            <div ${counterId ? `id="${counterId}"` : ''} class="bga-cards_deck-counter ${extraClasses}">0</div>
-        `);
-    }
-    /**
-     * Updates the cards number, if the counter is visible.
-     */
-    cardNumberUpdated() {
-        const cardNumber = this.cards.length;
-        this.element.style.setProperty('--tile-count', '' + cardNumber);
-        this.element.dataset.empty = (cardNumber == 0).toString();
-        const counterDiv = this.element.querySelector('.bga-cards_deck-counter');
-        if (counterDiv) {
-            counterDiv.innerHTML = `${cardNumber}`;
-        }
     }
 }
 class CardManager {

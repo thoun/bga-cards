@@ -45,7 +45,7 @@ class DiscardDeck<T> extends CardStock<T> {
             this.createCounter(settings.counter.position ?? 'bottom', settings.counter.extraClasses ?? 'round', settings.counter.counterId);
 
             if (settings.counter?.hideWhenEmpty) {
-                this.element.querySelector('.bga-cards_deck-counter').classList.add('hide-when-empty');
+                this.element.querySelector('.bga-cards_card-counter').classList.add('hide-when-empty');
                 this.element.dataset.empty = 'true';
             }
         }*/
@@ -80,40 +80,7 @@ class DiscardDeck<T> extends CardStock<T> {
         cardDiv.style.setProperty('--discard-deck-left', `${this.getRandomArbitrary(-this.maxHorizontalShift, this.maxHorizontalShift)}px`);
         cardDiv.style.setProperty('--discard-deck-top', `${this.getRandomArbitrary(-this.maxVerticalShift, this.maxVerticalShift)}px`);
         cardDiv.style.setProperty('--discard-deck-rotate', `${this.getRandomArbitrary(-this.maxRotation, this.maxRotation)}deg`);
-        
-        this.cardNumberUpdated();
 
         return promise;
-    }
-
-    public cardRemoved(card: T) {
-        super.cardRemoved(card);
-
-        this.cardNumberUpdated();
-    }
-
-    protected createCounter(counterPosition: SideOrAngleOrCenter, extraClasses: string, counterId?: string) {
-        const left = counterPosition.includes('right') ? 100 : (counterPosition.includes('left') ? 0 : 50);
-        const top = counterPosition.includes('bottom') ? 100 : (counterPosition.includes('top') ? 0 : 50);
-        this.element.style.setProperty('--bga-cards-deck-left', `${left}%`);
-        this.element.style.setProperty('--bga-cards-deck-top', `${top}%`);
-
-        this.element.insertAdjacentHTML('beforeend', `
-            <div ${counterId ? `id="${counterId}"` : ''} class="bga-cards_deck-counter ${extraClasses}">0</div>
-        `);
-    }
-
-    /**
-     * Updates the cards number, if the counter is visible.
-     */
-    protected cardNumberUpdated() {
-        const cardNumber = this.cards.length;
-        this.element.style.setProperty('--tile-count', ''+cardNumber);
-        this.element.dataset.empty = (cardNumber == 0).toString();
-
-        const counterDiv = this.element.querySelector('.bga-cards_deck-counter');
-        if (counterDiv) {
-            counterDiv.innerHTML = `${cardNumber}`;
-        }
     }
 }

@@ -41,15 +41,6 @@ class AllVisibleDeck<T> extends CardStock<T> {
         }
         element.style.setProperty('--vertical-shift', settings.verticalShift ?? settings.shift ?? '3px');
         element.style.setProperty('--horizontal-shift', settings.horizontalShift ?? settings.shift ?? '3px');
-
-        if (settings.counter && (settings.counter.show ?? true)) {
-            this.createCounter(settings.counter.position ?? 'bottom', settings.counter.extraClasses ?? 'round', settings.counter.counterId);
-
-            if (settings.counter?.hideWhenEmpty) {
-                this.element.querySelector('.bga-cards_deck-counter').classList.add('hide-when-empty');
-                this.element.dataset.empty = 'true';
-            }
-        }
     }        
 
     public addCard(card: T, animation?: CardAnimationSettings, settings?: AddCardSettings): Promise<boolean> {
@@ -61,8 +52,6 @@ class AllVisibleDeck<T> extends CardStock<T> {
         const cardId = this.manager.getId(card);
         const cardDiv = document.getElementById(cardId);
         cardDiv.style.setProperty('--order', ''+order);
-        
-        this.cardNumberUpdated();
 
         return promise;
     }
@@ -83,32 +72,5 @@ class AllVisibleDeck<T> extends CardStock<T> {
             const cardDiv = document.getElementById(cardId)
             cardDiv.style.setProperty('--order', ''+index);
         });
-
-        this.cardNumberUpdated();
-    }
-
-    protected createCounter(counterPosition: SideOrAngleOrCenter, extraClasses: string, counterId?: string) {
-        const left = counterPosition.includes('right') ? 100 : (counterPosition.includes('left') ? 0 : 50);
-        const top = counterPosition.includes('bottom') ? 100 : (counterPosition.includes('top') ? 0 : 50);
-        this.element.style.setProperty('--bga-cards-deck-left', `${left}%`);
-        this.element.style.setProperty('--bga-cards-deck-top', `${top}%`);
-
-        this.element.insertAdjacentHTML('beforeend', `
-            <div ${counterId ? `id="${counterId}"` : ''} class="bga-cards_deck-counter ${extraClasses}">0</div>
-        `);
-    }
-
-    /**
-     * Updates the cards number, if the counter is visible.
-     */
-    protected cardNumberUpdated() {
-        const cardNumber = this.cards.length;
-        this.element.style.setProperty('--tile-count', ''+cardNumber);
-        this.element.dataset.empty = (cardNumber == 0).toString();
-
-        const counterDiv = this.element.querySelector('.bga-cards_deck-counter');
-        if (counterDiv) {
-            counterDiv.innerHTML = `${cardNumber}`;
-        }
     }
 }

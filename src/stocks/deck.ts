@@ -1,34 +1,4 @@
-type SideOrAngle = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top' | 'bottom' | 'left' | 'right';
-type SideOrAngleOrCenter = SideOrAngle | 'center';
-
-interface DeckCounter {
-    /**
-     * Show a card counter on the deck. Default true.
-     */
-    show?: boolean;
-
-    /**
-     * Counter position. Default 'bottom'.
-     */
-    position?: SideOrAngleOrCenter;
-
-    /**
-     * Classes to add to counter (separated with spaces). Pre-built are `round` and `text-shadow`. Default `round`.
-     */
-    extraClasses?: string;
-
-    /**
-     * Show the counter when empty. Default true.
-     */
-    hideWhenEmpty?: boolean;
-
-    /**
-     * Set a counter id if you want to set a tooltip on it, for example. Default unset.
-     */
-    counterId?: string;
-}
-
-interface DeckSettings<T> {
+interface DeckSettings<T> extends CardStockSettings {
     /**
      * Indicate the current top card.
      */
@@ -60,11 +30,6 @@ interface DeckSettings<T> {
     shadowDirection?: SideOrAngle;
 
     /**
-     * Show a card counter on the deck. Not visible if unset.
-     */
-    counter?: DeckCounter;
-
-    /**
      * A generator of fake cards, to generate decks top card automatically.
      * Default is manager `fakeCardGenerator` method.
      * 
@@ -75,10 +40,6 @@ interface DeckSettings<T> {
 }
 
 interface AddCardToDeckSettings extends AddCardSettings {
-    /**
-     * Indicate if the card count is automatically updated when a card is added or removed. Default true.
-     */
-    autoUpdateCardNumber?: boolean;
 
     /**
      * Indicate if the cards under the new top card must be removed (to forbid players to check the content of the deck with Inspect). Default true.
@@ -131,7 +92,7 @@ class Deck<T> extends CardStock<T> {
     protected thicknesses: number[];
 
     constructor(protected manager: CardManager<T>, protected element: HTMLElement, settings: DeckSettings<T>) {
-        super(manager, element);
+        super(manager, element, settings);
         
         element.classList.add('deck');
         const cardWidth = this.manager.getCardWidth();
@@ -165,26 +126,7 @@ class Deck<T> extends CardStock<T> {
             if (settings.cardNumber === null || settings.cardNumber === undefined) {
                 console.warn(`Deck card counter created without a cardNumber`);
             }
-
-            this.createCounter(settings.counter.position ?? 'bottom', settings.counter.extraClasses ?? 'round', settings.counter.counterId);
-
-            if (settings.counter?.hideWhenEmpty) {
-                this.element.querySelector('.bga-cards_deck-counter').classList.add('hide-when-empty');
-            }
         }
-        
-        this.setCardNumber(settings.cardNumber ?? 0);
-    }
-
-    protected createCounter(counterPosition: SideOrAngleOrCenter, extraClasses: string, counterId?: string) {
-        const left = counterPosition.includes('right') ? 100 : (counterPosition.includes('left') ? 0 : 50);
-        const top = counterPosition.includes('bottom') ? 100 : (counterPosition.includes('top') ? 0 : 50);
-        this.element.style.setProperty('--bga-cards-deck-left', `${left}%`);
-        this.element.style.setProperty('--bga-cards-deck-top', `${top}%`);
-
-        this.element.insertAdjacentHTML('beforeend', `
-            <div ${counterId ? `id="${counterId}"` : ''} class="bga-cards_deck-counter ${extraClasses}"></div>
-        `);
     }
 
     /**
@@ -225,10 +167,11 @@ class Deck<T> extends CardStock<T> {
         });
         this.element.style.setProperty('--thickness', `${thickness}px`);
 
-        const counterDiv = this.element.querySelector('.bga-cards_deck-counter');
-        if (counterDiv) {
-            counterDiv.innerHTML = `${cardNumber}`;
+        if (this.counterDiv) {
+            this.counterDiv.innerHTML = `${cardNumber}`;
         }
+        
+        this.onCardCountChange?.(cardNumber);
 
         return promise;
     }

@@ -1,3 +1,33 @@
+type SideOrAngle = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top' | 'bottom' | 'left' | 'right';
+type SideOrAngleOrCenter = SideOrAngle | 'center';
+
+interface DeckCounter {
+    /**
+     * Show a card counter on the deck. Default true.
+     */
+    show?: boolean;
+
+    /**
+     * Counter position. Default 'bottom'.
+     */
+    position?: SideOrAngleOrCenter;
+
+    /**
+     * Classes to add to counter (separated with spaces). Pre-built are `round` and `text-shadow`. Default `round`.
+     */
+    extraClasses?: string;
+
+    /**
+     * Show the counter when empty. Default true.
+     */
+    hideWhenEmpty?: boolean;
+
+    /**
+     * Set a counter id if you want to set a tooltip on it, for example. Default unset.
+     */
+    counterId?: string;
+}
+
 interface CardStockSettings {
     /**
      * Indicate the card sorting (unset means no sorting, new cards will be added at the end).
@@ -20,6 +50,11 @@ interface CardStockSettings {
      * The class to apply to selected cards. Use class from manager is unset.
      */
     selectedCardClass?: string | null;
+
+    /**
+     * Show a card counter on the stock. Not visible if unset.
+     */
+    counter?: DeckCounter;
 }
 
 interface AddCardSettings {
@@ -49,6 +84,12 @@ interface AddCardSettings {
      * Indicates if we add a fade in effect when adding card (if it comes from an invisible or abstract element).
      */
     fadeIn?: boolean;
+
+    /**
+     * For counters.
+     * Indicate if the card count is automatically updated when a card is added or removed. Default true.
+     */
+    autoUpdateCardNumber?: boolean;
 }
 
 interface RemoveCardSettings {
@@ -65,6 +106,8 @@ class CardStock<T> {
     protected selectionMode: CardSelectionMode = 'none';
     protected sort?: SortFunction; 
 
+    protected counterDiv: HTMLDivElement | null = null;
+
     /**
      * Called when selection change. Returns the selection.
      * 
@@ -74,11 +117,18 @@ class CardStock<T> {
     public onSelectionChange?: (selection: T[], lastChange: T | null) => void;
 
     /**
-     * Called when selection change. Returns the clicked card.
+     * Called when a card is clicked. Returns the clicked card.
      * 
      * card: the clicked card (can be selected or unselected)
      */
     public onCardClick?: (card: T) => void;
+
+    /**
+     * Called when card count change. Returns the clicked card.
+     * 
+     * card: the clicked card (can be selected or unselected)
+     */
+    public onCardCountChange?: (cardCount: number) => void;
 
     /**
      * Creates the stock and register it on the manager.
@@ -92,6 +142,15 @@ class CardStock<T> {
         this.bindClick();
 
         this.sort = settings?.sort;
+
+        if (settings?.counter && (settings.counter.show ?? true)) {
+            this.createCounter(settings.counter.position ?? 'bottom', settings.counter.extraClasses ?? 'round', settings.counter.hideWhenEmpty, settings.counter.counterId);
+
+            if (settings.counter?.hideWhenEmpty) {
+                this.element.querySelector('.bga-cards_card-counter').classList.add('hide-when-empty');
+                this.element.dataset.empty = 'true';
+            }
+        }
     }
 
     /**
@@ -214,6 +273,8 @@ class CardStock<T> {
             // make selectable only at the end of the animation
             promise.then(() => this.setSelectableCard(card, addCardSettings.selectable ?? true));
         }
+        
+        this.cardNumberUpdated();
 
         return promise;
     }
@@ -344,6 +405,8 @@ class CardStock<T> {
         if (this.selectedCards.find(c => this.manager.getId(c) == this.manager.getId(card))) {
             this.unselectCard(card);
         }
+
+        this.cardNumberUpdated();
     }
 
     /**
@@ -623,6 +686,40 @@ class CardStock<T> {
                 this.element.insertBefore(movedCardDiv, previouslyMovedCardDiv);
                 previouslyMovedCardDiv = movedCardDiv;
             }
+        }
+    }
+
+    protected createCounter(counterPosition: SideOrAngleOrCenter, extraClasses: string, hideWhenEmpty?: boolean, counterId?: string) {
+        const left = counterPosition.includes('right') ? 100 : (counterPosition.includes('left') ? 0 : 50);
+        const top = counterPosition.includes('bottom') ? 100 : (counterPosition.includes('top') ? 0 : 50);
+        this.element.style.setProperty('--bga-cards-deck-left', `${left}%`);
+        this.element.style.setProperty('--bga-cards-deck-top', `${top}%`);
+
+        this.counterDiv = document.createElement('div');
+        if (counterId) {
+            this.counterDiv.id = counterId;
+        }
+        this.counterDiv.classList.add('bga-cards_card-counter', ...(extraClasses.trim() === '' ? [] : extraClasses.split(/\s+/)));
+        this.counterDiv.innerText = '0';
+
+        if (hideWhenEmpty ?? false) {
+            this.counterDiv.classList.add('hide-when-empty');
+        }
+
+        this.element.appendChild(this.counterDiv);
+    }
+
+    /**
+     * Updates the cards number, if the counter is visible.
+     */
+    protected cardNumberUpdated() {
+        const cardNumber = this.cards.length;
+        this.element.style.setProperty('--tile-count', ''+cardNumber);
+        this.element.dataset.empty = (cardNumber == 0).toString();
+        this.onCardCountChange?.(cardNumber);
+
+        if (this.counterDiv) {
+            this.counterDiv.innerHTML = `${cardNumber}`;
         }
     }
 }

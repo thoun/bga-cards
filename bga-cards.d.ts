@@ -10,6 +10,30 @@ interface CardAnimationSettings extends SlideAnimationSettings {
 }
 type SortFunction = (a: any, b: any) => number;
 declare function sortFunction(...sortedFields: string[]): SortFunction;
+type SideOrAngle = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top' | 'bottom' | 'left' | 'right';
+type SideOrAngleOrCenter = SideOrAngle | 'center';
+interface DeckCounter {
+    /**
+     * Show a card counter on the deck. Default true.
+     */
+    show?: boolean;
+    /**
+     * Counter position. Default 'bottom'.
+     */
+    position?: SideOrAngleOrCenter;
+    /**
+     * Classes to add to counter (separated with spaces). Pre-built are `round` and `text-shadow`. Default `round`.
+     */
+    extraClasses?: string;
+    /**
+     * Show the counter when empty. Default true.
+     */
+    hideWhenEmpty?: boolean;
+    /**
+     * Set a counter id if you want to set a tooltip on it, for example. Default unset.
+     */
+    counterId?: string;
+}
 interface CardStockSettings {
     /**
      * Indicate the card sorting (unset means no sorting, new cards will be added at the end).
@@ -29,6 +53,10 @@ interface CardStockSettings {
      * The class to apply to selected cards. Use class from manager is unset.
      */
     selectedCardClass?: string | null;
+    /**
+     * Show a card counter on the stock. Not visible if unset.
+     */
+    counter?: DeckCounter;
 }
 interface AddCardSettings {
     /**
@@ -52,6 +80,11 @@ interface AddCardSettings {
      * Indicates if we add a fade in effect when adding card (if it comes from an invisible or abstract element).
      */
     fadeIn?: boolean;
+    /**
+     * For counters.
+     * Indicate if the card count is automatically updated when a card is added or removed. Default true.
+     */
+    autoUpdateCardNumber?: boolean;
 }
 interface RemoveCardSettings {
 }
@@ -67,6 +100,7 @@ declare class CardStock<T> {
     protected selectedCards: T[];
     protected selectionMode: CardSelectionMode;
     protected sort?: SortFunction;
+    protected counterDiv: HTMLDivElement | null;
     /**
      * Called when selection change. Returns the selection.
      *
@@ -75,11 +109,17 @@ declare class CardStock<T> {
      */
     onSelectionChange?: (selection: T[], lastChange: T | null) => void;
     /**
-     * Called when selection change. Returns the clicked card.
+     * Called when a card is clicked. Returns the clicked card.
      *
      * card: the clicked card (can be selected or unselected)
      */
     onCardClick?: (card: T) => void;
+    /**
+     * Called when card count change. Returns the clicked card.
+     *
+     * card: the clicked card (can be selected or unselected)
+     */
+    onCardCountChange?: (cardCount: number) => void;
     /**
      * Creates the stock and register it on the manager.
      *
@@ -247,32 +287,13 @@ declare class CardStock<T> {
      * @param sort the new sort function. If defined, the stock will be sorted with this new function.
      */
     setSort(sort?: SortFunction): void;
+    protected createCounter(counterPosition: SideOrAngleOrCenter, extraClasses: string, hideWhenEmpty?: boolean, counterId?: string): void;
+    /**
+     * Updates the cards number, if the counter is visible.
+     */
+    protected cardNumberUpdated(): void;
 }
-type SideOrAngle = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top' | 'bottom' | 'left' | 'right';
-type SideOrAngleOrCenter = SideOrAngle | 'center';
-interface DeckCounter {
-    /**
-     * Show a card counter on the deck. Default true.
-     */
-    show?: boolean;
-    /**
-     * Counter position. Default 'bottom'.
-     */
-    position?: SideOrAngleOrCenter;
-    /**
-     * Classes to add to counter (separated with spaces). Pre-built are `round` and `text-shadow`. Default `round`.
-     */
-    extraClasses?: string;
-    /**
-     * Show the counter when empty. Default true.
-     */
-    hideWhenEmpty?: boolean;
-    /**
-     * Set a counter id if you want to set a tooltip on it, for example. Default unset.
-     */
-    counterId?: string;
-}
-interface DeckSettings<T> {
+interface DeckSettings<T> extends CardStockSettings {
     /**
      * Indicate the current top card.
      */
@@ -298,10 +319,6 @@ interface DeckSettings<T> {
      */
     shadowDirection?: SideOrAngle;
     /**
-     * Show a card counter on the deck. Not visible if unset.
-     */
-    counter?: DeckCounter;
-    /**
      * A generator of fake cards, to generate decks top card automatically.
      * Default is manager `fakeCardGenerator` method.
      *
@@ -311,10 +328,6 @@ interface DeckSettings<T> {
     fakeCardGenerator?: (deckId: string) => T;
 }
 interface AddCardToDeckSettings extends AddCardSettings {
-    /**
-     * Indicate if the card count is automatically updated when a card is added or removed. Default true.
-     */
-    autoUpdateCardNumber?: boolean;
     /**
      * Indicate if the cards under the new top card must be removed (to forbid players to check the content of the deck with Inspect). Default true.
      */
@@ -361,7 +374,6 @@ declare class Deck<T> extends CardStock<T> {
     protected fakeCardGenerator?: (deckId: string) => T;
     protected thicknesses: number[];
     constructor(manager: CardManager<T>, element: HTMLElement, settings: DeckSettings<T>);
-    protected createCounter(counterPosition: SideOrAngleOrCenter, extraClasses: string, counterId?: string): void;
     /**
      * Get the the cards number.
      *
@@ -865,11 +877,6 @@ declare class AllVisibleDeck<T> extends CardStock<T> {
      */
     setOpened(opened: boolean): void;
     cardRemoved(card: T): void;
-    protected createCounter(counterPosition: SideOrAngleOrCenter, extraClasses: string, counterId?: string): void;
-    /**
-     * Updates the cards number, if the counter is visible.
-     */
-    protected cardNumberUpdated(): void;
 }
 interface DiscardDeckSettings extends CardStockSettings {
     /**
@@ -898,12 +905,6 @@ declare class DiscardDeck<T> extends CardStock<T> {
         verticalMargin: number;
     };
     addCard(card: T, animation?: CardAnimationSettings, settings?: AddCardSettings): Promise<boolean>;
-    cardRemoved(card: T): void;
-    protected createCounter(counterPosition: SideOrAngleOrCenter, extraClasses: string, counterId?: string): void;
-    /**
-     * Updates the cards number, if the counter is visible.
-     */
-    protected cardNumberUpdated(): void;
 }
 interface CardManagerSettings<T> {
     /**

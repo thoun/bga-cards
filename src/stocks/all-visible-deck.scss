@@ -36,7 +36,7 @@
             }
         }
 
-        .bga-cards_deck-counter {
+        .bga-cards_card-counter {
             transition: left 0.5s ease-in-out, top 0.5s ease-in-out;
         }
     
@@ -45,7 +45,7 @@
                 visibility: hidden;
             }
 
-            .bga-cards_deck-counter.hide-when-empty {
+            .bga-cards_card-counter.hide-when-empty {
                 display: none;
             }
         }
