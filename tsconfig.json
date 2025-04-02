@@ -1,7 +1,7 @@
 {
     "rootDir": ".", 
     "compilerOptions": {
-      "target": "es5",
+      "target": "es6",
       "module": "none",
       "lib": ["dom", "esnext"],  
       "sourceMap": false,
@@ -24,6 +24,7 @@
       "src/stocks/manual-position-stock.ts",
       "src/stocks/void-stock.ts",
       "src/stocks/all-visible-deck.ts",
+      "src/stocks/discard-deck.ts",
       "src/card-manager.ts"
     ]
 }

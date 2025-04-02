@@ -871,6 +871,40 @@ declare class AllVisibleDeck<T> extends CardStock<T> {
      */
     protected cardNumberUpdated(): void;
 }
+interface DiscardDeckSettings extends CardStockSettings {
+    /**
+     * Max horizontal shift from the center (in % of the card width). Default 5.
+     */
+    maxHorizontalShift?: number;
+    /**
+     * Max vertical shift from the center (in % of the card height). Default 5.
+     */
+    maxVerticalShift?: number;
+    /**
+     * Max rotation (in deg). Default 5.
+     */
+    maxRotation?: number;
+}
+declare class DiscardDeck<T> extends CardStock<T> {
+    protected manager: CardManager<T>;
+    protected element: HTMLElement;
+    protected maxHorizontalShift: number;
+    protected maxVerticalShift: number;
+    protected maxRotation: number;
+    constructor(manager: CardManager<T>, element: HTMLElement, settings?: DiscardDeckSettings);
+    protected getRandomArbitrary(min: number, max: number): number;
+    protected getMargins(): {
+        horizontalMargin: number;
+        verticalMargin: number;
+    };
+    addCard(card: T, animation?: CardAnimationSettings, settings?: AddCardSettings): Promise<boolean>;
+    cardRemoved(card: T): void;
+    protected createCounter(counterPosition: SideOrAngleOrCenter, extraClasses: string, counterId?: string): void;
+    /**
+     * Updates the cards number, if the counter is visible.
+     */
+    protected cardNumberUpdated(): void;
+}
 interface CardManagerSettings<T> {
     /**
      * Define the id that will be set to each card div. It must generate a unique id for each different card, so it's often linked to card id.

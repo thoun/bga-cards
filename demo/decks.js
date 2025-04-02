@@ -1,6 +1,7 @@
 let hiddenDeck;
 let visibleDeck;
 let allVisibleDeck;
+let discardDeck;
 
 function initHiddenDeck() {
     hiddenDeck = new Deck(cardsManager, document.getElementById('hidden-deck'), {
@@ -81,4 +82,23 @@ function initAllVisibleDeck() {
 
 function setAllVisibleDeckOpen(opened) {
     allVisibleDeck.setOpened(opened);
+}
+
+function initDiscardDeck() {
+    discardDeck = new DiscardDeck(cardsManager, document.getElementById('discard-deck'), {
+        shift: '8px',
+        //verticalShift: '0px',
+        //horizontalShift: '10px',
+        //direction: 'horizontal',
+        counter: {
+            hideWhenEmpty: true,
+        },
+    });
+    discardDeck.addCards([
+        { id: getCardId(), type: 3, type_arg: 2, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 3, type_arg: 5, location: 'table', location_arg: 0 },
+        { id: getCardId(), type: 3, type_arg: 6, location: 'table', location_arg: 0 },
+    ]);
+
+    discardDeck.onCardClick = () => console.log('Show a popin to display ', discardDeck.getCards());
 }

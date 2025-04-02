@@ -219,3 +219,16 @@ body > .card {
 .card-stock.all-visible-deck[data-empty=true] .bga-cards_deck-counter.hide-when-empty {
   display: none;
 }
+
+.discard-deck {
+  position: relative;
+  width: var(--width);
+  height: var(--height);
+  margin: var(--discard-deck-vertical-margin) var(--discard-deck-horizontal-margin);
+}
+.discard-deck > .card {
+  position: absolute;
+  left: var(--discard-deck-left);
+  top: var(--discard-deck-top);
+  rotate: var(--discard-deck-rotate);
+}
