@@ -27,14 +27,10 @@ function initManager() {
         setupBackDiv: (card, div) => {
             div.classList.add('mygame-card-back');
         },
-        isCardVisible: card => Boolean(card.type),
+        isCardVisible: card => Boolean(card.type) && !card.flipped,
+        getCardRotation: card => card.r,
         cardWidth: 100,
         cardHeight: 150,
         cardBorderRadius: '5px',
     });
-}
-
-let cardId = 1;
-function getCardId() {
-    return cardId++;
 }

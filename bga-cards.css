@@ -6,9 +6,10 @@ body > .card {
 
 .card {
   position: relative;
-  width: var(--bga-cards_card-width);
-  height: var(--bga-cards_card-height);
+  width: var(--bga-cards_card-effective-width);
+  height: var(--bga-cards_card-effective-height);
   border-radius: var(--bga-cards_card-border-radius);
+  transition: width 0.5s, height 0.5s;
   flex-shrink: 0;
 }
 .card[data-side=back] .card-sides {
@@ -16,12 +17,13 @@ body > .card {
 }
 .card .card-sides {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  width: var(--bga-cards_card-width);
+  height: var(--bga-cards_card-height);
+  top: calc(50% - var(--bga-cards_card-height) / 2);
+  left: calc(50% - var(--bga-cards_card-width) / 2);
   transform-style: preserve-3d;
-  transition: transform 0.5s;
+  transition: rotate 0.5s, transform 0.5s;
+  rotate: var(--bga-cards_card-rotation);
 }
 .card .card-sides .card-side {
   position: absolute;
@@ -97,6 +99,7 @@ body > .card {
   gap: var(--gap);
   flex-wrap: var(--wrap);
   flex-direction: var(--direction);
+  align-items: center;
 }
 .card-stock.line-stock[data-center=true] {
   justify-content: center;
@@ -110,6 +113,11 @@ body > .card {
 }
 .card-stock.slot-stock[data-center=true] {
   justify-content: center;
+}
+.card-stock.slot-stock .slot {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .card-stock.grid-stock {

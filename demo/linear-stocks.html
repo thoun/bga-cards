@@ -1,9 +1,6 @@
 <html>
     <head>
         <title>bga-cards demo</title>
-        <script>
-            function define() {}
-        </script>
         <link href="../node_modules/bga-animations/bga-animations.css" rel="stylesheet"></link>
         <script src="../node_modules/bga-animations/bga-animations.js" type="text/javascript"></script>
 
@@ -25,6 +22,10 @@
             <div class="block">
                 <h2>LineStock</h2>
                 <div id="line-stocks">
+                    <div>
+                        <button onclick="rotateCard()">rotate card</button>
+                        <button onclick="flipCard()">flip card</button>
+                    </div>
                     <div id="line-stock"></div>
                     <div>
                         <button onclick="addCardToLineStockWithAnimation(this, false)">Add card with default animation (slide)</button>
@@ -77,7 +78,7 @@
 
         <div class="flex">
             <div class="block">
-                <h2>Moving a card between stocks</h2>
+                <h2>Moving a card between potentially hidden stocks</h2>
                 <div class="flex">
                     <div>
                         <input type="checkbox" checked id="line-stock-1-tab-diplay-toggle" onclick="document.getElementById('line-stock-1-tab').style.display = this.checked ? 'initial' : 'none'" />

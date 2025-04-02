@@ -1,10 +1,14 @@
+let gameLoaded = false;
+
+window.onload = setTimeout(() => gameLoaded = true, 500);
+
 let game = {
     instantaneousMode: false,
     
     addTooltipHtml: (divId, tooltip) => { document.getElementById(divId).title = tooltip },
 
     bgaAnimationsActive: function() {
-        return document.visibilityState !== 'hidden' && !this.instantaneousMode;
+        return document.visibilityState !== 'hidden' && !this.instantaneousMode && gameLoaded;
     },
     wait: function(delay) {
         if (delay > 0 && this.bgaAnimationsActive()) {
@@ -29,4 +33,23 @@ function initCommon() {
         <label for="instantaneousMode">Instantaneous mode (to simulate fast replay)</label>
     </div>
     `)
+}
+
+let cardId = 1;
+function getCardId() {
+    return cardId++;
+}
+
+let manipulatedCard = { id: getCardId(), type: 3, type_arg: 2, location: 'table', location_arg: 0, x: 3, y: 3, r: 1 };
+
+function rotateCard() {
+    manipulatedCard.r += 1;
+    //lineStock.addCard(manipulatedCard);
+    cardsManager.updateCardInformations(manipulatedCard);
+}
+
+function flipCard() {
+    manipulatedCard.flipped = !manipulatedCard.flipped;
+    //lineStock.addCard(manipulatedCard);
+    cardsManager.updateCardInformations(manipulatedCard);
 }

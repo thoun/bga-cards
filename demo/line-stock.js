@@ -25,7 +25,7 @@ function initLineStock() {
 
     // add cards
     lineStock.addCards([
-        { id: getCardId(), type: 3, type_arg: 2, location: 'table', location_arg: 0 },
+        manipulatedCard,
         { id: getCardId(), type: 1, type_arg: 5, location: 'table', location_arg: 0 },
         { id: getCardId(), type: 2, type_arg: 12, location: 'table', location_arg: 0 },
         { id: getCardId(), type: 4, type_arg: 9, location: 'table', location_arg: 0 },

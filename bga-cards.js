@@ -133,6 +133,7 @@ class CardStock {
      */
     addCard(card, animation, settings) {
         if (!this.canAddCard(card, settings)) {
+            this.manager.updateCardInformations(card);
             return Promise.resolve(false);
         }
         // we check if card is in a stock
@@ -348,10 +349,10 @@ class CardStock {
         const selectableCardsClass = this.getSelectableCardClass();
         const unselectableCardsClass = this.getUnselectableCardClass();
         if (selectableCardsClass) {
-            element === null || element === void 0 ? void 0 : element.classList.toggle(selectableCardsClass, selectable);
+            element === null || element === void 0 ? void 0 : element.querySelectorAll('.card-side').forEach(cardSideDiv => cardSideDiv.classList.toggle(selectableCardsClass, selectable));
         }
         if (unselectableCardsClass) {
-            element === null || element === void 0 ? void 0 : element.classList.toggle(unselectableCardsClass, !selectable);
+            element === null || element === void 0 ? void 0 : element.querySelectorAll('.card-side').forEach(cardSideDiv => cardSideDiv.classList.toggle(unselectableCardsClass, !selectable));
         }
         if (!selectable && this.isSelected(card)) {
             this.unselectCard(card, true);
@@ -381,14 +382,14 @@ class CardStock {
         }
         const element = this.getCardElement(card);
         const selectableCardsClass = this.getSelectableCardClass();
-        if (!element || !element.classList.contains(selectableCardsClass)) {
+        if (!element || !element.querySelector('.card-side').classList.contains(selectableCardsClass)) {
             return;
         }
         if (this.selectionMode === 'single') {
             this.cards.filter(c => this.manager.getId(c) != this.manager.getId(card)).forEach(c => this.unselectCard(c, true));
         }
         const selectedCardsClass = this.getSelectedCardClass();
-        element.classList.add(selectedCardsClass);
+        element === null || element === void 0 ? void 0 : element.querySelectorAll('.card-side').forEach(cardSideDiv => cardSideDiv.classList.add(selectedCardsClass));
         this.selectedCards.push(card);
         if (!silent) {
             (_a = this.onSelectionChange) === null || _a === void 0 ? void 0 : _a.call(this, this.selectedCards.slice(), card);
@@ -403,7 +404,7 @@ class CardStock {
         var _a;
         const element = this.getCardElement(card);
         const selectedCardsClass = this.getSelectedCardClass();
-        element === null || element === void 0 ? void 0 : element.classList.remove(selectedCardsClass);
+        element === null || element === void 0 ? void 0 : element.querySelectorAll('.card-side').forEach(cardSideDiv => cardSideDiv.classList.remove(selectedCardsClass));
         const index = this.selectedCards.findIndex(c => this.manager.getId(c) == this.manager.getId(card));
         if (index !== -1) {
             this.selectedCards.splice(index, 1);
@@ -1719,6 +1720,8 @@ class CardManager {
         var _a, _b, _c, _d, _e, _f;
         const id = this.getId(card);
         const side = ['front', 'back'].includes(initialSide) ? initialSide : (this.isCardVisible(card) ? 'front' : 'back'); // to apply auto & ignore invalid values
+        const rotation = this.getCardRotation(card);
+        const lying = rotation % 2 === 1;
         if (this.getCardElement(card)) {
             throw new Error('This card already exists ' + JSON.stringify(card));
         }
@@ -1727,6 +1730,9 @@ class CardManager {
         element.dataset.side = '' + side;
         element.style.setProperty('--bga-cards_card-width', `${this.getCardWidth()}px`);
         element.style.setProperty('--bga-cards_card-height', `${this.getCardHeight()}px`);
+        element.style.setProperty('--bga-cards_card-effective-width', `${lying ? this.getCardHeight() : this.getCardWidth()}px`);
+        element.style.setProperty('--bga-cards_card-effective-height', `${lying ? this.getCardWidth() : this.getCardHeight()}px`);
+        element.style.setProperty('--bga-cards_card-rotation', `${rotation * 90}deg`);
         element.style.setProperty('--bga-cards_card-border-radius', `${this.getCardBorderRadius()}`);
         element.innerHTML = `
             <div class="card-sides">
@@ -1789,6 +1795,17 @@ class CardManager {
     isCardVisible(card) {
         var _a, _b, _c, _d;
         return (_c = (_b = (_a = this.settings).isCardVisible) === null || _b === void 0 ? void 0 : _b.call(_a, card)) !== null && _c !== void 0 ? _c : ((_d = card.type) !== null && _d !== void 0 ? _d : false);
+    }
+    /** TODOGBA
+     * Return if the card passed as parameter is suppose to be visible or not.
+     * Use `isCardVisible` from settings if set, else will check if `card.type` is defined
+     *
+     * @param card the card informations
+     * @return the visiblility of the card (true means front side should be displayed)
+     */
+    getCardRotation(card) {
+        var _a, _b, _c;
+        return (_c = (_b = (_a = this.settings).getCardRotation) === null || _b === void 0 ? void 0 : _b.call(_a, card)) !== null && _c !== void 0 ? _c : 0;
     }
     /**
      * Set the card to its front (visible) or back (not visible) side.
@@ -1874,6 +1891,12 @@ class CardManager {
     updateCardInformations(card, settings) {
         const newSettings = Object.assign(Object.assign({}, (settings !== null && settings !== void 0 ? settings : {})), { updateData: true });
         this.setCardVisible(card, undefined, newSettings);
+        const rotation = this.getCardRotation(card);
+        const lying = rotation % 2 === 1;
+        const element = this.getCardElement(card);
+        element.style.setProperty('--bga-cards_card-effective-width', `${lying ? this.getCardHeight() : this.getCardWidth()}px`);
+        element.style.setProperty('--bga-cards_card-effective-height', `${lying ? this.getCardWidth() : this.getCardHeight()}px`);
+        element.style.setProperty('--bga-cards_card-rotation', `${rotation * 90}deg`);
     }
     /**
      * @returns the card with set in the settings (undefined if unset)

@@ -49,6 +49,16 @@ interface CardManagerSettings<T> {
      */
     isCardVisible?: (card: T) => boolean;
 
+
+    /** TODOGBA
+     * A function to determine if the card should show front side or back side, based on the informations of the card object.
+     * If you only manage visible cards, set it to `() => true`.
+     * Default is `card.type` is truthy.
+     * 
+     * @param card the card informations
+     * @return true if front side should be visible
+     */
+    getCardRotation?: (card: T) => number;
     /**
      * A generator of fake cards, to generate decks top card automatically.
      * Default is generating an empty card, with only id set.
@@ -198,6 +208,8 @@ class CardManager<T> {
     public createCardElement(card: T, initialSide: 'auto' | 'front' | 'back' = 'auto'): HTMLDivElement {
         const id = this.getId(card);
         const side = ['front', 'back'].includes(initialSide) ? initialSide : (this.isCardVisible(card) ? 'front' : 'back'); // to apply auto & ignore invalid values
+        const rotation = this.getCardRotation(card);
+        const lying = rotation % 2 === 1;
 
         if (this.getCardElement(card)) {
             throw new Error('This card already exists ' + JSON.stringify(card));
@@ -206,8 +218,11 @@ class CardManager<T> {
         const element = document.createElement("div");
         element.id = id;
         element.dataset.side = ''+side;
-        element.style.setProperty('--bga-cards_card-width', `${this.getCardWidth()}px`)
-        element.style.setProperty('--bga-cards_card-height', `${this.getCardHeight()}px`)
+        element.style.setProperty('--bga-cards_card-width', `${this.getCardWidth()}px`);
+        element.style.setProperty('--bga-cards_card-height', `${this.getCardHeight()}px`);
+        element.style.setProperty('--bga-cards_card-effective-width', `${lying ? this.getCardHeight() : this.getCardWidth()}px`);
+        element.style.setProperty('--bga-cards_card-effective-height', `${lying ? this.getCardWidth() : this.getCardHeight()}px`);
+        element.style.setProperty('--bga-cards_card-rotation', `${rotation * 90}deg`);
         element.style.setProperty('--bga-cards_card-border-radius', `${this.getCardBorderRadius()}`);
         element.innerHTML = `
             <div class="card-sides">
@@ -275,6 +290,17 @@ class CardManager<T> {
      */
     public isCardVisible(card: T): boolean {
         return this.settings.isCardVisible?.(card) ?? ((card as any).type ?? false);
+    }
+
+    /** TODOGBA
+     * Return if the card passed as parameter is suppose to be visible or not.
+     * Use `isCardVisible` from settings if set, else will check if `card.type` is defined
+     * 
+     * @param card the card informations
+     * @return the visiblility of the card (true means front side should be displayed)
+     */
+    public getCardRotation(card: T): number {
+        return this.settings.getCardRotation?.(card) ?? 0;
     }
 
     /**
@@ -372,6 +398,15 @@ class CardManager<T> {
     public updateCardInformations(card: T, settings?: Omit<FlipCardSettings, 'updateData'>): void {
         const newSettings = { ...(settings ?? {}), updateData: true, };
         this.setCardVisible(card, undefined, newSettings);
+
+        const rotation = this.getCardRotation(card);
+        const lying = rotation % 2 === 1;
+
+        const element = this.getCardElement(card);
+        
+        element.style.setProperty('--bga-cards_card-effective-width', `${lying ? this.getCardHeight() : this.getCardWidth()}px`);
+        element.style.setProperty('--bga-cards_card-effective-height', `${lying ? this.getCardWidth() : this.getCardHeight()}px`);
+        element.style.setProperty('--bga-cards_card-rotation', `${rotation * 90}deg`);
     }
 
     /**

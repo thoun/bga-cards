@@ -9,5 +9,11 @@
         &[data-center="true"] {
             justify-content: center;
         }
+
+        .slot {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     }
 }

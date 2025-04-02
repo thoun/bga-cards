@@ -952,6 +952,15 @@ interface CardManagerSettings<T> {
      * @return true if front side should be visible
      */
     isCardVisible?: (card: T) => boolean;
+    /** TODOGBA
+     * A function to determine if the card should show front side or back side, based on the informations of the card object.
+     * If you only manage visible cards, set it to `() => true`.
+     * Default is `card.type` is truthy.
+     *
+     * @param card the card informations
+     * @return true if front side should be visible
+     */
+    getCardRotation?: (card: T) => number;
     /**
      * A generator of fake cards, to generate decks top card automatically.
      * Default is generating an empty card, with only id set.
@@ -1092,6 +1101,14 @@ declare class CardManager<T> {
      * @return the visiblility of the card (true means front side should be displayed)
      */
     isCardVisible(card: T): boolean;
+    /** TODOGBA
+     * Return if the card passed as parameter is suppose to be visible or not.
+     * Use `isCardVisible` from settings if set, else will check if `card.type` is defined
+     *
+     * @param card the card informations
+     * @return the visiblility of the card (true means front side should be displayed)
+     */
+    getCardRotation(card: T): number;
     /**
      * Set the card to its front (visible) or back (not visible) side.
      *
