@@ -49,14 +49,12 @@ interface CardManagerSettings<T> {
      */
     isCardVisible?: (card: T) => boolean;
 
-
-    /** TODOGBA
-     * A function to determine if the card should show front side or back side, based on the informations of the card object.
-     * If you only manage visible cards, set it to `() => true`.
-     * Default is `card.type` is truthy.
+    /** 
+     * Return the card rotation.
+     * Use `getCardRotation` from settings if set, else will return 0
      * 
      * @param card the card informations
-     * @return true if front side should be visible
+     * @return the card rotation
      */
     getCardRotation?: (card: T) => number;
     /**
@@ -117,6 +115,11 @@ interface CardManagerSettings<T> {
      * The class to apply to selected slots. Default 'bga-cards_selected-slot'.
      */
     selectedSlotClass?: string | null;
+
+    /**
+     * The class to apply to the last played card. Default 'bga-cards_last-played-card'.
+     */
+    lastPlayedCardClass?: string | null;
 }
 
 interface FlipCardSettings {
@@ -292,12 +295,12 @@ class CardManager<T> {
         return this.settings.isCardVisible?.(card) ?? ((card as any).type ?? false);
     }
 
-    /** TODOGBA
-     * Return if the card passed as parameter is suppose to be visible or not.
-     * Use `isCardVisible` from settings if set, else will check if `card.type` is defined
+    /** 
+     * Return the card rotation.
+     * Use `getCardRotation` from settings if set, else will return 0
      * 
      * @param card the card informations
-     * @return the visiblility of the card (true means front side should be displayed)
+     * @return the card rotation
      */
     public getCardRotation(card: T): number {
         return this.settings.getCardRotation?.(card) ?? 0;
@@ -471,8 +474,51 @@ class CardManager<T> {
     public getSelectedSlotClass(): string | null {
         return this.settings?.selectedSlotClass === undefined ? 'bga-cards_selected-slot' : this.settings?.selectedSlotClass;
     }
+
+    /**
+     * @returns the class to apply to the last played card. Default 'bga-cards_last-played-card'.
+     */
+    public getLastPlayedCardClass(): string | null {
+        return this.settings?.lastPlayedCardClass === undefined ? 'bga-cards_last-played-card' : this.settings?.lastPlayedCardClass;
+    }
     
     public getFakeCardGenerator(): (deckId: string) => T {
         return this.settings?.fakeCardGenerator ?? (deckId => ({ id: this.getId({ id: `${deckId}-fake-top-card` as any} as T)} as T));
+    }
+
+    /**
+     * Mark the last play card. Remove the other last play card classes.
+     * 
+     * @param card the card to mark as last played
+     * @param color the color to use to mark the last played card, usually the player color
+     * @param cardClass a class applied on this type of cards, to limit removal to these type of cards.
+     */
+    public setLastPlayedCard(card: T | null, color?: string, cardClass?: string) {
+        this.setLastPlayedCards(card ? [card] : null, color, cardClass);
+    }
+
+    /**
+     * Mark the last play cards. Remove the other last play card classes.
+     * 
+     * @param cards the cards to mark as last played
+     * @param color the color to use to mark the last played card, usually the player color
+     * @param cardClass a class applied on this type of cards, to limit removal to these type of cards.
+     */
+    public setLastPlayedCards(cards: T[] | null, color?: string, cardClass?: string) {
+        const lastPlayedClass = this.getLastPlayedCardClass();
+
+        let selector = `.${lastPlayedClass}`;
+        if (cardClass) {
+            selector = `.${cardClass} .${selector}`;
+        }
+        document.querySelectorAll(selector).forEach(elem => elem.classList.remove(lastPlayedClass));
+
+        if (color.match(/^[\da-f]{6}$/i)) { // if the color sent is a color player without the #
+            color = `#${color}`;
+        }
+        cards.map(card => this.getCardElement(card)).filter(element => !!element).forEach(element => {
+            element.style.setProperty('--last-played-card-color', color ?? 'red');
+            element.querySelectorAll('.card-side').forEach(cardSideDiv => cardSideDiv.classList.add(lastPlayedClass));
+        });
     }
 }

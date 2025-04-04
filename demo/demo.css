@@ -32,21 +32,16 @@ h1, h2 {
     min-width: 500px;
 }
 
-.mygame-card .card-side:not(.bga-cards_selectable-card)/*:not(.bga-cards_selectable-card):not(.bga-cards_selected-card)*/ {
+.mygame-card .card-side/*:not(.bga-cards_selectable-card):not(.bga-cards_selected-card)*/ {
     box-shadow: 1px 1px 2px 1px rgba(0,0,0,0.5);
 }
 
-.selection-stock .mygame-card .bga-cards_selectable-card/*:not(.bga-cards_selected-card)*/ {
+.selection-stock .mygame-card .bga-cards_selectable-card {
     box-shadow: 0 0 5px 5px orange;
 }
 
 .selection-stock .mygame-card .bga-cards_selected-card{
     outline: 3px solid blueviolet;
-}
-
-.selection-stock .mygame-card .bga-cards_last-played-card {
-    --last-played-card-color: red;
-    outline: 2px dotted var(--last-played-card-color);
 }
 
 .mygame-card-front {

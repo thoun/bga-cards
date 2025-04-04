@@ -40,6 +40,8 @@ function setSelectableCards(all) {
     lineStock.setSelectableCards(lineStock.getCards().filter((card, index) => all ? true : index % 2));
 }
 
+let clicks = 0;
+
 function addCardToLineStockWithAnimation(fromElement, customAnimation) {
     const animationSettings = {
         fromElement: fromElement,
@@ -55,16 +57,18 @@ function addCardToLineStockWithAnimation(fromElement, customAnimation) {
         }];
     }
 
-    lineStock.addCard(
-        { id: getCardId(), type: 1 + Math.floor(Math.random() * 4), type_arg: 1 + Math.floor(Math.random() * 10), location: 'table', location_arg: 0 },
-        animationSettings
-    );
+    const card = { id: getCardId(), type: 1 + Math.floor(Math.random() * 4), type_arg: 1 + Math.floor(Math.random() * 10), location: 'table', location_arg: 0 };
+    lineStock.addCard(card, animationSettings);
+    const playerColor = ['red', 'green', 'blue', 'yellow'][clicks++ % 4];
+    cardsManager.setLastPlayedCard(card, playerColor);
 }
 
 function addCardToLineStockFromVoidStock() {
     const card = { id: getCardId(), type: 1 + Math.floor(Math.random() * 4), type_arg: 1 + Math.floor(Math.random() * 10), location: 'table', location_arg: 0 }
     voidStock.addCard({ id: card.id }, undefined, { remove: false, });
     lineStock.addCard(card);
+    const playerColor = ['red', 'green', 'blue', 'yellow'][clicks++ % 4];
+    cardsManager.setLastPlayedCard(card, playerColor);
 }
 
 function setSortFunction(type) {

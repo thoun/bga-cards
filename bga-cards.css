@@ -49,6 +49,9 @@ body > .card {
   pointer-events: none;
   user-select: none;
 }
+.card .bga-cards_last-played-card {
+  outline: 2px dotted var(--last-played-card-color);
+}
 
 .card-stock {
   position: relative;

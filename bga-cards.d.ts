@@ -957,13 +957,12 @@ interface CardManagerSettings<T> {
      * @return true if front side should be visible
      */
     isCardVisible?: (card: T) => boolean;
-    /** TODOGBA
-     * A function to determine if the card should show front side or back side, based on the informations of the card object.
-     * If you only manage visible cards, set it to `() => true`.
-     * Default is `card.type` is truthy.
+    /**
+     * Return the card rotation.
+     * Use `getCardRotation` from settings if set, else will return 0
      *
      * @param card the card informations
-     * @return true if front side should be visible
+     * @return the card rotation
      */
     getCardRotation?: (card: T) => number;
     /**
@@ -1014,6 +1013,10 @@ interface CardManagerSettings<T> {
      * The class to apply to selected slots. Default 'bga-cards_selected-slot'.
      */
     selectedSlotClass?: string | null;
+    /**
+     * The class to apply to the last played card. Default 'bga-cards_last-played-card'.
+     */
+    lastPlayedCardClass?: string | null;
 }
 interface FlipCardSettings {
     /**
@@ -1106,12 +1109,12 @@ declare class CardManager<T> {
      * @return the visiblility of the card (true means front side should be displayed)
      */
     isCardVisible(card: T): boolean;
-    /** TODOGBA
-     * Return if the card passed as parameter is suppose to be visible or not.
-     * Use `isCardVisible` from settings if set, else will check if `card.type` is defined
+    /**
+     * Return the card rotation.
+     * Use `getCardRotation` from settings if set, else will return 0
      *
      * @param card the card informations
-     * @return the visiblility of the card (true means front side should be displayed)
+     * @return the card rotation
      */
     getCardRotation(card: T): number;
     /**
@@ -1171,5 +1174,25 @@ declare class CardManager<T> {
      * @returns the class to apply to selected slots. Default 'bga-cards_selected-slot'.
      */
     getSelectedSlotClass(): string | null;
+    /**
+     * @returns the class to apply to the last played card. Default 'bga-cards_last-played-card'.
+     */
+    getLastPlayedCardClass(): string | null;
     getFakeCardGenerator(): (deckId: string) => T;
+    /**
+     * Mark the last play card. Remove the other last play card classes.
+     *
+     * @param card the card to mark as last played
+     * @param color the color to use to mark the last played card, usually the player color
+     * @param cardClass a class applied on this type of cards, to limit removal to these type of cards.
+     */
+    setLastPlayedCard(card: T | null, color?: string, cardClass?: string): void;
+    /**
+     * Mark the last play cards. Remove the other last play card classes.
+     *
+     * @param cards the cards to mark as last played
+     * @param color the color to use to mark the last played card, usually the player color
+     * @param cardClass a class applied on this type of cards, to limit removal to these type of cards.
+     */
+    setLastPlayedCards(cards: T[] | null, color?: string, cardClass?: string): void;
 }

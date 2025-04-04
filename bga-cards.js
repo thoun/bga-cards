@@ -1825,12 +1825,12 @@ class CardManager {
         var _a, _b, _c, _d;
         return (_c = (_b = (_a = this.settings).isCardVisible) === null || _b === void 0 ? void 0 : _b.call(_a, card)) !== null && _c !== void 0 ? _c : ((_d = card.type) !== null && _d !== void 0 ? _d : false);
     }
-    /** TODOGBA
-     * Return if the card passed as parameter is suppose to be visible or not.
-     * Use `isCardVisible` from settings if set, else will check if `card.type` is defined
+    /**
+     * Return the card rotation.
+     * Use `getCardRotation` from settings if set, else will return 0
      *
      * @param card the card informations
-     * @return the visiblility of the card (true means front side should be displayed)
+     * @return the card rotation
      */
     getCardRotation(card) {
         var _a, _b, _c;
@@ -1990,8 +1990,47 @@ class CardManager {
         var _a, _b;
         return ((_a = this.settings) === null || _a === void 0 ? void 0 : _a.selectedSlotClass) === undefined ? 'bga-cards_selected-slot' : (_b = this.settings) === null || _b === void 0 ? void 0 : _b.selectedSlotClass;
     }
+    /**
+     * @returns the class to apply to the last played card. Default 'bga-cards_last-played-card'.
+     */
+    getLastPlayedCardClass() {
+        var _a, _b;
+        return ((_a = this.settings) === null || _a === void 0 ? void 0 : _a.lastPlayedCardClass) === undefined ? 'bga-cards_last-played-card' : (_b = this.settings) === null || _b === void 0 ? void 0 : _b.lastPlayedCardClass;
+    }
     getFakeCardGenerator() {
         var _a, _b;
         return (_b = (_a = this.settings) === null || _a === void 0 ? void 0 : _a.fakeCardGenerator) !== null && _b !== void 0 ? _b : (deckId => ({ id: this.getId({ id: `${deckId}-fake-top-card` }) }));
+    }
+    /**
+     * Mark the last play card. Remove the other last play card classes.
+     *
+     * @param card the card to mark as last played
+     * @param color the color to use to mark the last played card, usually the player color
+     * @param cardClass a class applied on this type of cards, to limit removal to these type of cards.
+     */
+    setLastPlayedCard(card, color, cardClass) {
+        this.setLastPlayedCards(card ? [card] : null, color, cardClass);
+    }
+    /**
+     * Mark the last play cards. Remove the other last play card classes.
+     *
+     * @param cards the cards to mark as last played
+     * @param color the color to use to mark the last played card, usually the player color
+     * @param cardClass a class applied on this type of cards, to limit removal to these type of cards.
+     */
+    setLastPlayedCards(cards, color, cardClass) {
+        const lastPlayedClass = this.getLastPlayedCardClass();
+        let selector = `.${lastPlayedClass}`;
+        if (cardClass) {
+            selector = `.${cardClass} .${selector}`;
+        }
+        document.querySelectorAll(selector).forEach(elem => elem.classList.remove(lastPlayedClass));
+        if (color.match(/^[\da-f]{6}$/i)) { // if the color sent is a color player without the #
+            color = `#${color}`;
+        }
+        cards.map(card => this.getCardElement(card)).filter(element => !!element).forEach(element => {
+            element.style.setProperty('--last-played-card-color', color !== null && color !== void 0 ? color : 'red');
+            element.querySelectorAll('.card-side').forEach(cardSideDiv => cardSideDiv.classList.add(lastPlayedClass));
+        });
     }
 }
