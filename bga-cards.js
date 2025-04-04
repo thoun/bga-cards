@@ -52,6 +52,7 @@ class CardStock {
         this.element = element;
         this.settings = settings;
         this.cards = [];
+        this.selectableCards = [];
         this.selectedCards = [];
         this.selectionMode = 'none';
         this.counterDiv = null;
@@ -94,7 +95,13 @@ class CardStock {
         return this.selectedCards.slice();
     }
     /**
-     * @returns if the card is selectd
+     * @returns if the card is selectable
+     */
+    isSelectable(card) {
+        return this.selectableCards.some(c => this.manager.getId(c) == this.manager.getId(card));
+    }
+    /**
+     * @returns if the card is selected
      */
     isSelected(card) {
         return this.selectedCards.some(c => this.manager.getId(c) == this.manager.getId(card));
@@ -354,8 +361,19 @@ class CardStock {
         if (unselectableCardsClass) {
             element === null || element === void 0 ? void 0 : element.querySelectorAll('.card-side').forEach(cardSideDiv => cardSideDiv.classList.toggle(unselectableCardsClass, !selectable));
         }
-        if (!selectable && this.isSelected(card)) {
-            this.unselectCard(card, true);
+        const index = this.selectableCards.findIndex(c => this.manager.getId(c) == this.manager.getId(card));
+        if (selectable) {
+            if (index === -1) {
+                this.selectableCards.push(card);
+            }
+        }
+        else {
+            if (index !== -1) {
+                this.selectableCards.splice(index, 1);
+            }
+            if (this.isSelected(card)) {
+                this.unselectCard(card, true);
+            }
         }
     }
     /**
@@ -367,6 +385,7 @@ class CardStock {
         if (this.selectionMode === 'none') {
             return;
         }
+        this.selectableCards = selectableCards;
         const selectableCardsIds = (selectableCards !== null && selectableCards !== void 0 ? selectableCards : this.getCards()).map(card => this.manager.getId(card));
         this.cards.forEach(card => this.setSelectableCard(card, selectableCardsIds.includes(this.manager.getId(card))));
     }
@@ -381,15 +400,18 @@ class CardStock {
             return;
         }
         const element = this.getCardElement(card);
-        const selectableCardsClass = this.getSelectableCardClass();
-        if (!element || !element.querySelector('.card-side').classList.contains(selectableCardsClass)) {
+        if (!element || !this.selectableCards.some(c => this.manager.getId(c) == this.manager.getId(card))) {
             return;
         }
         if (this.selectionMode === 'single') {
             this.cards.filter(c => this.manager.getId(c) != this.manager.getId(card)).forEach(c => this.unselectCard(c, true));
         }
+        const selectableCardsClass = this.getSelectableCardClass();
         const selectedCardsClass = this.getSelectedCardClass();
-        element === null || element === void 0 ? void 0 : element.querySelectorAll('.card-side').forEach(cardSideDiv => cardSideDiv.classList.add(selectedCardsClass));
+        element === null || element === void 0 ? void 0 : element.querySelectorAll('.card-side').forEach(cardSideDiv => {
+            cardSideDiv.classList.remove(selectableCardsClass);
+            cardSideDiv.classList.add(selectedCardsClass);
+        });
         this.selectedCards.push(card);
         if (!silent) {
             (_a = this.onSelectionChange) === null || _a === void 0 ? void 0 : _a.call(this, this.selectedCards.slice(), card);
@@ -403,8 +425,15 @@ class CardStock {
     unselectCard(card, silent = false) {
         var _a;
         const element = this.getCardElement(card);
+        const selectable = this.selectableCards.some(c => this.manager.getId(c) == this.manager.getId(card));
+        const selectableCardsClass = this.getSelectableCardClass();
         const selectedCardsClass = this.getSelectedCardClass();
-        element === null || element === void 0 ? void 0 : element.querySelectorAll('.card-side').forEach(cardSideDiv => cardSideDiv.classList.remove(selectedCardsClass));
+        element === null || element === void 0 ? void 0 : element.querySelectorAll('.card-side').forEach(cardSideDiv => {
+            cardSideDiv.classList.remove(selectedCardsClass);
+            if (selectable) {
+                cardSideDiv.classList.add(selectableCardsClass);
+            }
+        });
         const index = this.selectedCards.findIndex(c => this.manager.getId(c) == this.manager.getId(card));
         if (index !== -1) {
             this.selectedCards.splice(index, 1);

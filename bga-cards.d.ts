@@ -97,6 +97,7 @@ declare class CardStock<T> {
     protected element: HTMLElement;
     protected settings?: CardStockSettings;
     protected cards: T[];
+    protected selectableCards: T[];
     protected selectedCards: T[];
     protected selectionMode: CardSelectionMode;
     protected sort?: SortFunction;
@@ -144,7 +145,11 @@ declare class CardStock<T> {
      */
     getSelection(): T[];
     /**
-     * @returns if the card is selectd
+     * @returns if the card is selectable
+     */
+    isSelectable(card: T): boolean;
+    /**
+     * @returns if the card is selected
      */
     isSelected(card: T): boolean;
     /**

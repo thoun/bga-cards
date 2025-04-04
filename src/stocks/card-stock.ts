@@ -102,6 +102,7 @@ type CardSelectionMode = 'none' | 'single' | 'multiple';
  */
 class CardStock<T> {
     protected cards: T[] = [];
+    protected selectableCards: T[] = [];
     protected selectedCards: T[] = [];
     protected selectionMode: CardSelectionMode = 'none';
     protected sort?: SortFunction; 
@@ -183,7 +184,14 @@ class CardStock<T> {
     }
 
     /**
-     * @returns if the card is selectd
+     * @returns if the card is selectable
+     */
+    public isSelectable(card: T): boolean {
+        return this.selectableCards.some(c => this.manager.getId(c) == this.manager.getId(card));
+    }
+
+    /**
+     * @returns if the card is selected
      */
     public isSelected(card: T): boolean {
         return this.selectedCards.some(c => this.manager.getId(c) == this.manager.getId(card));
@@ -470,8 +478,19 @@ class CardStock<T> {
             element?.querySelectorAll('.card-side').forEach(cardSideDiv => cardSideDiv.classList.toggle(unselectableCardsClass, !selectable));
         }
 
-        if (!selectable && this.isSelected(card)) {
-            this.unselectCard(card, true);
+        const index = this.selectableCards.findIndex(c => this.manager.getId(c) == this.manager.getId(card));
+        if (selectable) {
+            if (index === -1) {
+                this.selectableCards.push(card);
+            }
+        } else {
+            if (index !== -1) {
+                this.selectableCards.splice(index, 1);
+            }
+
+            if (this.isSelected(card)) {
+                this.unselectCard(card, true);
+            }
         }
     }
 
@@ -485,6 +504,7 @@ class CardStock<T> {
             return;
         }
 
+        this.selectableCards = selectableCards;
         const selectableCardsIds = (selectableCards ?? this.getCards()).map(card => this.manager.getId(card));
 
         this.cards.forEach(card =>
@@ -504,8 +524,7 @@ class CardStock<T> {
 
         const element = this.getCardElement(card);
 
-        const selectableCardsClass = this.getSelectableCardClass();
-        if (!element || !element.querySelector('.card-side').classList.contains(selectableCardsClass)) {
+        if (!element || !this.selectableCards.some(c => this.manager.getId(c) == this.manager.getId(card))) {
             return;
         }
         
@@ -513,8 +532,12 @@ class CardStock<T> {
             this.cards.filter(c => this.manager.getId(c) != this.manager.getId(card)).forEach(c => this.unselectCard(c, true));
         }
 
+        const selectableCardsClass = this.getSelectableCardClass();
         const selectedCardsClass = this.getSelectedCardClass();
-        element?.querySelectorAll('.card-side').forEach(cardSideDiv => cardSideDiv.classList.add(selectedCardsClass));
+        element?.querySelectorAll('.card-side').forEach(cardSideDiv => {
+            cardSideDiv.classList.remove(selectableCardsClass);
+            cardSideDiv.classList.add(selectedCardsClass);
+        });
         this.selectedCards.push(card);
         
         if (!silent) {
@@ -529,8 +552,15 @@ class CardStock<T> {
      */
     public unselectCard(card: T, silent: boolean = false) {
         const element = this.getCardElement(card);      
+        const selectable = this.selectableCards.some(c => this.manager.getId(c) == this.manager.getId(card));
+        const selectableCardsClass = this.getSelectableCardClass();
         const selectedCardsClass = this.getSelectedCardClass();
-        element?.querySelectorAll('.card-side').forEach(cardSideDiv => cardSideDiv.classList.remove(selectedCardsClass));
+        element?.querySelectorAll('.card-side').forEach(cardSideDiv => {
+            cardSideDiv.classList.remove(selectedCardsClass);
+            if (selectable) {
+                cardSideDiv.classList.add(selectableCardsClass);
+            }
+        });
 
         const index = this.selectedCards.findIndex(c => this.manager.getId(c) == this.manager.getId(card));
         if (index !== -1) {
