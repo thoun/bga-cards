@@ -16,25 +16,19 @@ When the card is mentionned in the parameters, it can be any type of object. For
 ## Card layout
 The card contains a div (card-sides) that contains 2 divs : a front side and a back side.
 
-# Integration
-## On standard BGA project
-Copy bga-cards.css and bga-cards.js files to the `modules` directory.  
-Then you can include the module on your game :
+# Integration on a BGA project
 
-CSS file: 
-```css
-@import url(modules/bga-cards.css);
-```
 JS file:
 ```js
-define([
-   "dojo","dojo/_base/declare",
-   "dojo/debounce",
-   "ebg/core/gamegui",
-   /*...,*/
-   g_gamethemeurl + "modules/bga-cards.js",
-],
-function (dojo, declare, debounce, gamegui, /*...,*/ bgaCards) {
-```
+loadBgaGameLib('bga-cards', '0.x');
 
-See [examples](./EXAMPLES.md) to see how to create a stock.
+/* ... */
+
+    constructor: function() {
+
+        // create the animation manager
+        this.cardManager = new CardManager(this, ...);
+
+        // ...
+    },
+```

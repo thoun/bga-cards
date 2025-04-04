@@ -25,6 +25,7 @@ function initCommon() {
         <a href="index.html">Index</a> | 
         <a href="linear-stocks.html">Linear stocks</a> | 
         <a href="slot-stocks.html">Slot stocks</a> | 
+        <a href="hand-stocks.html">Hand stocks</a> |
         <a href="decks.html">Decks</a> |
         <a href="selection.html">Card selection</a>
     </div>

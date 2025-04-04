@@ -24,6 +24,7 @@ class HandStock<T> extends CardStock<T> {
         element.style.setProperty('--card-overlap', settings.cardOverlap ?? '60px');
         element.style.setProperty('--card-shift', settings.cardShift ?? '15px');
         element.style.setProperty('--card-inclination', `${settings.inclination ?? 12}deg`);
+        element.style.height = `${manager.getCardHeight() * 1.5}px`;
 
         this.inclination = settings.inclination ?? 4;
     }        
@@ -58,7 +59,7 @@ class HandStock<T> extends CardStock<T> {
         return cards.map((card, index) => index - middle);
     }
 
-    protected updateAngles(fakeIndex?: number) {
+    protected updateAngles() {
         const middle = (this.cards.length - 1) / 2;
         this.cards.forEach((card, index) => {
             const middleIndex = index - middle;

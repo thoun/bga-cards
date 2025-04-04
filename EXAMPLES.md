@@ -2,16 +2,12 @@
 ## Example of integration
 
 ```js
-define([
-   "dojo","dojo/_base/declare",
-   "dojo/debounce",
-   "ebg/core/gamegui",
-   /*...,*/
-   g_gamethemeurl + "modules/bga-cards.js",
-],
-function (dojo, declare, debounce, gamegui, /*...,*/ bgaCards) {
-   return declare("bgagame.mygame", gamegui, {
-      constructor: function() {
+loadBgaGameLib('bga-cards', '0.x');
+
+/* ... */
+
+    setup: function(gamedatas) {
+        /* ... */
 
         // create the card manager
         this.cardsManager = new CardManager(this, {
@@ -35,10 +31,8 @@ function (dojo, declare, debounce, gamegui, /*...,*/ bgaCards) {
 
         // create the stock
         this.stock = new LineStock(this.cardsManager, document.getElementById('card-stock'));
-
-        // add a card
-        const card = { id: 3, type: 3, type_arg: 2, location: 'table', location_arg: 0 };
-        this.stock.addCard(card);
+        this.stock.addCards(gamedatas.cards);
+    }
 ```
 
 ## Example of custom Stock

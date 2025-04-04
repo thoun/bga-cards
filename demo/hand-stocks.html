@@ -1,0 +1,76 @@
+<html>
+    <head>
+        <title>bga-cards demo</title>
+        <link href="../node_modules/bga-animations/bga-animations.css" rel="stylesheet"></link>
+        <script src="../node_modules/bga-animations/bga-animations.js" type="text/javascript"></script>
+
+        <link href="../bga-cards.css" rel="stylesheet"></script>
+        <script src="../bga-cards.js" type="text/javascript"></script>
+        <link href="./demo.css" rel="stylesheet"></script>
+        <script src="./common.js" type="text/javascript"></script>
+        <script src="./manager.js" type="text/javascript"></script>
+        <script src="./hand-stock.js" type="text/javascript"></script>
+    </head>
+    <body>
+        <h1>Hand stocks</h1>
+
+        <div class="flex">
+
+            <div class="block">
+                <h2>HandStock</h2>
+                <button onclick="addCardToHandStock(this)">Add card to hand stock</button>
+                <button onclick="removeCardToHandStock()">Remove card from hand stock</button>
+                <div id="hand-stock"></div>
+                <div id="floating-hand-stock"></div>
+
+                <input
+                    type="range"
+                    id="hand-stock-setting-overlap"
+                    min="0"
+                    max="120"
+                    value="60"
+                    step="1"
+                    oninput="updateHandStockSettings()" />
+                <label for="hand-stock-setting-overlap">overlap</label>
+
+                <input
+                    type="range"
+                    id="hand-stock-setting-shift"
+                    min="0"
+                    max="30"
+                    value="15"
+                    step="1"
+                    oninput="updateHandStockSettings()" />
+                <label for="hand-stock-setting-shift">shift</label>
+
+                <input
+                    type="range"
+                    id="hand-stock-setting-inclination"
+                    min="0"
+                    max="30"
+                    value="12"
+                    step="1"
+                    oninput="updateHandStockSettings()" />
+                <label for="hand-stock-setting-inclination">inclination</label>
+                -
+                <input
+                    type="range"
+                    id="hand-stock-setting-floatingHeight"
+                    min="10"
+                    max="200"
+                    value="100"
+                    step="1"
+                    oninput="updateHandStockSettings()" />
+                <label for="hand-stock-setting-inclination">floatingHeight</label>
+            </div>
+
+        </div>
+
+        <script>
+            initCommon();
+            initManager();
+            initHandStock();
+            initFloatingHandStock();
+        </script>
+    </body>
+</html>

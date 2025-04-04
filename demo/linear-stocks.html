@@ -10,7 +10,6 @@
         <script src="./common.js" type="text/javascript"></script>
         <script src="./manager.js" type="text/javascript"></script>
         <script src="./line-stock.js" type="text/javascript"></script>
-        <script src="./hand-stock.js" type="text/javascript"></script>
         <script src="./scrollable-stock.js" type="text/javascript"></script>
         <script src="./manual-position-stock.js" type="text/javascript"></script>
         <script src="./void-stock.js" type="text/javascript"></script>
@@ -46,13 +45,6 @@
             <div class="block">
                 <h2>ScrollableStock</h2>
                 <div id="scrollable-stock"></div>
-            </div>
-
-            <div class="block">
-                <h2>HandStock</h2>
-                <button onclick="addCardToHandStock(this)">Add card to hand stock</button>
-                <button onclick="removeCardToHandStock()">Remove card from hand stock</button>
-                <div id="hand-stock"></div>
             </div>
 
             <div class="block" style="min-width: 750px;">
@@ -103,7 +95,6 @@
             initLineStockOverlap();
             initLineStockVerticalOverlap();
             initScrollableStock();
-            initHandStock();
             initManualPositionDiagonalStock();
             initManualPositionCurveStock();
             initManualPositionFitStock();

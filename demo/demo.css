@@ -170,3 +170,11 @@ h1, h2 {
 .slot-selection-stock .mygame-slot.bga-cards_selected-slot {
     box-shadow: 0 0 5px 3px blueviolet;
 }
+
+#floating-hand-stock {
+    --card-floatingHeight: 100px;
+
+    position: fixed;
+    top: calc(100vh - var(--card-floatingHeight));
+    width: 100%;
+}

@@ -794,7 +794,7 @@ declare class HandStock<T> extends CardStock<T> {
     addCard(card: T, animation?: CardAnimationSettings, settings?: AddCardSettings): Promise<boolean>;
     cardRemoved(card: T, settings?: RemoveCardSettings): void;
     protected getMiddleIndexes(cards: T[]): number[];
-    protected updateAngles(fakeIndex?: number): void;
+    protected updateAngles(): void;
 }
 /**
  * A stock with manually placed cards
