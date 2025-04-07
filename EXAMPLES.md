@@ -11,21 +11,11 @@ loadBgaGameLib('bga-cards', '0.x');
 
         // create the card manager
         this.cardsManager = new CardManager(this, {
-            getId: (card) => `card-${card.id}`,
-            setupDiv: (card, div) => {
-                div.classList.add('mygame-card');
-                div.style.width = '100px';
-                div.style.height = '150px';
-                div.style.position = 'relative';
-            },
+            type: 'mygame-card',
+            getId: (card) => card.id,
             setupFrontDiv: (card, div) => {
                 div.style.background = 'blue';
-                div.classList.add('mygame-card-front');
-                div.id = `card-${card.id}-front`;
                 this.addTooltipHtml(div.id, `tooltip of ${card.type}`);
-            },
-            setupBackDiv: (card, div) => {
-                div.style.background = 'url(' + g_gamethemeurl + 'img/card-back.jpg)';
             },
         });
 

@@ -49,8 +49,7 @@ class AllVisibleDeck<T> extends CardStock<T> {
         const order = this.cards.length;
         promise = super.addCard(card, animation, settings);
         
-        const cardId = this.manager.getId(card);
-        const cardDiv = document.getElementById(cardId);
+        const cardDiv = this.manager.getCardElement(card);
         cardDiv.style.setProperty('--order', ''+order);
 
         return promise;
@@ -68,8 +67,7 @@ class AllVisibleDeck<T> extends CardStock<T> {
     public cardRemoved(card: T) {
         super.cardRemoved(card);
         this.cards.forEach((c, index) => {
-            const cardId = this.manager.getId(c);
-            const cardDiv = document.getElementById(cardId)
+            const cardDiv = this.manager.getCardElement(card);
             cardDiv.style.setProperty('--order', ''+index);
         });
     }

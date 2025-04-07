@@ -2,19 +2,13 @@ let tokensManager;
 
 function initTokenManager() {
     tokensManager = new CardManager(game, {
-        getId: (card) => `token-${card.id}`,
-        setupDiv: (card, div) => {
-            div.classList.add('mygame-token');
-        },
+        type: 'mygame-token',
+        getId: (card) => card.id,
         setupFrontDiv: (card, div) => {
-            div.classList.add('mygame-token-front');
             div.dataset.number = card.number;
             if (card.number) {
                 game.addTooltipHtml(div.id, `tooltip de ${card.number}`);
             }
-        },
-        setupBackDiv: (card, div) => {
-            div.classList.add('mygame-token-back');
         },
         isCardVisible: card => Boolean(card.number),
         cardWidth: 90,

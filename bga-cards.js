@@ -473,7 +473,7 @@ class CardStock {
             if (!cardDiv) {
                 return;
             }
-            const card = this.cards.find(c => this.manager.getId(c) == cardDiv.id);
+            const card = this.cards.find(c => this.manager.getCardElementId(c) === cardDiv.id);
             if (!card) {
                 return;
             }
@@ -483,7 +483,7 @@ class CardStock {
     cardClick(card) {
         var _a;
         if (this.selectionMode != 'none') {
-            const alreadySelected = this.selectedCards.some(c => this.manager.getId(c) == this.manager.getId(card));
+            const alreadySelected = this.selectedCards.some(c => this.manager.getId(c) === this.manager.getId(card));
             if (alreadySelected) {
                 this.unselectCard(card);
             }
@@ -746,7 +746,7 @@ class Deck extends CardStock {
      * Shows a shuffle animation on the deck
      *
      * @param animatedCardsMax number of animated cards for shuffle animation.
-     * @param fakeCardSetter a function to generate a fake card for animation. Required if the card id is not based on a numerci `id` field, or if you want to set custom card back
+     * @param fakeCardSetter a function to generate a fake card for animation. Required if the card id is not based on a numeric `id` field, or if you want to set custom card back
      * @returns promise when animation ends
      */
     shuffle(settings) {
@@ -1655,8 +1655,7 @@ class AllVisibleDeck extends CardStock {
         let promise;
         const order = this.cards.length;
         promise = super.addCard(card, animation, settings);
-        const cardId = this.manager.getId(card);
-        const cardDiv = document.getElementById(cardId);
+        const cardDiv = this.manager.getCardElement(card);
         cardDiv.style.setProperty('--order', '' + order);
         return promise;
     }
@@ -1671,8 +1670,7 @@ class AllVisibleDeck extends CardStock {
     cardRemoved(card) {
         super.cardRemoved(card);
         this.cards.forEach((c, index) => {
-            const cardId = this.manager.getId(c);
-            const cardDiv = document.getElementById(cardId);
+            const cardDiv = this.manager.getCardElement(card);
             cardDiv.style.setProperty('--order', '' + index);
         });
     }
@@ -1708,7 +1706,7 @@ class DiscardDeck extends CardStock {
             }
         }*/
     }
-    getRandomArbitrary(min, max) {
+    getRand(min, max) {
         return Math.floor(Math.random() * ((max + 1) - min) + min);
     }
     getMargins() {
@@ -1724,11 +1722,10 @@ class DiscardDeck extends CardStock {
     addCard(card, animation, settings) {
         let promise;
         promise = super.addCard(card, animation, settings);
-        const cardId = this.manager.getId(card);
-        const cardDiv = document.getElementById(cardId);
-        cardDiv.style.setProperty('--discard-deck-left', `${this.getRandomArbitrary(-this.maxHorizontalShift, this.maxHorizontalShift)}px`);
-        cardDiv.style.setProperty('--discard-deck-top', `${this.getRandomArbitrary(-this.maxVerticalShift, this.maxVerticalShift)}px`);
-        cardDiv.style.setProperty('--discard-deck-rotate', `${this.getRandomArbitrary(-this.maxRotation, this.maxRotation)}deg`);
+        const cardDiv = this.manager.getCardElement(card);
+        cardDiv.style.setProperty('--discard-deck-left', `${this.getRand(-this.maxHorizontalShift, this.maxHorizontalShift)}px`);
+        cardDiv.style.setProperty('--discard-deck-top', `${this.getRand(-this.maxVerticalShift, this.maxVerticalShift)}px`);
+        cardDiv.style.setProperty('--discard-deck-rotate', `${this.getRand(-this.maxRotation, this.maxRotation)}deg`);
         return promise;
     }
 }
@@ -1762,14 +1759,30 @@ class CardManager {
      */
     getId(card) {
         var _a, _b, _c;
-        return (_c = (_b = (_a = this.settings).getId) === null || _b === void 0 ? void 0 : _b.call(_a, card)) !== null && _c !== void 0 ? _c : `card-${card.id}`;
+        return (_c = (_b = (_a = this.settings).getId) === null || _b === void 0 ? void 0 : _b.call(_a, card)) !== null && _c !== void 0 ? _c : `${card.id}`;
+    }
+    /**
+     * @param card the card informations
+     * @return the id for a card element
+     */
+    getCardElementId(card) {
+        return `${this.getType()}-${this.getId(card)}`;
+    }
+    /**
+     *
+     * @returns the type of the cards, either set in the settings or by using game_name if there is only 1 type.
+     */
+    getType() {
+        var _a;
+        return (_a = this.settings.type) !== null && _a !== void 0 ? _a : `${this.game.game_name}-card`;
     }
     createCardElement(card, initialSide = 'auto') {
         var _a, _b, _c, _d, _e, _f;
-        const id = this.getId(card);
+        const id = this.getCardElementId(card);
         const side = ['front', 'back'].includes(initialSide) ? initialSide : (this.isCardVisible(card) ? 'front' : 'back'); // to apply auto & ignore invalid values
         const rotation = this.getCardRotation(card);
         const lying = rotation % 2 === 1;
+        const type = this.getType();
         if (this.getCardElement(card)) {
             throw new Error('This card already exists ' + JSON.stringify(card));
         }
@@ -1784,13 +1797,13 @@ class CardManager {
         element.style.setProperty('--bga-cards_card-border-radius', `${this.getCardBorderRadius()}`);
         element.innerHTML = `
             <div class="card-sides">
-                <div id="${id}-front" class="card-side front">
+                <div id="${id}-front" class="card-side front ${type}-front">
                 </div>
-                <div id="${id}-back" class="card-side back">
+                <div id="${id}-back" class="card-side back ${type}-back">
                 </div>
             </div>
         `;
-        element.classList.add('card');
+        element.classList.add('card', type);
         document.body.appendChild(element);
         (_b = (_a = this.settings).setupDiv) === null || _b === void 0 ? void 0 : _b.call(_a, card, element);
         (_d = (_c = this.settings).setupFrontDiv) === null || _d === void 0 ? void 0 : _d.call(_c, card, element.getElementsByClassName('front')[0]);
@@ -1803,7 +1816,7 @@ class CardManager {
      * @return the HTML element of an existing card
      */
     getCardElement(card) {
-        return document.getElementById(this.getId(card));
+        return document.getElementById(this.getCardElementId(card));
     }
     /**
      * Remove a card.
@@ -1813,12 +1826,11 @@ class CardManager {
      */
     removeCard(card, settings) {
         var _a;
-        const id = this.getId(card);
-        const div = document.getElementById(id);
+        const div = this.getCardElement(card);
         if (!div) {
             return Promise.resolve(false);
         }
-        div.id = `deleted${id}`;
+        div.id = `deleted-${div.id}`;
         div.remove();
         // if the card is in a stock, notify the stock about removal
         (_a = this.getCardStock(card)) === null || _a === void 0 ? void 0 : _a.cardRemoved(card, settings);

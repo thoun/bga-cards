@@ -1,14 +1,21 @@
 interface CardManagerSettings<T> {
     /**
-     * Define the id that will be set to each card div. It must generate a unique id for each different card, so it's often linked to card id.
-     * If you use different cards types that couldhave the same ids, you must define this method to make it different for each type (for example : `getId: (card) => 'other-card-type-' + card.id`).
+     * The type of cards, if you game has multiple cards types (each card manager should have a different type).
+     * Default `${yourgamename}-card`.
      * 
-     * Default: the id will be set to `card-${card.id}`.
+     * The card element will have this type as a class, and each side will have the class `${type}-${'front'/'back'}`.
+     */
+    type?: string;
+
+    /**
+     * Define the id that will be set to each card div. It must return a unique id for each different card, so it's often linked to card id.
+     * 
+     * Default: the id will be set to `card.id`.
      * 
      * @param card the card informations
      * @return the id for a card
      */
-    getId?: (card: T) => string;
+    getId?: (card: T) => string | number;
 
     /**
      * Allow to populate the main div of the card. You can set classes or dataset, if it's informations shared by both sides.
@@ -204,15 +211,32 @@ class CardManager<T> {
      * @param card the card informations
      * @return the id for a card
      */
-    public getId(card: T) {
-        return this.settings.getId?.(card) ?? `card-${(card as any).id}`;
+    public getId(card: T): string | number {
+        return this.settings.getId?.(card) ?? `${(card as any).id}`;
+    }
+
+    /**
+     * @param card the card informations
+     * @return the id for a card element
+     */
+    public getCardElementId(card: T): string {
+        return `${this.getType()}-${this.getId(card)}`;
+    }
+
+    /**
+     * 
+     * @returns the type of the cards, either set in the settings or by using game_name if there is only 1 type.
+     */
+    public getType(): string {
+        return this.settings.type ?? `${(this.game as any).game_name}-card`;
     }
 
     public createCardElement(card: T, initialSide: 'auto' | 'front' | 'back' = 'auto'): HTMLDivElement {
-        const id = this.getId(card);
+        const id = this.getCardElementId(card);
         const side = ['front', 'back'].includes(initialSide) ? initialSide : (this.isCardVisible(card) ? 'front' : 'back'); // to apply auto & ignore invalid values
         const rotation = this.getCardRotation(card);
         const lying = rotation % 2 === 1;
+        const type = this.getType();
 
         if (this.getCardElement(card)) {
             throw new Error('This card already exists ' + JSON.stringify(card));
@@ -229,13 +253,13 @@ class CardManager<T> {
         element.style.setProperty('--bga-cards_card-border-radius', `${this.getCardBorderRadius()}`);
         element.innerHTML = `
             <div class="card-sides">
-                <div id="${id}-front" class="card-side front">
+                <div id="${id}-front" class="card-side front ${type}-front">
                 </div>
-                <div id="${id}-back" class="card-side back">
+                <div id="${id}-back" class="card-side back ${type}-back">
                 </div>
             </div>
         `;
-        element.classList.add('card');
+        element.classList.add('card', type);
         document.body.appendChild(element);
         this.settings.setupDiv?.(card, element);
         this.settings.setupFrontDiv?.(card, element.getElementsByClassName('front')[0] as HTMLDivElement);
@@ -249,7 +273,7 @@ class CardManager<T> {
      * @return the HTML element of an existing card
      */
     public getCardElement(card: T): HTMLElement {
-        return document.getElementById(this.getId(card));
+        return document.getElementById(this.getCardElementId(card));
     }
 
     /**
@@ -259,13 +283,12 @@ class CardManager<T> {
      * @param settings a `RemoveCardSettings` object
      */
     public removeCard(card: T, settings?: RemoveCardSettings): Promise<boolean> {
-        const id = this.getId(card);
-        const div = document.getElementById(id);
+        const div = this.getCardElement(card);
         if (!div) {
             return Promise.resolve(false);
         }
 
-        div.id = `deleted${id}`;
+        div.id = `deleted-${div.id}`;
         div.remove();
 
         // if the card is in a stock, notify the stock about removal

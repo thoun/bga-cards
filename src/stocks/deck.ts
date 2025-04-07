@@ -215,7 +215,7 @@ class Deck<T> extends CardStock<T> {
      * Shows a shuffle animation on the deck
      * 
      * @param animatedCardsMax number of animated cards for shuffle animation.
-     * @param fakeCardSetter a function to generate a fake card for animation. Required if the card id is not based on a numerci `id` field, or if you want to set custom card back
+     * @param fakeCardSetter a function to generate a fake card for animation. Required if the card id is not based on a numeric `id` field, or if you want to set custom card back
      * @returns promise when animation ends
      */
     public async shuffle(settings?: ShuffleAnimationSettings<T>): Promise<boolean> {

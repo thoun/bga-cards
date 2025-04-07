@@ -605,7 +605,7 @@ class CardStock<T> {
             if (!cardDiv) {
                 return;
             }
-            const card = this.cards.find(c => this.manager.getId(c) == cardDiv.id);
+            const card = this.cards.find(c => this.manager.getCardElementId(c) === cardDiv.id);
             if (!card) {
                 return;
             }
@@ -615,7 +615,7 @@ class CardStock<T> {
 
     protected cardClick(card: T) {
         if (this.selectionMode != 'none') {
-            const alreadySelected = this.selectedCards.some(c => this.manager.getId(c) == this.manager.getId(card));
+            const alreadySelected = this.selectedCards.some(c => this.manager.getId(c) === this.manager.getId(card));
 
             if (alreadySelected) {
                 this.unselectCard(card);
@@ -636,7 +636,7 @@ class CardStock<T> {
             const result = await this.manager.animationManager.slideAndAttach(element, toElement, animation, insertBefore);
             return result?.played ?? false;
         } else {
-            (this.manager.animationManager as any).base.attachToElement(element, toElement, insertBefore);
+            this.manager.animationManager.base.attachToElement(element, toElement, insertBefore);
             let result = null;
             if (!animation.fromStock || settings.fadeIn) {
                 result = await this.manager.animationManager.fadeIn(element, fromElement, animation);

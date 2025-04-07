@@ -51,7 +51,7 @@ class DiscardDeck<T> extends CardStock<T> {
         }*/
     } 
 
-    protected getRandomArbitrary(min: number, max: number): number {
+    protected getRand(min: number, max: number): number {
         return Math.floor(Math.random() * ((max + 1) - min) + min);
     }      
     
@@ -75,11 +75,10 @@ class DiscardDeck<T> extends CardStock<T> {
 
         promise = super.addCard(card, animation, settings);
         
-        const cardId = this.manager.getId(card);
-        const cardDiv = document.getElementById(cardId);
-        cardDiv.style.setProperty('--discard-deck-left', `${this.getRandomArbitrary(-this.maxHorizontalShift, this.maxHorizontalShift)}px`);
-        cardDiv.style.setProperty('--discard-deck-top', `${this.getRandomArbitrary(-this.maxVerticalShift, this.maxVerticalShift)}px`);
-        cardDiv.style.setProperty('--discard-deck-rotate', `${this.getRandomArbitrary(-this.maxRotation, this.maxRotation)}deg`);
+        const cardDiv = this.manager.getCardElement(card);
+        cardDiv.style.setProperty('--discard-deck-left', `${this.getRand(-this.maxHorizontalShift, this.maxHorizontalShift)}px`);
+        cardDiv.style.setProperty('--discard-deck-top', `${this.getRand(-this.maxVerticalShift, this.maxVerticalShift)}px`);
+        cardDiv.style.setProperty('--discard-deck-rotate', `${this.getRand(-this.maxRotation, this.maxRotation)}deg`);
 
         return promise;
     }

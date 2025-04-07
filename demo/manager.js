@@ -5,12 +5,13 @@ const cardHeight = 150;
 
 function initManager() {
     cardsManager = new CardManager(game, {
-        getId: (card) => `card-${card.id}`,
+        type: 'mygame-card',
+        getId: (card) => card.id,
         setupDiv: (card, div) => {
-            div.classList.add('mygame-card');
+            // div.classList.add('mygame-card'); // useless as type generates a class name like this
         },
         setupFrontDiv: (card, div) => {
-            div.classList.add('mygame-card-front');
+            //div.classList.add('mygame-card-front'); // useless as type generates a class name like this
             div.style.backgroundPositionX = `${(card.type_arg - 1) * 100 / 14}%`;
             div.style.backgroundPositionY = `${(card.type - 1) * 100 / 3}%`;
             /*div.style.background = 'white';
@@ -25,7 +26,7 @@ function initManager() {
             }
         },
         setupBackDiv: (card, div) => {
-            div.classList.add('mygame-card-back');
+            //div.classList.add('mygame-card-back'); // useless as type generates a class name like this
         },
         isCardVisible: card => Boolean(card.type) && !card.flipped,
         getCardRotation: card => card.r,

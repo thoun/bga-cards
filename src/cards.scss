@@ -58,6 +58,10 @@ body > .card {
         }
     }
 
+    .bga-cards_selectable-card {
+        cursor: pointer;
+    }
+
     .bga-cards_last-played-card {
         outline: 2px dotted var(--last-played-card-color);
     }

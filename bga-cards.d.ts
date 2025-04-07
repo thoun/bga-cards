@@ -401,7 +401,7 @@ declare class Deck<T> extends CardStock<T> {
      * Shows a shuffle animation on the deck
      *
      * @param animatedCardsMax number of animated cards for shuffle animation.
-     * @param fakeCardSetter a function to generate a fake card for animation. Required if the card id is not based on a numerci `id` field, or if you want to set custom card back
+     * @param fakeCardSetter a function to generate a fake card for animation. Required if the card id is not based on a numeric `id` field, or if you want to set custom card back
      * @returns promise when animation ends
      */
     shuffle(settings?: ShuffleAnimationSettings<T>): Promise<boolean>;
@@ -911,7 +911,7 @@ declare class DiscardDeck<T> extends CardStock<T> {
     protected maxVerticalShift: number;
     protected maxRotation: number;
     constructor(manager: CardManager<T>, element: HTMLElement, settings?: DiscardDeckSettings);
-    protected getRandomArbitrary(min: number, max: number): number;
+    protected getRand(min: number, max: number): number;
     protected getMargins(): {
         horizontalMargin: number;
         verticalMargin: number;
@@ -920,15 +920,21 @@ declare class DiscardDeck<T> extends CardStock<T> {
 }
 interface CardManagerSettings<T> {
     /**
-     * Define the id that will be set to each card div. It must generate a unique id for each different card, so it's often linked to card id.
-     * If you use different cards types that couldhave the same ids, you must define this method to make it different for each type (for example : `getId: (card) => 'other-card-type-' + card.id`).
+     * The type of cards, if you game has multiple cards types (each card manager should have a different type).
+     * Default `${yourgamename}-card`.
      *
-     * Default: the id will be set to `card-${card.id}`.
+     * The card element will have this type as a class, and each side will have the class `${type}-${'front'/'back'}`.
+     */
+    type?: string;
+    /**
+     * Define the id that will be set to each card div. It must return a unique id for each different card, so it's often linked to card id.
+     *
+     * Default: the id will be set to `card.id`.
      *
      * @param card the card informations
      * @return the id for a card
      */
-    getId?: (card: T) => string;
+    getId?: (card: T) => string | number;
     /**
      * Allow to populate the main div of the card. You can set classes or dataset, if it's informations shared by both sides.
      *
@@ -1087,7 +1093,17 @@ declare class CardManager<T> {
      * @param card the card informations
      * @return the id for a card
      */
-    getId(card: T): string;
+    getId(card: T): string | number;
+    /**
+     * @param card the card informations
+     * @return the id for a card element
+     */
+    getCardElementId(card: T): string;
+    /**
+     *
+     * @returns the type of the cards, either set in the settings or by using game_name if there is only 1 type.
+     */
+    getType(): string;
     createCardElement(card: T, initialSide?: 'auto' | 'front' | 'back'): HTMLDivElement;
     /**
      * @param card the card informations
