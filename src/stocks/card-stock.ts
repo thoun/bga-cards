@@ -246,8 +246,8 @@ class CardStock<T> {
             throw new Error('The card element exists but is not attached to any Stock');
         }
         if (cardElement) { // unselect the card
-            this.removeSelectionClassesFromElement(cardElement);
             originStock.unselectCard(card);
+            this.removeSelectionClassesFromElement(cardElement);
         }
         const animationSettings: CardAnimationSettings = animation ?? {};
         if (originStock) { // if the card is in a Stock, the animation must come from it
@@ -696,7 +696,7 @@ class CardStock<T> {
         const unselectableCardsClass = this.getUnselectableCardClass();
         const selectedCardsClass = this.getSelectedCardClass();
 
-        cardElement?.classList.remove(selectableCardsClass, unselectableCardsClass, selectedCardsClass);
+        cardElement?.querySelectorAll('.card-side').forEach(cardSideDiv => cardSideDiv.classList.remove(selectableCardsClass, unselectableCardsClass, selectedCardsClass));
     }
 
     /**

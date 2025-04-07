@@ -150,8 +150,8 @@ class CardStock {
             throw new Error('The card element exists but is not attached to any Stock');
         }
         if (cardElement) { // unselect the card
-            this.removeSelectionClassesFromElement(cardElement);
             originStock.unselectCard(card);
+            this.removeSelectionClassesFromElement(cardElement);
         }
         const animationSettings = animation !== null && animation !== void 0 ? animation : {};
         if (originStock) { // if the card is in a Stock, the animation must come from it
@@ -561,7 +561,7 @@ class CardStock {
         const selectableCardsClass = this.getSelectableCardClass();
         const unselectableCardsClass = this.getUnselectableCardClass();
         const selectedCardsClass = this.getSelectedCardClass();
-        cardElement === null || cardElement === void 0 ? void 0 : cardElement.classList.remove(selectableCardsClass, unselectableCardsClass, selectedCardsClass);
+        cardElement === null || cardElement === void 0 ? void 0 : cardElement.querySelectorAll('.card-side').forEach(cardSideDiv => cardSideDiv.classList.remove(selectableCardsClass, unselectableCardsClass, selectedCardsClass));
     }
     /**
      * Changes the sort function of the stock.
