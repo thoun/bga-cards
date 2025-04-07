@@ -598,11 +598,19 @@ class CardStock {
         this.element.appendChild(this.counterDiv);
     }
     /**
+     * Returns the card count in the deck (what the player think there is, for decks, the real number of cards for all visible card stocks).
+     *
+     * @returns the number of card in the stock
+     */
+    getCardCount() {
+        return this.cards.length;
+    }
+    /**
      * Updates the cards number, if the counter is visible.
      */
     cardNumberUpdated() {
         var _a;
-        const cardNumber = this.cards.length;
+        const cardNumber = this.getCardCount();
         this.element.style.setProperty('--tile-count', '' + cardNumber);
         this.element.dataset.empty = (cardNumber == 0).toString();
         (_a = this.onCardCountChange) === null || _a === void 0 ? void 0 : _a.call(this, cardNumber);
@@ -742,12 +750,14 @@ class Deck extends CardStock {
      * @returns promise when animation ends
      */
     shuffle(settings) {
-        var _a, _b, _c;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             const animatedCardsMax = (_a = settings === null || settings === void 0 ? void 0 : settings.animatedCardsMax) !== null && _a !== void 0 ? _a : 8;
-            this.addCard((_b = settings === null || settings === void 0 ? void 0 : settings.newTopCard) !== null && _b !== void 0 ? _b : this.getFakeCard(), undefined, { autoUpdateCardNumber: false });
             if (!this.manager.game.bgaAnimationsActive()) {
                 return Promise.resolve(false); // we don't execute as it's just visual temporary stuff
+            }
+            if (this.getCardCount() > 0 && !this.cards.length) {
+                this.addCard(this.getFakeCard(), undefined, { autoUpdateCardNumber: false });
             }
             const animatedCards = Math.min(8, animatedCardsMax, this.getCardNumber());
             if (animatedCards > 1) {
@@ -796,7 +806,7 @@ class Deck extends CardStock {
                     return () => this.manager.animationManager.slideIn(element, undefined, { parallelAnimations, duration: 1000 });
                 }), 80);
                 elements.filter(element => element.dataset.tempCardForShuffleAnimation === 'true').forEach(element => element === null || element === void 0 ? void 0 : element.remove());
-                const pauseDelayAfterAnimation = (_c = settings === null || settings === void 0 ? void 0 : settings.pauseDelayAfterAnimation) !== null && _c !== void 0 ? _c : 500;
+                const pauseDelayAfterAnimation = (_b = settings === null || settings === void 0 ? void 0 : settings.pauseDelayAfterAnimation) !== null && _b !== void 0 ? _b : 500;
                 if (pauseDelayAfterAnimation > 0) {
                     yield this.manager.game.wait(pauseDelayAfterAnimation);
                 }
@@ -809,6 +819,14 @@ class Deck extends CardStock {
     }
     getFakeCard() {
         return this.fakeCardGenerator(this.element.id);
+    }
+    /**
+     * Returns the card count in the deck (what the player think there is, for decks, the real number of cards for all visible card stocks).
+     *
+     * @returns the number of card in the stock
+     */
+    getCardCount() {
+        return this.cardNumber;
     }
 }
 /**

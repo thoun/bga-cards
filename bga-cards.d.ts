@@ -294,6 +294,12 @@ declare class CardStock<T> {
     setSort(sort?: SortFunction): void;
     protected createCounter(counterPosition: SideOrAngleOrCenter, extraClasses: string, hideWhenEmpty?: boolean, counterId?: string): void;
     /**
+     * Returns the card count in the deck (what the player think there is, for decks, the real number of cards for all visible card stocks).
+     *
+     * @returns the number of card in the stock
+     */
+    getCardCount(): number;
+    /**
      * Updates the cards number, if the counter is visible.
      */
     protected cardNumberUpdated(): void;
@@ -356,11 +362,6 @@ interface ShuffleAnimationSettings<T> {
      */
     fakeCardSetter?: (card: T, index: number) => void;
     /**
-     * The top card after the shuffle animation.
-     * Default is a card generated with fakeCardGenerator from Deck (or Manager if unset in Deck).
-     */
-    newTopCard?: T;
-    /**
      * Time to wait after shuffle, in case it is chained with other animations, to let the time to understand it's 2 different animations.
      * Default is 500ms.
      */
@@ -405,6 +406,12 @@ declare class Deck<T> extends CardStock<T> {
      */
     shuffle(settings?: ShuffleAnimationSettings<T>): Promise<boolean>;
     protected getFakeCard(): T;
+    /**
+     * Returns the card count in the deck (what the player think there is, for decks, the real number of cards for all visible card stocks).
+     *
+     * @returns the number of card in the stock
+     */
+    getCardCount(): number;
 }
 interface LineStockSettings extends CardStockSettings {
     /**

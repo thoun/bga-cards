@@ -68,12 +68,6 @@ interface ShuffleAnimationSettings<T> {
     fakeCardSetter?: (card: T, index: number) => void;
     
     /**
-     * The top card after the shuffle animation. 
-     * Default is a card generated with fakeCardGenerator from Deck (or Manager if unset in Deck).
-     */
-    newTopCard?: T;
-    
-    /**
      * Time to wait after shuffle, in case it is chained with other animations, to let the time to understand it's 2 different animations.
      * Default is 500ms.
      */
@@ -227,10 +221,12 @@ class Deck<T> extends CardStock<T> {
     public async shuffle(settings?: ShuffleAnimationSettings<T>): Promise<boolean> {
         const animatedCardsMax = settings?.animatedCardsMax ?? 8;
 
-        this.addCard(settings?.newTopCard ?? this.getFakeCard(), undefined, { autoUpdateCardNumber: false });
-
         if (!this.manager.game.bgaAnimationsActive()) { 
             return Promise.resolve(false); // we don't execute as it's just visual temporary stuff
+        }
+
+        if (this.getCardCount() > 0 && !this.cards.length) {
+            this.addCard(this.getFakeCard(), undefined, { autoUpdateCardNumber: false });
         }
 
         const animatedCards = Math.min(8, animatedCardsMax, this.getCardNumber());
@@ -252,7 +248,7 @@ class Deck<T> extends CardStock<T> {
             for (let i = elements.length; i <= animatedCards; i++) {
                 let newCard: T;
                 do {
-                    newCard = getFakeCard(uid++)
+                    newCard = getFakeCard(uid++);
                 } while (this.manager.getCardElement(newCard)); // To make sure there isn't a fake card remaining with the same uid
 
                 const newElement = this.manager.createCardElement(newCard, 'back');
@@ -299,5 +295,14 @@ class Deck<T> extends CardStock<T> {
 
     protected getFakeCard(): T {
         return this.fakeCardGenerator(this.element.id);
+    }
+
+    /**
+     * Returns the card count in the deck (what the player think there is, for decks, the real number of cards for all visible card stocks).
+     * 
+     * @returns the number of card in the stock
+     */
+    public getCardCount(): number {
+        return this.cardNumber;
     }
 }

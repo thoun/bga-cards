@@ -741,10 +741,19 @@ class CardStock<T> {
     }
 
     /**
+     * Returns the card count in the deck (what the player think there is, for decks, the real number of cards for all visible card stocks).
+     * 
+     * @returns the number of card in the stock
+     */
+    public getCardCount(): number {
+        return this.cards.length;
+    }
+
+    /**
      * Updates the cards number, if the counter is visible.
      */
     protected cardNumberUpdated() {
-        const cardNumber = this.cards.length;
+        const cardNumber = this.getCardCount();
         this.element.style.setProperty('--tile-count', ''+cardNumber);
         this.element.dataset.empty = (cardNumber == 0).toString();
         this.onCardCountChange?.(cardNumber);
