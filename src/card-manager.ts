@@ -179,6 +179,10 @@ interface FlipCardSettings {
     updateBackDelay?: number;
 }
 
+const BGA_CARDS_CARD_CLASS = 'bga-cards_card';
+const BGA_CARDS_CARD_SIDES_CLASS = 'bga-cards_card-sides';
+const BGA_CARDS_CARD_SIDE_CLASS = 'bga-cards_card-side';
+
 class CardManager<T> {
     public animationManager: AnimationManager;
 
@@ -252,14 +256,14 @@ class CardManager<T> {
         element.style.setProperty('--bga-cards_card-rotation', `${rotation * 90}deg`);
         element.style.setProperty('--bga-cards_card-border-radius', `${this.getCardBorderRadius()}`);
         element.innerHTML = `
-            <div class="card-sides">
-                <div id="${id}-front" class="card-side front ${type}-front">
+            <div class="${BGA_CARDS_CARD_SIDES_CLASS}">
+                <div id="${id}-front" class="${BGA_CARDS_CARD_SIDE_CLASS} front ${type}-front">
                 </div>
-                <div id="${id}-back" class="card-side back ${type}-back">
+                <div id="${id}-back" class="${BGA_CARDS_CARD_SIDE_CLASS} back ${type}-back">
                 </div>
             </div>
         `;
-        element.classList.add('card', type);
+        element.classList.add(BGA_CARDS_CARD_CLASS, type);
         document.body.appendChild(element);
         this.settings.setupDiv?.(card, element);
         this.settings.setupFrontDiv?.(card, element.getElementsByClassName('front')[0] as HTMLDivElement);
@@ -541,7 +545,7 @@ class CardManager<T> {
         }
         cards.map(card => this.getCardElement(card)).filter(element => !!element).forEach(element => {
             element.style.setProperty('--last-played-card-color', color ?? 'red');
-            element.querySelectorAll('.card-side').forEach(cardSideDiv => cardSideDiv.classList.add(lastPlayedClass));
+            element.querySelectorAll(`.${BGA_CARDS_CARD_SIDE_CLASS}`).forEach(cardSideDiv => cardSideDiv.classList.add(lastPlayedClass));
         });
     }
 }

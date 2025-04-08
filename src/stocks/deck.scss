@@ -4,7 +4,7 @@
         width: var(--width);
         height: var(--height);
 
-        &>.card {            
+        &>.bga-cards_card {            
             position: absolute;
             top: calc(var(--thickness) * var(--xShadowShift) * -1);
             left: calc(var(--thickness) * var(--yShadowShift) * -1);
@@ -15,7 +15,7 @@
         }
     
         &[data-empty="true"] {
-            &>.card { 
+            &>.bga-cards_card { 
                 visibility: hidden;
             }
         }

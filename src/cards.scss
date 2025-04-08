@@ -1,10 +1,10 @@
-body > .card {
+body > .bga-cards_card {
     position: absolute;
     left: -9999px;
     top: -9999px;
 }
 
-.card {
+.bga-cards_card {
     position: relative;
     width: var(--bga-cards_card-effective-width);
     height: var(--bga-cards_card-effective-height);
@@ -14,12 +14,12 @@ body > .card {
     flex-shrink: 0;
     
     &[data-side="back"] {
-        .card-sides { 
+        .bga-cards_card-sides { 
             transform: rotateY(180deg);
         }
     }
 
-    .card-sides {
+    .bga-cards_card-sides {
         position: absolute;
         width: var(--bga-cards_card-width);
         height: var(--bga-cards_card-height);
@@ -29,7 +29,7 @@ body > .card {
         transition: rotate 0.5s, transform 0.5s;
         rotate: var(--bga-cards_card-rotation);
 
-        .card-side {
+        .bga-cards_card-side {
             position: absolute;
             top: 0;
             left: 0;

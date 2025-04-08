@@ -472,10 +472,10 @@ class CardStock<T> {
         const unselectableCardsClass = this.getUnselectableCardClass();
 
         if (selectableCardsClass) {
-            element?.querySelectorAll('.card-side').forEach(cardSideDiv => cardSideDiv.classList.toggle(selectableCardsClass, selectable));
+            element?.querySelectorAll(`.${BGA_CARDS_CARD_SIDE_CLASS}`).forEach(cardSideDiv => cardSideDiv.classList.toggle(selectableCardsClass, selectable));
         }
         if (unselectableCardsClass) {
-            element?.querySelectorAll('.card-side').forEach(cardSideDiv => cardSideDiv.classList.toggle(unselectableCardsClass, !selectable));
+            element?.querySelectorAll(`.${BGA_CARDS_CARD_SIDE_CLASS}`).forEach(cardSideDiv => cardSideDiv.classList.toggle(unselectableCardsClass, !selectable));
         }
 
         const index = this.selectableCards.findIndex(c => this.manager.getId(c) == this.manager.getId(card));
@@ -534,7 +534,7 @@ class CardStock<T> {
 
         const selectableCardsClass = this.getSelectableCardClass();
         const selectedCardsClass = this.getSelectedCardClass();
-        element?.querySelectorAll('.card-side').forEach(cardSideDiv => {
+        element?.querySelectorAll(`.${BGA_CARDS_CARD_SIDE_CLASS}`).forEach(cardSideDiv => {
             cardSideDiv.classList.remove(selectableCardsClass);
             cardSideDiv.classList.add(selectedCardsClass);
         });
@@ -555,7 +555,7 @@ class CardStock<T> {
         const selectable = this.selectableCards.some(c => this.manager.getId(c) == this.manager.getId(card));
         const selectableCardsClass = this.getSelectableCardClass();
         const selectedCardsClass = this.getSelectedCardClass();
-        element?.querySelectorAll('.card-side').forEach(cardSideDiv => {
+        element?.querySelectorAll(`.${BGA_CARDS_CARD_SIDE_CLASS}`).forEach(cardSideDiv => {
             cardSideDiv.classList.remove(selectedCardsClass);
             if (selectable) {
                 cardSideDiv.classList.add(selectableCardsClass);
@@ -601,7 +601,7 @@ class CardStock<T> {
 
     protected bindClick() {
         this.element?.addEventListener('click', event => {
-            const cardDiv = (event.target as HTMLElement).closest('.card');
+            const cardDiv = (event.target as HTMLElement).closest(`.${BGA_CARDS_CARD_CLASS}`);
             if (!cardDiv) {
                 return;
             }
@@ -696,7 +696,7 @@ class CardStock<T> {
         const unselectableCardsClass = this.getUnselectableCardClass();
         const selectedCardsClass = this.getSelectedCardClass();
 
-        cardElement?.querySelectorAll('.card-side').forEach(cardSideDiv => cardSideDiv.classList.remove(selectableCardsClass, unselectableCardsClass, selectedCardsClass));
+        cardElement?.querySelectorAll(`.${BGA_CARDS_CARD_SIDE_CLASS}`).forEach(cardSideDiv => cardSideDiv.classList.remove(selectableCardsClass, unselectableCardsClass, selectedCardsClass));
     }
 
     /**

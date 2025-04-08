@@ -4,7 +4,7 @@
     width: var(--width);
     height: var(--height);
     margin: var(--discard-deck-vertical-margin) var(--discard-deck-horizontal-margin);
-    & > .card {
+    & > .bga-cards_card {
         position: absolute;
         left: var(--discard-deck-left);
         top: var(--discard-deck-top);

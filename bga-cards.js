@@ -356,10 +356,10 @@ class CardStock {
         const selectableCardsClass = this.getSelectableCardClass();
         const unselectableCardsClass = this.getUnselectableCardClass();
         if (selectableCardsClass) {
-            element === null || element === void 0 ? void 0 : element.querySelectorAll('.card-side').forEach(cardSideDiv => cardSideDiv.classList.toggle(selectableCardsClass, selectable));
+            element === null || element === void 0 ? void 0 : element.querySelectorAll(`.${BGA_CARDS_CARD_SIDE_CLASS}`).forEach(cardSideDiv => cardSideDiv.classList.toggle(selectableCardsClass, selectable));
         }
         if (unselectableCardsClass) {
-            element === null || element === void 0 ? void 0 : element.querySelectorAll('.card-side').forEach(cardSideDiv => cardSideDiv.classList.toggle(unselectableCardsClass, !selectable));
+            element === null || element === void 0 ? void 0 : element.querySelectorAll(`.${BGA_CARDS_CARD_SIDE_CLASS}`).forEach(cardSideDiv => cardSideDiv.classList.toggle(unselectableCardsClass, !selectable));
         }
         const index = this.selectableCards.findIndex(c => this.manager.getId(c) == this.manager.getId(card));
         if (selectable) {
@@ -408,7 +408,7 @@ class CardStock {
         }
         const selectableCardsClass = this.getSelectableCardClass();
         const selectedCardsClass = this.getSelectedCardClass();
-        element === null || element === void 0 ? void 0 : element.querySelectorAll('.card-side').forEach(cardSideDiv => {
+        element === null || element === void 0 ? void 0 : element.querySelectorAll(`.${BGA_CARDS_CARD_SIDE_CLASS}`).forEach(cardSideDiv => {
             cardSideDiv.classList.remove(selectableCardsClass);
             cardSideDiv.classList.add(selectedCardsClass);
         });
@@ -428,7 +428,7 @@ class CardStock {
         const selectable = this.selectableCards.some(c => this.manager.getId(c) == this.manager.getId(card));
         const selectableCardsClass = this.getSelectableCardClass();
         const selectedCardsClass = this.getSelectedCardClass();
-        element === null || element === void 0 ? void 0 : element.querySelectorAll('.card-side').forEach(cardSideDiv => {
+        element === null || element === void 0 ? void 0 : element.querySelectorAll(`.${BGA_CARDS_CARD_SIDE_CLASS}`).forEach(cardSideDiv => {
             cardSideDiv.classList.remove(selectedCardsClass);
             if (selectable) {
                 cardSideDiv.classList.add(selectableCardsClass);
@@ -469,7 +469,7 @@ class CardStock {
     bindClick() {
         var _a;
         (_a = this.element) === null || _a === void 0 ? void 0 : _a.addEventListener('click', event => {
-            const cardDiv = event.target.closest('.card');
+            const cardDiv = event.target.closest(`.${BGA_CARDS_CARD_CLASS}`);
             if (!cardDiv) {
                 return;
             }
@@ -561,7 +561,7 @@ class CardStock {
         const selectableCardsClass = this.getSelectableCardClass();
         const unselectableCardsClass = this.getUnselectableCardClass();
         const selectedCardsClass = this.getSelectedCardClass();
-        cardElement === null || cardElement === void 0 ? void 0 : cardElement.querySelectorAll('.card-side').forEach(cardSideDiv => cardSideDiv.classList.remove(selectableCardsClass, unselectableCardsClass, selectedCardsClass));
+        cardElement === null || cardElement === void 0 ? void 0 : cardElement.querySelectorAll(`.${BGA_CARDS_CARD_SIDE_CLASS}`).forEach(cardSideDiv => cardSideDiv.classList.remove(selectableCardsClass, unselectableCardsClass, selectedCardsClass));
     }
     /**
      * Changes the sort function of the stock.
@@ -1729,6 +1729,9 @@ class DiscardDeck extends CardStock {
         return promise;
     }
 }
+const BGA_CARDS_CARD_CLASS = 'bga-cards_card';
+const BGA_CARDS_CARD_SIDES_CLASS = 'bga-cards_card-sides';
+const BGA_CARDS_CARD_SIDE_CLASS = 'bga-cards_card-side';
 class CardManager {
     /**
      * @param game the BGA game class, usually it will be `this`
@@ -1796,14 +1799,14 @@ class CardManager {
         element.style.setProperty('--bga-cards_card-rotation', `${rotation * 90}deg`);
         element.style.setProperty('--bga-cards_card-border-radius', `${this.getCardBorderRadius()}`);
         element.innerHTML = `
-            <div class="card-sides">
-                <div id="${id}-front" class="card-side front ${type}-front">
+            <div class="${BGA_CARDS_CARD_SIDES_CLASS}">
+                <div id="${id}-front" class="${BGA_CARDS_CARD_SIDE_CLASS} front ${type}-front">
                 </div>
-                <div id="${id}-back" class="card-side back ${type}-back">
+                <div id="${id}-back" class="${BGA_CARDS_CARD_SIDE_CLASS} back ${type}-back">
                 </div>
             </div>
         `;
-        element.classList.add('card', type);
+        element.classList.add(BGA_CARDS_CARD_CLASS, type);
         document.body.appendChild(element);
         (_b = (_a = this.settings).setupDiv) === null || _b === void 0 ? void 0 : _b.call(_a, card, element);
         (_d = (_c = this.settings).setupFrontDiv) === null || _d === void 0 ? void 0 : _d.call(_c, card, element.getElementsByClassName('front')[0]);
@@ -2061,7 +2064,7 @@ class CardManager {
         }
         cards.map(card => this.getCardElement(card)).filter(element => !!element).forEach(element => {
             element.style.setProperty('--last-played-card-color', color !== null && color !== void 0 ? color : 'red');
-            element.querySelectorAll('.card-side').forEach(cardSideDiv => cardSideDiv.classList.add(lastPlayedClass));
+            element.querySelectorAll(`.${BGA_CARDS_CARD_SIDE_CLASS}`).forEach(cardSideDiv => cardSideDiv.classList.add(lastPlayedClass));
         });
     }
 }

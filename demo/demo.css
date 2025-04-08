@@ -32,7 +32,7 @@ h1, h2 {
     min-width: 500px;
 }
 
-.mygame-card .card-side/*:not(.bga-cards_selectable-card):not(.bga-cards_selected-card)*/ {
+.mygame-card .bga-cards_card-side/*:not(.bga-cards_selectable-card):not(.bga-cards_selected-card)*/ {
     box-shadow: 1px 1px 2px 1px rgba(0,0,0,0.5);
 }
 

@@ -6,7 +6,7 @@
         height: calc(var(--height) + (var(--tile-count) - 1) * var(--vertical-shift));
         transition: width 0.5s ease-in-out, height 0.5s ease-in-out, background-color 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
 
-        & > .card {
+        & > .bga-cards_card {
             position: absolute;
             margin: 0;
             transition: left 0.5s ease-in-out, top 0.5s ease-in-out;
@@ -19,7 +19,7 @@
                 height: calc((var(--height) + var(--vertical-shift)) * var(--tile-count) - var(--vertical-shift));
                 z-index: 1;
 
-                & > .card {
+                & > .bga-cards_card {
                     top: calc((var(--height) + var(--vertical-shift)) * var(--order));
                 }
             }
@@ -30,7 +30,7 @@
                 width: calc((var(--width) + var(--horizontal-shift)) * var(--tile-count) - var(--horizontal-shift));
                 z-index: 1;
 
-                & > .card {
+                & > .bga-cards_card {
                     left: calc((var(--width) + var(--horizontal-shift)) * var(--order));
                 }
             }
@@ -41,7 +41,7 @@
         }
     
         &[data-empty="true"] {
-            &>.card { 
+            &>.bga-cards_card { 
                 visibility: hidden;
             }
 

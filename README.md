@@ -14,7 +14,7 @@ If you have different decks of cards (cards of different kind, that may have ids
 When the card is mentionned in the parameters, it can be any type of object. For example `{ id: 3, type: 3, type_arg: 2 }`. It should be possible to identify the card and generate it's unique id by the object, when used in manager/stock parameter, but it isn't necessary to be the exact same object that was used to add the card.
 
 ## Card layout
-The card contains a div (card-sides) that contains 2 divs : a front side and a back side.
+The card contains a div (bga-cards_card-sides) that contains 2 divs : a front side and a back side.
 
 # Integration on a BGA project
 

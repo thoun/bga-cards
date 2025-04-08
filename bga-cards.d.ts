@@ -1074,6 +1074,9 @@ interface FlipCardSettings {
      */
     updateBackDelay?: number;
 }
+declare const BGA_CARDS_CARD_CLASS = "bga-cards_card";
+declare const BGA_CARDS_CARD_SIDES_CLASS = "bga-cards_card-sides";
+declare const BGA_CARDS_CARD_SIDE_CLASS = "bga-cards_card-side";
 declare class CardManager<T> {
     game: Game;
     private settings;
