@@ -354,7 +354,7 @@ class CardStock<T> {
      * @param shift if number, the number of milliseconds between each card. if true, chain animations
      */
     public async addCards(cards: T[], animation?: CardAnimationSettings, settings?: AddCardSettings, shift: number | boolean = false): Promise<boolean> {
-        if (!this.manager.game.bgaAnimationsActive()) {
+        if (!this.manager.animationManager.animationsActive()) {
             shift = false;
         }
         let promises: Promise<boolean>[] = [];

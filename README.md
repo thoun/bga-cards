@@ -25,9 +25,8 @@ loadBgaGameLib('bga-cards', '0.x');
 /* ... */
 
     constructor: function() {
-
-        // create the animation manager
-        this.cardManager = new CardManager(this, ...);
+        // create the card manager
+        this.cardManager = new CardManager(...);
 
         // ...
     },

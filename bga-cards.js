@@ -246,7 +246,7 @@ class CardStock {
      */
     addCards(cards, animation, settings, shift = false) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.manager.game.bgaAnimationsActive()) {
+            if (!this.manager.animationManager.animationsActive()) {
                 shift = false;
             }
             let promises = [];
@@ -753,7 +753,7 @@ class Deck extends CardStock {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             const animatedCardsMax = (_a = settings === null || settings === void 0 ? void 0 : settings.animatedCardsMax) !== null && _a !== void 0 ? _a : 8;
-            if (!this.manager.game.bgaAnimationsActive()) {
+            if (!this.manager.animationManager.animationsActive()) {
                 return Promise.resolve(false); // we don't execute as it's just visual temporary stuff
             }
             if (this.getCardCount() > 0 && !this.cards.length) {
@@ -808,7 +808,7 @@ class Deck extends CardStock {
                 elements.filter(element => element.dataset.tempCardForShuffleAnimation === 'true').forEach(element => element === null || element === void 0 ? void 0 : element.remove());
                 const pauseDelayAfterAnimation = (_b = settings === null || settings === void 0 ? void 0 : settings.pauseDelayAfterAnimation) !== null && _b !== void 0 ? _b : 500;
                 if (pauseDelayAfterAnimation > 0) {
-                    yield this.manager.game.wait(pauseDelayAfterAnimation);
+                    yield this.manager.animationManager.base.wait(pauseDelayAfterAnimation);
                 }
                 return true;
             }
@@ -1737,15 +1737,16 @@ class CardManager {
      * @param game the BGA game class, usually it will be `this`
      * @param settings: a `CardManagerSettings` object
      */
-    constructor(game, settings) {
-        var _a;
-        this.game = game;
+    constructor(settings) {
         this.settings = settings;
         this.stocks = [];
         this.updateMainTimeoutId = [];
         this.updateFrontTimeoutId = [];
         this.updateBackTimeoutId = [];
-        this.animationManager = (_a = settings.animationManager) !== null && _a !== void 0 ? _a : new AnimationManager(game);
+        if (!settings || !settings.animationManager) {
+            throw new Error('You must define an AnimationManager in the settings');
+        }
+        this.animationManager = settings.animationManager;
     }
     addStock(stock) {
         this.stocks.push(stock);
@@ -1773,11 +1774,11 @@ class CardManager {
     }
     /**
      *
-     * @returns the type of the cards, either set in the settings or by using game_name if there is only 1 type.
+     * @returns the type of the cards, either set in the settings or by using a default one if there is only 1 type.
      */
     getType() {
         var _a;
-        return (_a = this.settings.type) !== null && _a !== void 0 ? _a : `${this.game.game_name}-card`;
+        return (_a = this.settings.type) !== null && _a !== void 0 ? _a : `game-card`;
     }
     createCardElement(card, initialSide = 'auto') {
         var _a, _b, _c, _d, _e, _f;
@@ -1892,7 +1893,7 @@ class CardManager {
                 delete this.updateMainTimeoutId[stringId];
             }
             const updateMainDelay = (_b = settings === null || settings === void 0 ? void 0 : settings.updateMainDelay) !== null && _b !== void 0 ? _b : 0;
-            if (isVisible && updateMainDelay > 0 && this.game.bgaAnimationsActive()) {
+            if (isVisible && updateMainDelay > 0 && this.animationManager.animationsActive()) {
                 this.updateMainTimeoutId[stringId] = setTimeout(() => { var _a, _b; return (_b = (_a = this.settings).setupDiv) === null || _b === void 0 ? void 0 : _b.call(_a, card, element); }, updateMainDelay);
             }
             else {
@@ -1905,7 +1906,7 @@ class CardManager {
                 delete this.updateFrontTimeoutId[stringId];
             }
             const updateFrontDelay = (_f = settings === null || settings === void 0 ? void 0 : settings.updateFrontDelay) !== null && _f !== void 0 ? _f : 500;
-            if (!isVisible && updateFrontDelay > 0 && this.game.bgaAnimationsActive()) {
+            if (!isVisible && updateFrontDelay > 0 && this.animationManager.animationsActive()) {
                 this.updateFrontTimeoutId[stringId] = setTimeout(() => { var _a, _b; return (_b = (_a = this.settings).setupFrontDiv) === null || _b === void 0 ? void 0 : _b.call(_a, card, element.getElementsByClassName('front')[0]); }, updateFrontDelay);
             }
             else {
@@ -1918,7 +1919,7 @@ class CardManager {
                 delete this.updateBackTimeoutId[stringId];
             }
             const updateBackDelay = (_k = settings === null || settings === void 0 ? void 0 : settings.updateBackDelay) !== null && _k !== void 0 ? _k : 0;
-            if (isVisible && updateBackDelay > 0 && this.game.bgaAnimationsActive()) {
+            if (isVisible && updateBackDelay > 0 && this.animationManager.animationsActive()) {
                 this.updateBackTimeoutId[stringId] = setTimeout(() => { var _a, _b; return (_b = (_a = this.settings).setupBackDiv) === null || _b === void 0 ? void 0 : _b.call(_a, card, element.getElementsByClassName('back')[0]); }, updateBackDelay);
             }
             else {

@@ -74,9 +74,9 @@ interface CardManagerSettings<T> {
     fakeCardGenerator?: (deckId: string) => T;
 
     /**
-     * The animation manager used in the game. If not provided, a new one will be instanciated for this card manager. Useful if you use AnimationManager outside of card manager, to avoid double instanciation.
+     * The animation manager used in the game.
      */
-    animationManager?: AnimationManager;
+    animationManager: AnimationManager;
 
     /**
      * Indicate the width of a card (in px).
@@ -196,8 +196,12 @@ class CardManager<T> {
      * @param game the BGA game class, usually it will be `this`
      * @param settings: a `CardManagerSettings` object
      */
-    constructor(public game: Game, private settings: CardManagerSettings<T>) {
-        this.animationManager = settings.animationManager ?? new AnimationManager(game);
+    constructor(private settings: CardManagerSettings<T>) {
+        if (!settings || !settings.animationManager) {
+            throw new Error('You must define an AnimationManager in the settings');
+        }
+
+        this.animationManager = settings.animationManager;
     }
 
     public addStock(stock: CardStock<T>) {
@@ -229,10 +233,10 @@ class CardManager<T> {
 
     /**
      * 
-     * @returns the type of the cards, either set in the settings or by using game_name if there is only 1 type.
+     * @returns the type of the cards, either set in the settings or by using a default one if there is only 1 type.
      */
     public getType(): string {
-        return this.settings.type ?? `${(this.game as any).game_name}-card`;
+        return this.settings.type ?? `game-card`;
     }
 
     public createCardElement(card: T, initialSide: 'auto' | 'front' | 'back' = 'auto'): HTMLDivElement {
@@ -361,7 +365,7 @@ class CardManager<T> {
             }
 
             const updateMainDelay = settings?.updateMainDelay ?? 0;
-            if (isVisible && updateMainDelay > 0 && this.game.bgaAnimationsActive()) {
+            if (isVisible && updateMainDelay > 0 && this.animationManager.animationsActive()) {
                 this.updateMainTimeoutId[stringId] = setTimeout(() => this.settings.setupDiv?.(card, element), updateMainDelay);
             } else {
                 this.settings.setupDiv?.(card, element);
@@ -376,7 +380,7 @@ class CardManager<T> {
 
             const updateFrontDelay = settings?.updateFrontDelay ?? 500;
 
-            if (!isVisible && updateFrontDelay > 0 && this.game.bgaAnimationsActive()) {
+            if (!isVisible && updateFrontDelay > 0 && this.animationManager.animationsActive()) {
                 this.updateFrontTimeoutId[stringId] = setTimeout(() => this.settings.setupFrontDiv?.(card, element.getElementsByClassName('front')[0] as HTMLDivElement), updateFrontDelay);
             } else {
                 this.settings.setupFrontDiv?.(card, element.getElementsByClassName('front')[0] as HTMLDivElement);
@@ -390,7 +394,7 @@ class CardManager<T> {
             }
 
             const updateBackDelay = settings?.updateBackDelay ?? 0;
-            if (isVisible && updateBackDelay > 0 && this.game.bgaAnimationsActive()) {
+            if (isVisible && updateBackDelay > 0 && this.animationManager.animationsActive()) {
                 this.updateBackTimeoutId[stringId] = setTimeout(() => this.settings.setupBackDiv?.(card, element.getElementsByClassName('back')[0] as HTMLDivElement), updateBackDelay);
             } else {
                 this.settings.setupBackDiv?.(card, element.getElementsByClassName('back')[0] as HTMLDivElement);

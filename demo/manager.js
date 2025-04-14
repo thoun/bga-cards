@@ -4,7 +4,8 @@ const cardWidth = 100;
 const cardHeight = 150;
 
 function initManager() {
-    cardsManager = new CardManager(game, {
+    cardsManager = new CardManager({
+        animationManager: animationManager,
         type: 'mygame-card',
         getId: (card) => card.id,
         setupDiv: (card, div) => {

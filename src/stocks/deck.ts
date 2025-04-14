@@ -221,7 +221,7 @@ class Deck<T> extends CardStock<T> {
     public async shuffle(settings?: ShuffleAnimationSettings<T>): Promise<boolean> {
         const animatedCardsMax = settings?.animatedCardsMax ?? 8;
 
-        if (!this.manager.game.bgaAnimationsActive()) { 
+        if (!this.manager.animationManager.animationsActive()) { 
             return Promise.resolve(false); // we don't execute as it's just visual temporary stuff
         }
 
@@ -284,7 +284,7 @@ class Deck<T> extends CardStock<T> {
             const pauseDelayAfterAnimation = settings?.pauseDelayAfterAnimation ?? 500;
 
             if (pauseDelayAfterAnimation > 0) {
-                await this.manager.game.wait(pauseDelayAfterAnimation);
+                await this.manager.animationManager.base.wait(pauseDelayAfterAnimation);
             }
 
             return true;

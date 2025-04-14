@@ -1,7 +1,8 @@
 let tokensManager;
 
 function initTokenManager() {
-    tokensManager = new CardManager(game, {
+    tokensManager = new CardManager({
+        animationManager: animationManager,
         type: 'mygame-token',
         getId: (card) => card.id,
         setupFrontDiv: (card, div) => {
@@ -13,6 +14,7 @@ function initTokenManager() {
         isCardVisible: card => Boolean(card.number),
         cardWidth: 90,
         cardHeight: 90,
+        cardBorderRadius: '50%',
     });
 }
 

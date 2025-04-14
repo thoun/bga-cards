@@ -987,9 +987,9 @@ interface CardManagerSettings<T> {
      */
     fakeCardGenerator?: (deckId: string) => T;
     /**
-     * The animation manager used in the game. If not provided, a new one will be instanciated for this card manager. Useful if you use AnimationManager outside of card manager, to avoid double instanciation.
+     * The animation manager used in the game.
      */
-    animationManager?: AnimationManager;
+    animationManager: AnimationManager;
     /**
      * Indicate the width of a card (in px).
      */
@@ -1078,7 +1078,6 @@ declare const BGA_CARDS_CARD_CLASS = "bga-cards_card";
 declare const BGA_CARDS_CARD_SIDES_CLASS = "bga-cards_card-sides";
 declare const BGA_CARDS_CARD_SIDE_CLASS = "bga-cards_card-side";
 declare class CardManager<T> {
-    game: Game;
     private settings;
     animationManager: AnimationManager;
     private stocks;
@@ -1089,7 +1088,7 @@ declare class CardManager<T> {
      * @param game the BGA game class, usually it will be `this`
      * @param settings: a `CardManagerSettings` object
      */
-    constructor(game: Game, settings: CardManagerSettings<T>);
+    constructor(settings: CardManagerSettings<T>);
     addStock(stock: CardStock<T>): void;
     removeStock(stock: CardStock<T>): void;
     /**
@@ -1104,7 +1103,7 @@ declare class CardManager<T> {
     getCardElementId(card: T): string;
     /**
      *
-     * @returns the type of the cards, either set in the settings or by using game_name if there is only 1 type.
+     * @returns the type of the cards, either set in the settings or by using a default one if there is only 1 type.
      */
     getType(): string;
     createCardElement(card: T, initialSide?: 'auto' | 'front' | 'back'): HTMLDivElement;

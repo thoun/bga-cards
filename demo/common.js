@@ -1,4 +1,5 @@
 let gameLoaded = false;
+let animationManager;
 
 window.onload = setTimeout(() => gameLoaded = true, 500);
 
@@ -10,16 +11,13 @@ let game = {
     bgaAnimationsActive: function() {
         return document.visibilityState !== 'hidden' && !this.instantaneousMode && gameLoaded;
     },
-    wait: function(delay) {
-        if (delay > 0 && this.bgaAnimationsActive()) {
-            return new Promise(resolve => setTimeout(resolve, delay));
-        } else {
-            return Promise.resolve();
-        }
-    },
 };
 
 function initCommon() {
+    animationManager = new AnimationManager({
+        animationsActive: () => game.bgaAnimationsActive(),
+    });
+
     document.body.insertAdjacentHTML('afterbegin', `    
     <div class="nav">
         <a href="index.html">Index</a> | 
@@ -33,7 +31,7 @@ function initCommon() {
         <input type="checkbox" id="instantaneousMode" onclick="game.instantaneousMode = !game.instantaneousMode">
         <label for="instantaneousMode">Instantaneous mode (to simulate fast replay)</label>
     </div>
-    `)
+    `);
 }
 
 let cardId = 1;

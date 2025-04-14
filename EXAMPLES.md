@@ -9,8 +9,13 @@ loadBgaGameLib('bga-cards', '0.x');
     setup: function(gamedatas) {
         /* ... */
 
+        // create the animation manager, used by the card manager
+        this.animationManager = new AnimationManager({
+            animationsActive: () => this.bgaAnimationsActive(),
+        });
         // create the card manager
-        this.cardsManager = new CardManager(this, {
+        this.cardsManager = new CardManager({
+            animationManager: this.animationManager,
             type: 'mygame-card',
             getId: (card) => card.id,
             setupFrontDiv: (card, div) => {
