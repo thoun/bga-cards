@@ -889,6 +889,10 @@ declare class AllVisibleDeck<T> extends CardStock<T> {
      */
     setOpened(opened: boolean): void;
     cardRemoved(card: T): void;
+    /**
+     * Updates the cards number, if the counter is visible.
+     */
+    protected cardNumberUpdated(): void;
 }
 interface DiscardDeckSettings extends CardStockSettings {
     /**

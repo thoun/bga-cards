@@ -71,4 +71,13 @@ class AllVisibleDeck<T> extends CardStock<T> {
             cardDiv.style.setProperty('--order', ''+index);
         });
     }
+
+    /**
+     * Updates the cards number, if the counter is visible.
+     */
+    protected cardNumberUpdated() {
+        super.cardNumberUpdated();
+        const cardNumber = this.getCardCount();
+        this.element.style.setProperty('--tile-count', ''+cardNumber);
+    }
 }

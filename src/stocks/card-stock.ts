@@ -754,7 +754,6 @@ class CardStock<T> {
      */
     protected cardNumberUpdated() {
         const cardNumber = this.getCardCount();
-        this.element.style.setProperty('--tile-count', ''+cardNumber);
         this.element.dataset.empty = (cardNumber == 0).toString();
         this.onCardCountChange?.(cardNumber);
 

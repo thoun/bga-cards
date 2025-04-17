@@ -89,6 +89,7 @@ class Deck<T> extends CardStock<T> {
         super(manager, element, settings);
         
         element.classList.add('deck');
+        element.style.setProperty('--bga-cards_card-border-radius', `${this.manager.getCardBorderRadius()}`);
         const cardWidth = this.manager.getCardWidth();
         const cardHeight = this.manager.getCardHeight();
         if (cardWidth && cardHeight) {
@@ -110,6 +111,8 @@ class Deck<T> extends CardStock<T> {
         this.element.style.setProperty('--xShadowShift', ''+xShadowShift);
         this.element.style.setProperty('--yShadowShift', ''+yShadowShift);
 
+        shadowDirectionSplit.forEach(direction => this.element.style.setProperty(`--deck-margin-${direction}`, `${this.thicknesses.length}px`));
+        
         if (settings.topCard) {
             this.addCard(settings.topCard);
         } else if (settings.cardNumber > 0) {

@@ -611,7 +611,6 @@ class CardStock {
     cardNumberUpdated() {
         var _a;
         const cardNumber = this.getCardCount();
-        this.element.style.setProperty('--tile-count', '' + cardNumber);
         this.element.dataset.empty = (cardNumber == 0).toString();
         (_a = this.onCardCountChange) === null || _a === void 0 ? void 0 : _a.call(this, cardNumber);
         if (this.counterDiv) {
@@ -630,6 +629,7 @@ class Deck extends CardStock {
         this.manager = manager;
         this.element = element;
         element.classList.add('deck');
+        element.style.setProperty('--bga-cards_card-border-radius', `${this.manager.getCardBorderRadius()}`);
         const cardWidth = this.manager.getCardWidth();
         const cardHeight = this.manager.getCardHeight();
         if (cardWidth && cardHeight) {
@@ -650,6 +650,7 @@ class Deck extends CardStock {
         const yShadowShift = shadowDirectionSplit.includes('bottom') ? 1 : (shadowDirectionSplit.includes('top') ? -1 : 0);
         this.element.style.setProperty('--xShadowShift', '' + xShadowShift);
         this.element.style.setProperty('--yShadowShift', '' + yShadowShift);
+        shadowDirectionSplit.forEach(direction => this.element.style.setProperty(`--deck-margin-${direction}`, `${this.thicknesses.length}px`));
         if (settings.topCard) {
             this.addCard(settings.topCard);
         }
@@ -1673,6 +1674,14 @@ class AllVisibleDeck extends CardStock {
             const cardDiv = this.manager.getCardElement(card);
             cardDiv.style.setProperty('--order', '' + index);
         });
+    }
+    /**
+     * Updates the cards number, if the counter is visible.
+     */
+    cardNumberUpdated() {
+        super.cardNumberUpdated();
+        const cardNumber = this.getCardCount();
+        this.element.style.setProperty('--tile-count', '' + cardNumber);
     }
 }
 class DiscardDeck extends CardStock {
