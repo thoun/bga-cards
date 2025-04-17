@@ -11,10 +11,17 @@
         <script src="./manager.js" type="text/javascript"></script>
         <script src="./line-stock.js" type="text/javascript"></script>
     </head>
-    <body>
+    <body data-selection-style="line">
         <h1>Card selection</h1>
 
         <div class="block">
+            <select onchange="document.body.dataset.selectionStyle = this.value">
+                <option value="none">None</option>
+                <option value="line" selected>dashed line / line</option>
+                <option value="glow">glow</option>
+                <option value="lifted">lifted</option>
+            </select>
+
             <div id="line-stock" class="selection-stock"></div>
             <div>
                 <button onclick="rotateCard()">rotate card</button>
