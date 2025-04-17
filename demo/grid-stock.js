@@ -5,7 +5,7 @@ let gridCards = [];
 const CARD_TO_COORDINATE = (card) => ({ x: card.x, y: card.y });
 
 function initFixedGridStock() {
-    fixedGridStock = new GridStock(cardsManager, document.getElementById('fixed-grid-stock'), {
+    fixedGridStock = new BgaCards.GridStock(cardsManager, document.getElementById('fixed-grid-stock'), {
         slotClasses: ['mygame-slot'],
         mapCardToCoordinates: CARD_TO_COORDINATE,
         minX: 1,
@@ -26,7 +26,7 @@ function initFixedGridStock() {
 }
 
 function initGridStock() {
-    gridStock = new GridStock(cardsManager, document.getElementById('grid-stock'), {
+    gridStock = new BgaCards.GridStock(cardsManager, document.getElementById('grid-stock'), {
         slotClasses: ['mygame-slot'],
         mapCardToCoordinates: CARD_TO_COORDINATE,
     });

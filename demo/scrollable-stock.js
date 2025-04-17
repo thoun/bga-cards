@@ -1,7 +1,7 @@
 let scrollableStock;
 
 function initScrollableStock() {
-    scrollableStock = new ScrollableStock(cardsManager, document.getElementById('scrollable-stock'), {
+    scrollableStock = new BgaCards.ScrollableStock(cardsManager, document.getElementById('scrollable-stock'), {
         leftButton: {
             html: '&lt;'
         },

@@ -14,7 +14,7 @@ let game = {
 };
 
 function initCommon() {
-    animationManager = new AnimationManager({
+    animationManager = new BgaAnimations.Manager({
         animationsActive: () => game.bgaAnimationsActive(),
     });
 

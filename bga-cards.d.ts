@@ -1225,3 +1225,17 @@ declare class CardManager<T> {
      */
     setLastPlayedCards(cards: T[] | null, color?: string, cardClass?: string): void;
 }
+declare const BgaCards: {
+    Manager: typeof CardManager;
+    Stock: typeof CardStock;
+    AllVisibleDeck: typeof AllVisibleDeck;
+    Deck: typeof Deck;
+    DiscardDeck: typeof DiscardDeck;
+    GridStock: typeof GridStock;
+    HandStock: typeof HandStock;
+    LineStock: typeof LineStock;
+    ManualPositionStock: typeof ManualPositionStock;
+    ScrollableStock: typeof ScrollableStock;
+    SlotStock: typeof SlotStock;
+    VoidStock: typeof VoidStock;
+};

@@ -6,7 +6,7 @@ let lineStock1;
 let lineStock2;
 
 function initLineStock() {
-    lineStock = new LineStock(cardsManager, document.getElementById('line-stock'), {
+    lineStock = new BgaCards.LineStock(cardsManager, document.getElementById('line-stock'), {
         sort: sortFunction('type', 'type_arg')
     });
     lineStock.setSelectionMode('multiple');
@@ -87,7 +87,7 @@ function setSortFunction(type) {
 }
 
 function initLineStockOverlap() {
-    lineStockOverlap = new LineStock(cardsManager, document.getElementById('line-stock-overlap'));
+    lineStockOverlap = new BgaCards.LineStock(cardsManager, document.getElementById('line-stock-overlap'));
 
     // add cards
     lineStockOverlap.addCards([
@@ -98,7 +98,7 @@ function initLineStockOverlap() {
 }
 
 function initLineStockVerticalOverlap() {
-    lineStockVerticalOverlap = new LineStock(cardsManager, document.getElementById('line-stock-vertical-overlap'), {
+    lineStockVerticalOverlap = new BgaCards.LineStock(cardsManager, document.getElementById('line-stock-vertical-overlap'), {
         direction: 'column',
     });
 
@@ -113,8 +113,8 @@ function initLineStockVerticalOverlap() {
 const lineStocksCard = { id: getCardId(), type: 3, type_arg: 2, location: 'table', location_arg: 0 };
 
 function initLineStocks() {
-    lineStock1 = new LineStock(cardsManager, document.getElementById('line-stock-1'));
-    lineStock2 = new LineStock(cardsManager, document.getElementById('line-stock-2'));
+    lineStock1 = new BgaCards.LineStock(cardsManager, document.getElementById('line-stock-1'));
+    lineStock2 = new BgaCards.LineStock(cardsManager, document.getElementById('line-stock-2'));
 
     // add cards
     lineStock1.addCard(lineStocksCard);

@@ -1,7 +1,7 @@
 let tokensManager;
 
 function initTokenManager() {
-    tokensManager = new CardManager({
+    tokensManager = new BgaCards.Manager({
         animationManager: animationManager,
         type: 'mygame-token',
         getId: (card) => card.id,

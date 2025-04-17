@@ -4,7 +4,7 @@ let allVisibleDeck;
 let discardDeck;
 
 function initHiddenDeck() {
-    hiddenDeck = new Deck(cardsManager, document.getElementById('hidden-deck'), {
+    hiddenDeck = new BgaCards.Deck(cardsManager, document.getElementById('hidden-deck'), {
         cardNumber: 5,
         counter: {
             position: 'center',
@@ -50,7 +50,7 @@ function shuffleDeck() {
 }
 
 function initVisibleDeck() {
-    visibleDeck = new Deck(cardsManager, document.getElementById('visible-deck'), {
+    visibleDeck = new BgaCards.Deck(cardsManager, document.getElementById('visible-deck'), {
         cardNumber: 5,
         topCard: { id: getCardId(), type: 2, type_arg: 3, location: 'table', location_arg: 0 },
         counter: {
@@ -64,7 +64,7 @@ function setVisibleDeckCardNumber(cardNumber) {
 }
 
 function initAllVisibleDeck() {
-    allVisibleDeck = new AllVisibleDeck(cardsManager, document.getElementById('all-visible-deck'), {
+    allVisibleDeck = new BgaCards.AllVisibleDeck(cardsManager, document.getElementById('all-visible-deck'), {
         shift: '8px',
         //verticalShift: '0px',
         //horizontalShift: '10px',
@@ -85,7 +85,7 @@ function setAllVisibleDeckOpen(opened) {
 }
 
 function initDiscardDeck() {
-    discardDeck = new DiscardDeck(cardsManager, document.getElementById('discard-deck'), {
+    discardDeck = new BgaCards.DiscardDeck(cardsManager, document.getElementById('discard-deck'), {
         shift: '8px',
         //verticalShift: '0px',
         //horizontalShift: '10px',

@@ -1,7 +1,7 @@
 let voidStock;
 
 function initVoidStock() {
-    voidStock = new VoidStock(cardsManager, document.getElementById('void-stock'));
+    voidStock = new BgaCards.VoidStock(cardsManager, document.getElementById('void-stock'));
 }
 
 function addCardToVoidStock(fromElement) {

@@ -3,7 +3,7 @@ let slotStockCard1;
 let slotStockCard2;
 
 function initSlotStock() {
-    slotStock = new SlotStock(cardsManager, document.getElementById('slot-stock'), {
+    slotStock = new BgaCards.SlotStock(cardsManager, document.getElementById('slot-stock'), {
         slotsIds: ['A', 'B', 'C', 'D', 'E'],
         slotClasses: ['mygame-slot'],
         mapCardToSlot: (card) => card.location,

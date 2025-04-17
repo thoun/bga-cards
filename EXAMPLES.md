@@ -10,11 +10,11 @@ loadBgaGameLib('bga-cards', '0.x');
         /* ... */
 
         // create the animation manager, used by the card manager
-        this.animationManager = new AnimationManager({
+        this.animationManager = new BgaAnimations.Manager({
             animationsActive: () => this.bgaAnimationsActive(),
         });
         // create the card manager
-        this.cardsManager = new CardManager({
+        this.cardsManager = new BgaCards.Manager({
             animationManager: this.animationManager,
             type: 'mygame-card',
             getId: (card) => card.id,
@@ -25,7 +25,7 @@ loadBgaGameLib('bga-cards', '0.x');
         });
 
         // create the stock
-        this.stock = new LineStock(this.cardsManager, document.getElementById('card-stock'));
+        this.stock = new BgaCards.LineStock(this.cardsManager, document.getElementById('card-stock'));
         this.stock.addCards(gamedatas.cards);
     }
 ```
@@ -33,15 +33,15 @@ loadBgaGameLib('bga-cards', '0.x');
 ## Example of custom Stock
 A composite stock that holds 3 AllVisibleDeck stocks
 ```js
-class WickednessDecks extends CardStock {
-    decks: AllVisibleDeck = [];
+class WickednessDecks extends BgaCards.CardStock {
+    decks: BgaCards.AllVisibleDeck = [];
     
     constructor(manager) {
         super(manager, null);
 
         [3, 6, 10].forEach(level => {
             dojo.place(`<div id="wickedness-tiles-pile-${level}" class="wickedness-tiles-pile wickedness-tile-stock"></div>`, 'wickedness-board');
-            this.decks[level] = new AllVisibleDeck(manager, document.getElementById(`wickedness-tiles-pile-${level}`), '132px', '81px', '3px');
+            this.decks[level] = new BgaCards.AllVisibleDeck(manager, document.getElementById(`wickedness-tiles-pile-${level}`), '132px', '81px', '3px');
             this.decks[level].onSelectionChange = (selection, lastChange) => this.selectionChange(selection, lastChange);
         });
     }   

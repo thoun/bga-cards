@@ -4,7 +4,7 @@ const cardWidth = 100;
 const cardHeight = 150;
 
 function initManager() {
-    cardsManager = new CardManager({
+    cardsManager = new BgaCards.Manager({
         animationManager: animationManager,
         type: 'mygame-card',
         getId: (card) => card.id,

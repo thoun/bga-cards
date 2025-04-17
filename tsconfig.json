@@ -25,6 +25,7 @@
       "src/stocks/void-stock.ts",
       "src/stocks/all-visible-deck.ts",
       "src/stocks/discard-deck.ts",
-      "src/card-manager.ts"
+      "src/card-manager.ts",
+      "src/index.ts"
     ]
 }

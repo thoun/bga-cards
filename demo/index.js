@@ -8,7 +8,7 @@ let token;
 // cards
 
 function initLineStock() {
-    lineStock = new LineStock(cardsManager, document.getElementById('line-stock'), {
+    lineStock = new BgaCards.LineStock(cardsManager, document.getElementById('line-stock'), {
         sort: sortFunction('type', 'type_arg')
     });
     lineStock.setSelectionMode('multiple');
@@ -28,7 +28,7 @@ function initLineStock() {
 }
 
 function initHiddenDeck() {
-    hiddenDeck = new Deck(cardsManager, document.getElementById('hidden-deck'), {
+    hiddenDeck = new BgaCards.Deck(cardsManager, document.getElementById('hidden-deck'), {
         cardNumber: 49,
         counter: {
             position: 'center',
@@ -80,8 +80,8 @@ function initTokens() {
         mapCardToSlot: () => 1,
  }
 
-    tokenHiddenStock = new SlotStock(tokensManager, document.getElementById('token-hidden-stock'), slotSettings);
-    tokenRevealedStock = new SlotStock(tokensManager, document.getElementById('token-revealed-stock'), slotSettings);
+    tokenHiddenStock = new BgaCards.SlotStock(tokensManager, document.getElementById('token-hidden-stock'), slotSettings);
+    tokenRevealedStock = new BgaCards.SlotStock(tokensManager, document.getElementById('token-revealed-stock'), slotSettings);
     tokenHiddenStock.addCard(token);
 }
 

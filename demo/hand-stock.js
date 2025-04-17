@@ -2,7 +2,7 @@ let handStock;
 let floatingHandStock;
 
 function initHandStock() {
-    handStock = new HandStock(cardsManager, document.getElementById('hand-stock'), {
+    handStock = new BgaCards.HandStock(cardsManager, document.getElementById('hand-stock'), {
     });
 
     // add cards
@@ -17,7 +17,7 @@ function initHandStock() {
 }
 
 function initFloatingHandStock() {
-    floatingHandStock = new HandStock(cardsManager, document.getElementById('floating-hand-stock'), {
+    floatingHandStock = new BgaCards.HandStock(cardsManager, document.getElementById('floating-hand-stock'), {
     });
 
     // add cards
