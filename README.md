@@ -1,3 +1,6 @@
+# THIS LIB IS DEPRECATED!
+It's replaced by [bga-cards](https://en.doc.boardgamearena.com/BgaCards)
+
 # Links
 [Documentation](https://thoun.github.io/bga-cards/docs/index.html)
 
